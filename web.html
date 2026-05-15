@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Magic Color Switcher</title>
+    <style>
+        /* CSS untuk mempercantik tampilan */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.4s ease; /* Efek memudar saat ganti warna */
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 { color: #333; }
+
+        #colorText {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #555;
+            margin: 20px 0;
+            display: block;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Ganti Warna</h1>
+        <span id="colorText">#FFFFFF</span>
+        <button id="btnGanti">Klik untuk Ganti!</button>
+    </div>
+
+    <script>
+        // JavaScript untuk logika ganti warna
+        const tombol = document.getElementById('btnGanti');
+        const teksWarna = document.getElementById('colorText');
+
+        function generateWarnaAcak() {
+            // Karakter yang tersedia untuk kode HEX
+            const karakter = '0123456789ABCDEF';
+            let warna = '#';
+            
+            // Loop 6 kali untuk membuat kode warna (misal: #A1B2C3)
+            for (let i = 0; i < 6; i++) {
+                warna += karakter[Math.floor(Math.random() * 16)];
+            }
+            return warna;
+        }
+
+        tombol.addEventListener('click', () => {
+            const warnaBaru = generateWarnaAcak();
+            
+            // Ubah background body
+            document.body.style.backgroundColor = warnaBaru;
+            
+            // Ubah teks di layar
+            teksWarna.innerText = warnaBaru;
+            teksWarna.style.color = warnaBaru;
+        });
+    </script>
+
+</body>
+</html>
