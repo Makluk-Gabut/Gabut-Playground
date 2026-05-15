@@ -1,4 +1,4 @@
-# TagMind v3.2.1 - PyTorch Edition 
+# TagMind v - Paling ambisiuss yang pernah kucoba 
 
 
 import random
