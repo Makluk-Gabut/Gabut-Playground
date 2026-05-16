@@ -1,0 +1,31 @@
+1. FORWARD PASS: INPUT -> HIDDEN LAYER
+
+01001000 10001011 00000101 00000000 00000000 00000000 00000000 # Salurkan arus input ke register (RAX)
+01001000 10001001 11000011                                     # Salin data input ke jalur pemrosesan (RBX)
+
+Hidden Neuron 1: Gerbang NOT (Pembalik Arus Transistor)
+
+01001000 11110111 11010011                                     # Pemicu Transistor NOT (Membalik seluruh bit)
+01001000 10000011 11100011 00000001                           # Gerbang AND (Saring bit pertama)
+
+Hidden Neuron 2: Gerbang AND dengan Bias
+
+01001000 10100011 00000000 00000000 00000000 00000000 00000000 # Ambil data bias dari transistor memori
+01001000 10000101 11000011                                     # Satukan input DAN bias lewat sirkuit AND
+
+Hidden Neuron 3: Gerbang XOR (Detektor Perbedaan Arus)
+
+01001000 00110011 11000011                                     # Tabrakkan arus input dan bias di gerbang XOR
+
+Hidden Neuron 4: Gerbang OR (Penerus Arus)
+
+01001000 00001011 11000011                                     # Gabungkan input dan bias lewat sirkuit OR
+
+2. OUTPUT LAYER: AKUMULASI LOGIKA (4 ke 1)
+
+01001000 00001011 11000001                                     # OR jalur Neuron 1 dan Neuron 2
+01001000 00110011 11000010                                     # XOR hasil gabungan untuk keputusan akhir (Aktivasi)
+
+3. KIRIM HASIL KE PIN OUTPUT CPU
+
+01001000 10001001 00000101 00000000 00000000 00000000 00000000 # Dorong bit hasil akhir (0 atau 1) ke pin sirkuit luar
