@@ -8,7 +8,7 @@ pygame.init()
 # Warna (RGB)
 putih = (255, 255, 255)
 kuning = (255, 255, 102)
-hitam = (30, 30, 30) # Abu-abu gelap agar lebih modern
+hitam = (30, 30, 30) # Abu-abu gelap biar keren :v
 merah = (213, 50, 80)
 hijau = (0, 255, 100)
 biru_muda = (50, 153, 213)
