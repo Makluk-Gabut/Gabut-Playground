@@ -1,8 +1,8 @@
 """
 oke ini pertama kali aku bikin RL yang hampir sempurna
 ╔══════════════════════════════════════════════════════════════╗
-║          MaklukGabut's Game of Life  —  ALL-IN-ONE          ║
-║                        v4.0  (final)                        ║
+║          MaklukGabut's Game of Life  —  ALL-IN-ONE           ║
+║                        v4.0  (final)                         ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Satu file berisi segalanya:                                 ║
 ║    • Game engine  (agen + lingkungan 4-fase atomik)          ║
@@ -16,8 +16,8 @@ oke ini pertama kali aku bikin RL yang hampir sempurna
 ║    python makluk_gabut.py train --resume   ← lanjut          ║
 ║    python makluk_gabut.py train --visual   ← + visualisasi   ║
 ║    python makluk_gabut.py demo             ← tonton AI       ║
-║    python makluk_gabut.py plot             ← lihat grafik     ║
-║    python makluk_gabut.py list             ← daftar checkpoint║
+║    python makluk_gabut.py plot            ← lihat grafik     ║
+║    python makluk_gabut.py list            ← daftar checkpoint║
 ╚══════════════════════════════════════════════════════════════╝
 """
 
