@@ -1,8 +1,8 @@
 """
 aku mutusin buat bikin dokumentasi pertama yang jelas
-______________________________
+_____________________________
 makluk_gabut_visualizer.py
-──────────────────────────
+─────────────────────────
 Visualisasi real-time untuk MaklukGabut's Game of Life.
 Jalankan dari folder yang sama dengan makluk_gabut_v3.py.
 
