@@ -124,9 +124,9 @@ def main():
     print("\n ATURAN: Perkalian (×) dan pembagian (÷) DIDAHULUKAN")
     print("   Contoh: 5 + 3 × 2 = 5 + 6 = 11 (BUKAN 8 × 2 = 16)\n")
     print("Pilih tingkat kesulitan:")
-    print("1. Mudah     (Penjumlahan 2 variabel, angka 1-20, 3 detik)")
-    print("2. Sedang    (2-3 variabel, + - × ÷, angka 1-50, 5 detik)")
-    print("3. Sulit     (3-5 variabel + kurung + akar, angka 20-90, 10 detik)")
+    print("1. Mudah     (Penjumlahan 2 variabel, angka 1-20, 5 detik)")
+    print("2. Sedang    (2-3 variabel, + - × ÷, angka 1-50, 10 detik)")
+    print("3. Sulit     (3-5 variabel + kurung + akar, angka 20-90, 20 detik)")
     
     while True:
         try:
@@ -138,15 +138,15 @@ def main():
             print("Masukkan angka!")
     
     if pilih == 1:
-        waktu = 3
+        waktu = 5  # diubah dari 3 menjadi 5 detik
         func_soal = buat_soal_mudah
         tingkat = "Mudah"
     elif pilih == 2:
-        waktu = 5
+        waktu = 10  # diubah dari 5 menjadi 10 detik
         func_soal = buat_soal_sedang
         tingkat = "Sedang"
     else:
-        waktu = 10
+        waktu = 20  # diubah dari 10 menjadi 20 detik
         func_soal = buat_soal_sulit
         tingkat = "Sulit"
     
