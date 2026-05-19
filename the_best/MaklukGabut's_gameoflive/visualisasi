@@ -1,0 +1,538 @@
+"""
+aku mutusin buat bikin dokumentasi pertama yang jelas
+______________________________
+makluk_gabut_visualizer.py
+──────────────────────────
+Visualisasi real-time untuk MaklukGabut's Game of Life.
+Jalankan dari folder yang sama dengan makluk_gabut_v3.py.
+
+Mode:
+  python makluk_gabut_visualizer.py train_visual   ← training sambil lihat visual
+  python makluk_gabut_visualizer.py demo            ← demo pakai brain yang sudah jadi
+  python makluk_gabut_visualizer.py train_first     ← train cepat dulu, baru demo
+
+Kontrol saat window terbuka:
+  SPACE       → pause / lanjut
+  → / ←       → tambah / kurangi kecepatan
+  R           → reset episode sekarang
+  Q / Tutup   → keluar
+"""
+
+import sys
+import time
+import random
+import numpy as np
+import torch
+import torch.nn as nn
+import pygame
+
+# ── Import semua dari file utama ────────────────────────────────
+try:
+    from makluk_gabut_v3 import (
+        NUM_AGENTS, ACTION_MAP, ACTION_SIZE, STATE_SIZE,
+        MaklukGabutEnv, AgentBrainManager,
+        get_agent_state, train_makluk_gabut
+    )
+except ImportError:
+    sys.exit("[ERROR] makluk_gabut_v3.py tidak ditemukan di folder ini.")
+
+
+# ══════════════════════════════════════════════════════════════
+# KONSTANTA TAMPILAN
+# ══════════════════════════════════════════════════════════════
+CELL        = 52          # ukuran tiap cell grid (px)
+PANEL_W     = 290         # lebar panel info kanan
+GRID_CELLS  = 12
+WIN_W       = GRID_CELLS * CELL + PANEL_W
+WIN_H       = GRID_CELLS * CELL
+
+# Palet warna
+C = {
+    'bg'         : (12,  14,  24),
+    'cell'       : (22,  26,  42),
+    'cell_border': (35,  40,  65),
+    'food'       : (72, 200,  90),
+    'food_glow'  : (40, 100,  50),
+    'panel'      : (16,  18,  32),
+    'divider'    : (45,  50,  85),
+
+    # Agen berdasarkan status
+    'alive'      : ( 70, 130, 230),
+    'alive_rim'  : (130, 180, 255),
+    'dormant'    : (210, 150,  40),
+    'dormant_rim': (255, 200,  80),
+    'carrying'   : (190,  70, 210),
+    'carried'    : (140, 140, 155),
+    'dead_bg'    : ( 50,  50,  60),
+
+    # Bars & indikator
+    'hp_hi'      : ( 60, 210, 110),
+    'hp_lo'      : (220,  60,  60),
+    'hp_bg'      : ( 30,  35,  50),
+    'boost_dot'  : (255, 215,  50),
+    'inv_dot'    : ( 72, 200,  90),
+
+    # Teks
+    'txt'        : (210, 215, 230),
+    'txt_dim'    : (110, 115, 135),
+    'txt_hi'     : (150, 195, 255),
+    'txt_warn'   : (220, 140,  50),
+    'txt_dead'   : ( 85,  85, 100),
+}
+
+
+# ══════════════════════════════════════════════════════════════
+# KELAS VISUALIZER
+# ══════════════════════════════════════════════════════════════
+class MaklukVisualizer:
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("MaklukGabut's Game of Life  |  Visualizer")
+        self.screen = pygame.display.set_mode((WIN_W, WIN_H))
+        self.clock  = pygame.time.Clock()
+
+        # Font
+        mono = 'monospace'
+        self.f_title = pygame.font.SysFont(mono, 17, bold=True)
+        self.f_body  = pygame.font.SysFont(mono, 13)
+        self.f_small = pygame.font.SysFont(mono, 11)
+
+        # Surface tembus pandang untuk overlay
+        self._overlay = pygame.Surface((CELL, CELL), pygame.SRCALPHA)
+
+    # ── Gambar satu cell grid ────────────────────────────────
+    def _draw_cell(self, gx, gy, food):
+        rx = gx * CELL
+        ry = gy * CELL
+        pygame.draw.rect(self.screen, C['cell'],        (rx,     gy*CELL,     CELL-1, CELL-1))
+        pygame.draw.rect(self.screen, C['cell_border'], (rx,     gy*CELL,     CELL-1, CELL-1), 1)
+
+        if food:
+            cx, cy = rx + CELL//2, gy*CELL + CELL//2
+            pygame.draw.circle(self.screen, C['food_glow'], (cx, cy), 10)
+            pygame.draw.circle(self.screen, C['food'],      (cx, cy),  7)
+
+    # ── Gambar satu agen ────────────────────────────────────
+    def _draw_agent(self, agent):
+        if agent.is_dead:
+            # Tampilkan "X" samar di cell tempat agen terakhir
+            rx, ry = agent.x * CELL, agent.y * CELL
+            t = self.f_small.render("✕", True, C['dead_bg'])
+            self.screen.blit(t, (rx + CELL//2 - t.get_width()//2,
+                                 ry + CELL//2 - t.get_height()//2))
+            return
+
+        cx = agent.x * CELL + CELL//2
+        cy = agent.y * CELL + CELL//2
+
+        # ── Pilih warna & ukuran berdasarkan status ──────────
+        if agent.is_being_carried:
+            color, rim, r = C['carried'],  C['txt_dim'],   9
+        elif agent.is_dormant:
+            color, rim, r = C['dormant'],  C['dormant_rim'], 15
+            # Overlay semi-transparan untuk efek tidur
+            self._overlay.fill((210, 150, 40, 45))
+            self.screen.blit(self._overlay, (agent.x * CELL, agent.y * CELL))
+        elif agent.carrying:
+            color, rim, r = C['carrying'], C['alive_rim'], 17
+        else:
+            color, rim, r = C['alive'],    C['alive_rim'], 15
+
+        pygame.draw.circle(self.screen, color, (cx, cy), r)
+        pygame.draw.circle(self.screen, rim,   (cx, cy), r, 2)
+
+        # ID agen
+        id_t = self.f_body.render(str(agent.id), True, (255, 255, 255))
+        self.screen.blit(id_t, (cx - id_t.get_width()//2, cy - id_t.get_height()//2))
+
+        # ── Boost stacks (titik kuning atas-kiri cell) ───────
+        for s in range(min(agent.boost_stacks, 5)):
+            bx = agent.x * CELL + 5 + s * 9
+            by = agent.y * CELL + 5
+            pygame.draw.circle(self.screen, C['boost_dot'], (bx, by), 3)
+
+        # ── Inventory (titik hijau atas-kanan cell) ──────────
+        for idx in range(len(agent.inventory)):
+            ix = agent.x * CELL + CELL - 8 - idx * 9
+            iy = agent.y * CELL + 5
+            pygame.draw.circle(self.screen, C['inv_dot'], (ix, iy), 3)
+
+        # ── Energy bar bawah cell ────────────────────────────
+        bw   = CELL - 8
+        bh   = 5
+        bx   = agent.x * CELL + 4
+        by   = agent.y * CELL + CELL - 9
+        rat  = max(0.0, agent.energy / 50.0)
+        bcol = C['hp_hi'] if rat > 0.35 else C['hp_lo']
+        pygame.draw.rect(self.screen, C['hp_bg'], (bx, by, bw, bh))
+        pygame.draw.rect(self.screen, bcol,       (bx, by, int(bw * rat), bh))
+
+        # ── Label "zzz" untuk dorman ─────────────────────────
+        if agent.is_dormant:
+            zzz = self.f_small.render("zzz", True, C['dormant_rim'])
+            self.screen.blit(zzz, (cx + r, cy - r - 2))
+
+    # ── Panel info kanan ────────────────────────────────────
+    def _draw_panel(self, env, episode, step, total_reward, epsilon, fps, paused):
+        px = GRID_CELLS * CELL
+        pygame.draw.rect(self.screen, C['panel'], (px, 0, PANEL_W, WIN_H))
+        pygame.draw.line(self.screen, C['divider'], (px, 0), (px, WIN_H), 2)
+
+        y = 0
+
+        def txt(msg, color=None, font=None, indent=12):
+            nonlocal y
+            f = font or self.f_body
+            c = color or C['txt']
+            s = f.render(msg, True, c)
+            self.screen.blit(s, (px + indent, y))
+            y += s.get_height() + 3
+
+        def sep(gap=6):
+            nonlocal y
+            y += gap // 2
+            pygame.draw.line(self.screen, C['divider'],
+                             (px + 8, y), (px + PANEL_W - 8, y))
+            y += gap // 2 + 2
+
+        def bar(ratio, width=140, height=6, col_hi=C['hp_hi'], col_lo=C['hp_lo']):
+            nonlocal y
+            col = col_hi if ratio > 0.35 else col_lo
+            pygame.draw.rect(self.screen, C['hp_bg'], (px + 12, y, width, height))
+            pygame.draw.rect(self.screen, col,        (px + 12, y, int(width * ratio), height))
+            y += height + 4
+
+        # ── Header ──────────────────────────────────────────
+        y = 12
+        txt("MAKLUKGABUT", C['txt_hi'], self.f_title)
+        txt("Game of Life  v3", C['txt_dim'])
+        sep()
+
+        # ── Info episode ─────────────────────────────────────
+        pause_tag = "  [PAUSED]" if paused else ""
+        txt(f"Episode : {episode}{pause_tag}", C['txt_warn'] if paused else C['txt'])
+        txt(f"Step    : {step:>3} / 200")
+        txt(f"Reward  : {total_reward:>8.1f}")
+        txt(f"Epsilon : {epsilon:.3f}")
+        txt(f"FPS     : {fps}", C['txt_dim'])
+        sep()
+
+        # ── Status tiap agen ─────────────────────────────────
+        txt("STATUS AGEN", C['txt_hi'], self.f_title)
+        y += 2
+
+        for agent in env.agents:
+            if agent.is_dead:
+                txt(f"[{agent.id}] MATI", C['txt_dead'])
+                continue
+
+            if agent.is_dormant:
+                status = f"DORMAN {agent.dormant_timer}/60"
+                sc     = C['dormant']
+            elif agent.is_being_carried:
+                status = "DIGENDONG"
+                sc     = C['carried']
+            elif agent.carrying:
+                status = f"GENDONG [{agent.carrying.id}]"
+                sc     = C['carrying']
+            else:
+                status = "AKTIF"
+                sc     = C['alive']
+
+            txt(f"[{agent.id}] {status}", sc)
+
+            # Energy bar
+            bar(max(0, agent.energy / 50.0))
+
+            # Boost & inventory info
+            boost_str = "⚡" * agent.boost_stacks + "·" * (5 - agent.boost_stacks)
+            inv_str   = "●" * len(agent.inventory) + "○" * (3 - len(agent.inventory))
+            txt(f"  {boost_str}  inv:{inv_str}  stp:{agent.steps_taken}",
+                C['txt_dim'], self.f_small)
+            y += 2
+
+        sep()
+
+        # ── Legenda ──────────────────────────────────────────
+        txt("LEGENDA", C['txt_hi'], self.f_title)
+        legends = [
+            (C['alive'],   "Aktif"),
+            (C['dormant'], "Dorman / tertidur"),
+            (C['carrying'],"Menggendong teman"),
+            (C['carried'], "Sedang digendong"),
+            (C['food'],    "Makanan"),
+        ]
+        for col, label in legends:
+            pygame.draw.circle(self.screen, col, (px + 18, y + 6), 5)
+            lbl = self.f_small.render(label, True, C['txt_dim'])
+            self.screen.blit(lbl, (px + 28, y))
+            y += 16
+
+        # Indikator boost
+        pygame.draw.circle(self.screen, C['boost_dot'], (px + 18, y + 6), 3)
+        self.screen.blit(self.f_small.render("Boost stack", True, C['txt_dim']),
+                         (px + 28, y))
+        y += 16
+        pygame.draw.circle(self.screen, C['inv_dot'], (px + 18, y + 6), 3)
+        self.screen.blit(self.f_small.render("Item inventaris", True, C['txt_dim']),
+                         (px + 28, y))
+        y += 20
+        sep(4)
+
+        # ── Kontrol ──────────────────────────────────────────
+        controls = [
+            ("SPACE",  "pause / lanjut"),
+            ("→ / ←",  "speed +5 / -5 fps"),
+            ("R",       "reset episode"),
+            ("Q",       "keluar"),
+        ]
+        for key, desc in controls:
+            k = self.f_small.render(f"[{key}]", True, C['txt_hi'])
+            d = self.f_small.render(desc, True, C['txt_dim'])
+            self.screen.blit(k, (px + 12, y))
+            self.screen.blit(d, (px + 12 + k.get_width() + 5, y))
+            y += k.get_height() + 3
+
+    # ── Render satu frame penuh ──────────────────────────────
+    def render(self, env, episode, step, total_reward, epsilon, fps=10, paused=False):
+        self.screen.fill(C['bg'])
+
+        for gx in range(env.grid_size):
+            for gy in range(env.grid_size):
+                self._draw_cell(gx, gy, env.food_grid[gx, gy])
+
+        for agent in env.agents:
+            self._draw_agent(agent)
+
+        self._draw_panel(env, episode, step, total_reward, epsilon, fps, paused)
+        pygame.display.flip()
+
+    def quit(self):
+        pygame.quit()
+
+
+# ══════════════════════════════════════════════════════════════
+# TRAINING + VISUALISASI BERSAMAAN
+# ══════════════════════════════════════════════════════════════
+def run_visual_training(brain=None, episodes=100):
+    """Training sambil melihat visualisasi real-time."""
+    viz = MaklukVisualizer()
+
+    BATCH_SIZE          = 64
+    GAMMA               = 0.99
+    LR                  = 1e-3
+    TARGET_UPDATE_STEPS = 500
+    TRAIN_EVERY_N_STEPS = 4
+
+    epsilon       = 1.0
+    epsilon_min   = 0.05
+    epsilon_decay = 0.995
+    criterion     = nn.MSELoss()
+
+    if brain is None:
+        brain = AgentBrainManager(NUM_AGENTS, lr=LR)
+
+    global_step = 0
+    fps         = 10
+    paused      = False
+
+    print("=== VISUAL TRAINING DIMULAI ===")
+    print("SPACE=pause  |  ←→=speed  |  R=reset ep  |  Q=quit\n")
+
+    for episode in range(1, episodes + 1):
+        env      = MaklukGabutEnv()
+        total    = 0.0
+        reset_ep = False
+
+        for step in range(200):
+
+            # ── Event handler ────────────────────────────────
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    viz.quit()
+                    return brain
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        viz.quit()
+                        return brain
+                    if event.key == pygame.K_SPACE:
+                        paused = not paused
+                    if event.key == pygame.K_RIGHT:
+                        fps = min(60, fps + 5)
+                    if event.key == pygame.K_LEFT:
+                        fps = max(1, fps - 5)
+                    if event.key == pygame.K_r:
+                        reset_ep = True
+
+            if reset_ep:
+                break
+
+            if paused:
+                viz.render(env, episode, step, total, epsilon, fps, paused=True)
+                viz.clock.tick(15)
+                continue
+
+            # ── Step simulasi ─────────────────────────────────
+            current_states = {
+                i: get_agent_state(i, env)
+                for i in range(NUM_AGENTS)
+                if not env.agents[i].is_dead
+            }
+            if not current_states:
+                break
+
+            actions_dict   = {}
+            action_indices = {}
+            for i, state in current_states.items():
+                if random.random() < epsilon:
+                    idx = random.randrange(ACTION_SIZE)
+                else:
+                    with torch.no_grad():
+                        idx = brain.policy_nets[i](
+                            torch.FloatTensor(state).unsqueeze(0)
+                        ).argmax().item()
+                action_indices[i] = idx
+                actions_dict[i]   = ACTION_MAP[idx]
+
+            rewards_dict, _ = env.step(actions_dict)
+            total      += sum(rewards_dict.values())
+            global_step += 1
+
+            game_done = all(a.is_dead for a in env.agents)
+
+            for i in current_states:
+                brain.memories[i].push(
+                    current_states[i],
+                    action_indices[i],
+                    rewards_dict.get(i, -10.0),
+                    get_agent_state(i, env),
+                    game_done or env.agents[i].is_dead
+                )
+
+            # Training update
+            if global_step % TRAIN_EVERY_N_STEPS == 0:
+                for i in range(NUM_AGENTS):
+                    if len(brain.memories[i]) < BATCH_SIZE:
+                        continue
+                    b_s, b_a, b_r, b_ns, b_d = brain.memories[i].sample(BATCH_SIZE)
+                    b_s  = torch.FloatTensor(b_s)
+                    b_a  = torch.LongTensor(b_a).unsqueeze(1)
+                    b_r  = torch.FloatTensor(b_r).unsqueeze(1)
+                    b_ns = torch.FloatTensor(b_ns)
+                    b_d  = torch.BoolTensor(b_d).unsqueeze(1)
+                    cur_q = brain.policy_nets[i](b_s).gather(1, b_a)
+                    with torch.no_grad():
+                        na      = brain.policy_nets[i](b_ns).argmax(1, keepdim=True)
+                        nq      = brain.target_nets[i](b_ns).gather(1, na)
+                        tgt_q   = b_r + GAMMA * nq * (~b_d)
+                    loss = criterion(cur_q, tgt_q)
+                    brain.optimizers[i].zero_grad()
+                    loss.backward()
+                    torch.nn.utils.clip_grad_norm_(brain.policy_nets[i].parameters(), 1.0)
+                    brain.optimizers[i].step()
+
+            if global_step % TARGET_UPDATE_STEPS == 0:
+                brain.sync_all_targets()
+
+            # Render
+            viz.render(env, episode, step + 1, total, epsilon, fps)
+            viz.clock.tick(fps)
+
+            if game_done:
+                break
+
+        epsilon = max(epsilon_min, epsilon * epsilon_decay)
+        alive   = sum(1 for a in env.agents if not a.is_dead)
+        print(f"Ep {episode:>3} | Reward: {total:>8.1f} | ε: {epsilon:.3f} | Alive: {alive}/{NUM_AGENTS}")
+
+    viz.quit()
+    return brain
+
+
+# ══════════════════════════════════════════════════════════════
+# DEMO MURNI (TANPA TRAINING, EPSILON = 0)
+# ══════════════════════════════════════════════════════════════
+def run_visual_demo(brain, episodes=20):
+    """
+    Lihat brain yang sudah dilatih beraksi.
+    Tidak ada exploration, murni eksploitasi.
+    """
+    viz = MaklukVisualizer()
+    fps = 8
+
+    print("=== DEMO MODE (ε=0) ===")
+    print("←→=speed  |  Q=quit\n")
+
+    for episode in range(1, episodes + 1):
+        env   = MaklukGabutEnv()
+        total = 0.0
+
+        for step in range(200):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    viz.quit(); return
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        viz.quit(); return
+                    if event.key == pygame.K_RIGHT: fps = min(60, fps + 5)
+                    if event.key == pygame.K_LEFT:  fps = max(1,  fps - 5)
+
+            current_states = {
+                i: get_agent_state(i, env)
+                for i in range(NUM_AGENTS)
+                if not env.agents[i].is_dead
+            }
+            if not current_states:
+                break
+
+            actions_dict = {}
+            for i, state in current_states.items():
+                with torch.no_grad():
+                    idx = brain.policy_nets[i](
+                        torch.FloatTensor(state).unsqueeze(0)
+                    ).argmax().item()
+                actions_dict[i] = ACTION_MAP[idx]
+
+            rewards_dict, _ = env.step(actions_dict)
+            total += sum(rewards_dict.values())
+
+            viz.render(env, episode, step + 1, total, 0.0, fps)
+            viz.clock.tick(fps)
+
+            if all(a.is_dead for a in env.agents):
+                break
+
+        alive = sum(1 for a in env.agents if not a.is_dead)
+        print(f"Ep {episode:>3} | Reward: {total:>8.1f} | Alive: {alive}/{NUM_AGENTS}")
+        time.sleep(0.8)
+
+    viz.quit()
+
+
+# ══════════════════════════════════════════════════════════════
+# ENTRY POINT
+# ══════════════════════════════════════════════════════════════
+if __name__ == "__main__":
+    mode = sys.argv[1] if len(sys.argv) > 1 else "train_visual"
+
+    if mode == "train_visual":
+        # ── Training sambil lihat agen bergerak ─────────────
+        trained = run_visual_training(brain=None, episodes=100)
+
+    elif mode == "train_first":
+        # ── Train cepat tanpa visual, baru demo ─────────────
+        print("Training tanpa visual dulu (lebih cepat)...")
+        trained = train_makluk_gabut()
+        print("\nTraining selesai. Membuka demo visualisasi...\n")
+        run_visual_demo(trained, episodes=20)
+
+    elif mode == "demo":
+        # ── Demo dengan brain kosong (belum dilatih) ─────────
+        print("Demo dengan brain baru (belum dilatih)...")
+        brain = AgentBrainManager(NUM_AGENTS)
+        run_visual_demo(brain, episodes=20)
+
+    else:
+        print(f"Mode tidak dikenal: '{mode}'")
+        print("Gunakan: train_visual | train_first | demo")
+        
