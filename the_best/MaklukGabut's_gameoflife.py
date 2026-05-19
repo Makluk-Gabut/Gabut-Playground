@@ -1,24 +1,25 @@
 """
 oke ini pertama kali aku bikin RL yang hampir sempurna
-╔══════════════════════════════════════════════════════════════╗
-║          MaklukGabut's Game of Life  —  ALL-IN-ONE           ║
-║                        v4.0  (final)                         ║
-╠══════════════════════════════════════════════════════════════╣
-║  Satu file berisi segalanya:                                 ║
-║    • Game engine  (agen + lingkungan 4-fase atomik)          ║
-║    • RL engine    (12 NN, Double DQN, Replay Buffer)         ║
-║    • Save / Load  (checkpoint otomatis)                      ║
-║    • Statistik    (catat + grafik matplotlib)                ║
-║    • Visualizer   (real-time pygame)                         ║
-╠══════════════════════════════════════════════════════════════╣
-║  Cara pakai:                                                 ║
-║    python makluk_gabut.py train            ← mulai baru      ║
-║    python makluk_gabut.py train --resume   ← lanjut          ║
-║    python makluk_gabut.py train --visual   ← + visualisasi   ║
-║    python makluk_gabut.py demo             ← tonton AI       ║
-║    python makluk_gabut.py plot            ← lihat grafik     ║
-║    python makluk_gabut.py list            ← daftar checkpoint║
-╚══════════════════════════════════════════════════════════════╝
+
+MaklukGabut's Game of Life  —  ALL-IN-ONE   
+              final                        
+
+  Satu file berisi segalanya:                                 
+    • Game engine  (agen + lingkungan 4-fase atomik)          
+    • RL engine    (12 NN, Double DQN, Replay Buffer)         
+    • Save / Load  (checkpoint otomatis)                      
+    • Statistik    (catat + grafik matplotlib)                
+    • Visualizer   (real-time pygame) 
+    • Keribetan    (6767676767 out of 10)
+
+  Cara pakai:                                                 
+    python makluk_gabut.py train            ← mulai baru      
+    python makluk_gabut.py train --resume   ← lanjut          
+    python makluk_gabut.py train --visual   ← + visualisasi  (kalo mau komputermu berat) 
+    python makluk_gabut.py demo             ← tonton AI       
+    python makluk_gabut.py plot             ← lihat grafik     
+    python makluk_gabut.py list             ← daftar checkpoint
+
 """
 
 import os, sys, json, random, time, argparse
