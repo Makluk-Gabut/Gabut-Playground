@@ -1,4 +1,12 @@
-semua proyek ini bisa kamu pake bebas, aku gak ada rencana apapun, ini cuma pure hobi kalo lagi gabut aja,
-idk cara pake readme dan jujur, gak gitu peduli kecuali mungkin kalo suatu saat butuh
-dan semuanya di buat oleh Raylan yang untuk saat ini masih umur 15 tahun lebih 3 bulan 13 hari 18 menit
-dan ini juga tempat aku nyimpan proyek proyek lama yang kesimpan di wa pribadiku, ada beberapa proyek yang berbahaya dan menarik jadi kalo komputermu meledak karena kodeku aku gak tanggung jawab
+# Gabut-Playground 
+
+Tempat Saya nyimpan semua ide gila pas lagi gabut.
+
+### Apa yang ada di sini?
+- Experiment AI setengah jadi
+- Proyek random & dangerous
+- Belajar OS, low-level, dll
+
+**Semua open source** — bebas kamu pakai, tapi pakai risiko sendiri ya 😂
+
+Made with ❤️ by a 15 years old kid
