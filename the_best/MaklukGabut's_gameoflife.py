@@ -1,14 +1,14 @@
 """
 MaklukGabut's Game of Life  —  ALL-IN-ONE  + COMPANION SYSTEM
-                  final+companion
+                  final(semoga)
 
   Satu file berisi segalanya:
-    • Game engine   (agen + lingkungan 4-fase atomik)
-    • Companion     (agen pendamping, NN ~4070 param, shared memory)
+    • Game engine   (agen + lingkungan 4-fase atomik(biar gak makan VRAM))
+    • Companion     (agen pendamping, NN ~4070 param, shared memory(karena keamalan brainstorming))
     • RL engine     (12+2 NN, Double DQN, Replay Buffer)
     • Save / Load   (checkpoint otomatis, termasuk companion)
     • Statistik     (catat + grafik matplotlib)
-    • Visualizer    (real-time pygame, companion ditampilkan sebagai ♦)
+    • Visualizer    (real-time pygame, companion ditampilkan sebagai "♦")
     • Keribetan     (676767676767676767 out of 10)
 
   Cara pakai:
