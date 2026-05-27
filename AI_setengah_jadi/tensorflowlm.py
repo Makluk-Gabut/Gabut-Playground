@@ -1,8 +1,8 @@
 """
-==============================================================
-  Membangun LLM Sederhana dengan TensorFlow
-  Arsitektur: Transformer Decoder (GPT-style)
-==============================================================
+========================================================
+  Membangun LLM Sederhana pake TensorFlow karena gabut
+  Arsitektur: Transformer Decoder (semacam GPT)
+========================================================
 """
 
 import numpy as np
