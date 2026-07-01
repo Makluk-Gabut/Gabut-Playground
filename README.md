@@ -11,7 +11,7 @@ Tempat saya nyimpan semua ide gila pas lagi gabut.
 
 **Semua open source** — bebas kamu pakai, tapi pakai risiko sendiri ya 😂
 
-# > Ohh ya, check out **TiniMind**, Transformer dekoder ringan buatan saya sendiri yang dibangun dari awal menggunakan PyTorch.
+### Ohh ya, check out **TiniMind**, Transformer dekoder ringan buatan saya sendiri yang dibangun dari awal menggunakan PyTorch.
 nih linknya: https://github.com/Makluk-Gabut/TiniMind
 
 Made with ❤️ by a 15-year-old developer.
