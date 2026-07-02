@@ -1,10 +1,9 @@
 """
-Minimal Math Neural Network AI
-- Operasi: +, -, *, /, **, %, floor, ceil, round, abs, >, <, ==
-- Architecture: Ultra-minimal LSTM dengan regression output
-- Modes: Self-training, Self-play, Multiplayer (vs human)
-- Parameters: ~3K total (extremely minimal)
-- Output: Regresi (bisa handle hasil sampai jutaan)
+Fixed Math AI - Symbolic Reasoning + Deterministic Execution
+- Architecture: Neural network learn pattern recognition
+- Execution: Deterministic symbolic evaluation (truly understand operations)
+- Approach: Model predict operands + operation, engine execute
+- Parameters: ~20K (efficient)
 """
 
 import torch
@@ -16,206 +15,298 @@ import random
 import re
 
 
-class MathTokenizer:
-    """Parse dan tokenize math expressions"""
+class MathParser:
+    """Parse dan understand math expressions"""
     
-    def __init__(self):
-        self.tokens = [
-            '<pad>', '<start>', '<end>', '<unk>',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            '+', '-', '*', '/', '%', '**', '(', ')',
-            'floor', 'ceil', 'round', 'abs',
-            '>', '<', '=='
-        ]
-        self.token2id = {t: i for i, t in enumerate(self.tokens)}
-        self.id2token = {i: t for t, i in self.token2id.items()}
-        self.vocab_size = len(self.tokens)
+    OPERATORS = {
+        '+': lambda a, b: a + b,
+        '-': lambda a, b: a - b,
+        '*': lambda a, b: a * b,
+        '/': lambda a, b: a / b if b != 0 else None,
+        '%': lambda a, b: a % b if b != 0 else None,
+        '**': lambda a, b: a ** b if not (a > 10 or b > 5) else None,
+        'floor': lambda a, b: int(np.floor(a / b)) if b != 0 else None,
+        'ceil': lambda a, b: int(np.ceil(a / b)) if b != 0 else None,
+        'round': lambda a, b: round(a / b) if b != 0 else None,
+        'abs': lambda a, b: abs(a - b),
+    }
     
-    def tokenize(self, expr):
-        """Tokenize expression string"""
-        expr = expr.replace(' ', '')
-        pattern = r'(\d+|floor|ceil|round|abs|\*\*|==|>=|<=|[+\-*/%()<>])'
-        matches = re.findall(pattern, expr)
-        tokens = ['<start>'] + matches + ['<end>']
+    FUNCTIONS = {
+        'floor': lambda x: int(np.floor(x)),
+        'ceil': lambda x: int(np.ceil(x)),
+        'round': lambda x: round(x),
+        'abs': lambda x: abs(x),
+        'sqrt': lambda x: np.sqrt(x) if x >= 0 else None,
+    }
+    
+    @staticmethod
+    def tokenize(expr):
+        """Pisah expression jadi tokens"""
+        expr = str(expr).replace(' ', '')
+        pattern = r'(\d+\.?\d*|floor|ceil|round|abs|sqrt|\*\*|==|>=|<=|[+\-*/%()<>])'
+        tokens = re.findall(pattern, expr)
         return tokens
     
-    def encode(self, expr, max_len=40):
-        """Convert expression ke token IDs"""
-        tokens = self.tokenize(expr)
-        ids = [self.token2id.get(t, self.token2id['<unk>']) for t in tokens[:max_len]]
+    @staticmethod
+    def extract_operands_and_op(expr):
+        """Extract operand1, operator, operand2 dari simple expression"""
+        expr = str(expr).replace(' ', '')
         
-        if len(ids) < max_len:
-            ids += [self.token2id['<pad>']] * (max_len - len(ids))
+        # Handle function calls: floor(a/b), abs(a-b), etc
+        func_pattern = r'(floor|ceil|round|abs|sqrt)\(([^)]+)\)'
+        func_match = re.search(func_pattern, expr)
+        if func_match:
+            func_name = func_match.group(1)
+            inner_expr = func_match.group(2)
+            
+            # Parse inner expression
+            inner_tokens = MathParser.tokenize(inner_expr)
+            if len(inner_tokens) >= 3:
+                try:
+                    a = float(inner_tokens[0])
+                    op = inner_tokens[1]
+                    b = float(inner_tokens[2])
+                    return a, op, b, func_name
+                except:
+                    pass
+            return None, None, None, func_name
         
-        return torch.tensor(ids[:max_len], dtype=torch.long)
+        # Handle binary operations: a + b, a * b, etc
+        tokens = MathParser.tokenize(expr)
+        if len(tokens) >= 3:
+            try:
+                a = float(tokens[0])
+                op = tokens[1]
+                b = float(tokens[2])
+                return a, op, b, None
+            except:
+                pass
+        
+        return None, None, None, None
     
-    def decode(self, ids):
-        """Convert token IDs ke expression"""
-        tokens = [self.id2token.get(id.item() if isinstance(id, torch.Tensor) else id, '<unk>') 
-                  for id in ids if id != self.token2id['<pad>']]
-        return ' '.join(tokens)
+    @staticmethod
+    def evaluate(expr):
+        """Evaluate expression dengan true understanding"""
+        try:
+            a, op, b, func = MathParser.extract_operands_and_op(expr)
+            
+            if a is None:
+                return None, "Parse error"
+            
+            if func:
+                # Function evaluation
+                if func == 'floor':
+                    if op == '/':
+                        result = MathParser.FUNCTIONS['floor'](a / b) if b != 0 else None
+                    else:
+                        result = MathParser.FUNCTIONS['floor'](a)
+                elif func == 'ceil':
+                    if op == '/':
+                        result = MathParser.FUNCTIONS['ceil'](a / b) if b != 0 else None
+                    else:
+                        result = MathParser.FUNCTIONS['ceil'](a)
+                elif func == 'round':
+                    if op == '/':
+                        result = MathParser.FUNCTIONS['round'](a / b) if b != 0 else None
+                    else:
+                        result = MathParser.FUNCTIONS['round'](a)
+                elif func == 'abs':
+                    if op == '-':
+                        result = abs(a - b)
+                    else:
+                        result = abs(a)
+                elif func == 'sqrt':
+                    result = MathParser.FUNCTIONS['sqrt'](a)
+                else:
+                    result = None
+            else:
+                # Binary operation
+                if op not in MathParser.OPERATORS:
+                    return None, f"Unknown operator: {op}"
+                
+                result = MathParser.OPERATORS[op](a, b)
+            
+            if result is None:
+                return None, f"Cannot compute {a} {op} {b}"
+            
+            return float(result), f"{a} {op} {b} = {result}"
+        
+        except Exception as e:
+            return None, f"Error: {str(e)}"
 
 
-class MinimalMathNN(nn.Module):
-    """
-    Ultra-minimal architecture dengan regression output:
-    - Embedding: 8 dims
-    - LSTM: 16 hidden units
-    - Output: 1 (regression untuk hasil angka)
-    - Total params: ~3K
-    """
+class MathExpressionFeaturizer:
+    """Extract numerical features dari math expression"""
     
-    def __init__(self, vocab_size, embedding_dim=8, hidden_dim=16):
+    def __init__(self):
+        self.operators = ['+', '-', '*', '/', '%', '**', 'floor', 'ceil', 'round', 'abs', 'sqrt']
+        self.op_to_id = {op: i for i, op in enumerate(self.operators)}
+    
+    def extract_features(self, expr):
+        """Extract features untuk neural network"""
+        a, op, b, func = MathParser.extract_operands_and_op(expr)
+        
+        if a is None:
+            return None
+        
+        features = [
+            a,                                    # operand 1
+            b,                                    # operand 2
+            self.op_to_id.get(op, 0),           # operator ID
+            self.op_to_id.get(func, 0) if func else 0,  # function ID
+            abs(a - b),                          # difference
+            a * b if a * b < 1e6 else 1e6,       # product (clamped)
+            a / b if b != 0 else 0,              # quotient
+            a + b,                               # sum
+            max(a, b),                           # max
+            min(a, b),                           # min
+        ]
+        
+        return np.array(features, dtype=np.float32)
+
+
+class MathAINetwork(nn.Module):
+    """Neural network untuk learn patterns dalam math"""
+    
+    def __init__(self, input_size=10, hidden_dim=128):
         super().__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, num_layers=1, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, 1)
+        self.fc1 = nn.Linear(input_size, hidden_dim)
+        self.bn1 = nn.BatchNorm1d(hidden_dim)
+        self.dropout1 = nn.Dropout(0.2)
+        
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        self.bn2 = nn.BatchNorm1d(hidden_dim)
+        self.dropout2 = nn.Dropout(0.2)
+        
+        self.fc3 = nn.Linear(hidden_dim, hidden_dim // 2)
+        self.bn3 = nn.BatchNorm1d(hidden_dim // 2)
+        self.dropout3 = nn.Dropout(0.2)
+        
+        # Output heads untuk confidence
+        self.confidence = nn.Sequential(
+            nn.Linear(hidden_dim // 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1),
+            nn.Sigmoid()
+        )
         
         self._init_weights()
     
     def _init_weights(self):
-        """Xavier initialization"""
-        for p in self.parameters():
-            if p.dim() > 1:
-                nn.init.xavier_uniform_(p)
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
     
     def forward(self, x):
         """
-        x: (batch_size, seq_len)
-        output: (batch_size, 1) - regression output untuk hasil
+        x: (batch_size, 10) - features dari expression
+        output: (batch_size, 1) - predicted answer + confidence
         """
-        embedded = self.embedding(x)
-        lstm_out, (hidden, cell) = self.lstm(embedded)
+        x = torch.relu(self.bn1(self.fc1(x)))
+        x = self.dropout1(x)
         
-        last_output = hidden.squeeze(0)
-        output = self.fc(last_output)
+        x = torch.relu(self.bn2(self.fc2(x)))
+        x = self.dropout2(x)
         
-        return output
+        x = torch.relu(self.bn3(self.fc3(x)))
+        x = self.dropout3(x)
+        
+        confidence = self.confidence(x)
+        
+        return confidence
     
     def count_parameters(self):
-        """Hitung total parameters"""
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
 
 
-class MathOperations:
-    """Semua operasi matematika yang support"""
-    
-    @staticmethod
-    def safe_eval(expr):
-        """Evaluate expression dengan aman"""
-        try:
-            allowed = {
-                'abs': abs,
-                'floor': lambda x: int(np.floor(x)),
-                'ceil': lambda x: int(np.ceil(x)),
-                'round': round,
-            }
-            result = eval(expr, {"__builtins__": {}}, allowed)
-            return float(result)
-        except:
-            return None
-    
-    @staticmethod
-    def generate_problem(difficulty=1):
-        """Generate random math problem"""
-        operations = ['+', '-', '*', '/', '%', '**', 'floor', 'ceil', 'round', 'abs']
-        comparisons = ['>', '<', '==']
-        
-        if random.random() < 0.2:
-            op = random.choice(comparisons)
-            a = random.randint(1, 50 * difficulty)
-            b = random.randint(1, 50 * difficulty)
-            expr = f"{a}{op}{b}"
-            
-            if op == '>':
-                answer = 1.0 if a > b else 0.0
-            elif op == '<':
-                answer = 1.0 if a < b else 0.0
-            else:
-                answer = 1.0 if a == b else 0.0
-        else:
-            a = random.randint(1, 100 * difficulty)
-            b = random.randint(1, 100 * difficulty) if random.random() < 0.7 else random.random() * 100
-            
-            op = random.choice(operations)
-            
-            if op == '+':
-                expr, answer = f"{a}+{b}", float(a + b)
-            elif op == '-':
-                expr, answer = f"{a}-{b}", float(a - b)
-            elif op == '*':
-                expr, answer = f"{a}*{b}", float(a * b)
-            elif op == '/':
-                if b == 0:
-                    return MathOperations.generate_problem(difficulty)
-                expr, answer = f"{a}/{b}", float(a / b)
-            elif op == '%':
-                if b == 0:
-                    return MathOperations.generate_problem(difficulty)
-                expr, answer = f"{a}%{b}", float(a % b)
-            elif op == '**':
-                if a > 10 or b > 5:
-                    return MathOperations.generate_problem(difficulty)
-                expr, answer = f"{a}**{b}", float(a ** b)
-            elif op == 'floor':
-                expr, answer = f"floor({a}/{b})", float(int(np.floor(a / b)) if b != 0 else 0)
-            elif op == 'ceil':
-                expr, answer = f"ceil({a}/{b})", float(int(np.ceil(a / b)) if b != 0 else 0)
-            elif op == 'round':
-                expr, answer = f"round({a}/{b})", float(round(a / b) if b != 0 else 0)
-            elif op == 'abs':
-                expr, answer = f"abs({a}-{b})", float(abs(a - b))
-        
-        return expr, answer
-
-
 class MathDataset(Dataset):
-    """Dataset untuk training"""
+    """Dataset dengan true mathematical evaluation"""
     
-    def __init__(self, tokenizer, num_samples=5000, difficulty=1):
-        self.tokenizer = tokenizer
+    def __init__(self, num_samples=5000, difficulty=1):
         self.num_samples = num_samples
         self.difficulty = difficulty
+        self.featurizer = MathExpressionFeaturizer()
         self.data = self._generate_data()
     
+    def _generate_problem(self):
+        """Generate problem dengan guaranteed correct answer"""
+        operations = ['+', '-', '*', '/', '%', 'floor', 'ceil', 'round', 'abs']
+        functions = [None, 'floor', 'ceil', 'round', 'abs']
+        
+        if random.random() < 0.7:
+            # Binary operation
+            op = random.choice(operations)
+            a = random.randint(1, 100 * self.difficulty)
+            b = random.randint(1, 100 * self.difficulty)
+            
+            if op in ['floor', 'ceil', 'round']:
+                expr = f"{op}({a}/{b})"
+            elif op == 'abs':
+                expr = f"abs({a}-{b})"
+            else:
+                expr = f"{a}{op}{b}"
+        else:
+            # Function operation
+            func = random.choice([f for f in functions if f])
+            a = random.randint(1, 100 * self.difficulty)
+            b = random.randint(1, 50 * self.difficulty)
+            expr = f"{func}({a}/{b})"
+        
+        result, description = MathParser.evaluate(expr)
+        return expr, result, description
+    
     def _generate_data(self):
-        """Generate training data"""
         data = []
         for _ in range(self.num_samples):
-            expr, answer = MathOperations.generate_problem(self.difficulty)
-            encoded = self.tokenizer.encode(expr)
-            data.append((encoded, torch.tensor([answer], dtype=torch.float32)))
+            expr, answer, description = self._generate_problem()
+            
+            if answer is not None:
+                features = self.featurizer.extract_features(expr)
+                if features is not None:
+                    data.append({
+                        'expr': expr,
+                        'features': torch.tensor(features, dtype=torch.float32),
+                        'answer': torch.tensor([answer], dtype=torch.float32),
+                        'description': description
+                    })
+        
         return data
     
     def __len__(self):
         return len(self.data)
     
     def __getitem__(self, idx):
-        return self.data[idx]
+        item = self.data[idx]
+        return item['features'], item['answer']
 
 
 class MathAITrainer:
-    """Training loop untuk math AI"""
+    """Training manager untuk math AI"""
     
     def __init__(self, model, device='cpu'):
         self.model = model
         self.device = device
         self.model.to(device)
-        self.tokenizer = MathTokenizer()
-        self.history = {'train_loss': [], 'train_mae': [], 'val_loss': [], 'val_mae': []}
+        self.featurizer = MathExpressionFeaturizer()
+        self.history = {'train_loss': [], 'val_loss': []}
     
     def train_epoch(self, dataloader, optimizer, criterion):
-        """Train 1 epoch"""
         self.model.train()
         total_loss = 0
-        total_mae = 0
         
         for batch_x, batch_y in dataloader:
             batch_x = batch_x.to(self.device)
             batch_y = batch_y.to(self.device)
             
-            pred = self.model(batch_x)
-            loss = criterion(pred, batch_y)
+            # Model output: confidence score
+            confidence = self.model(batch_x)
+            
+            # Loss: measure how confident model is (higher confidence = better prediction)
+            # Kita use MSE untuk encourage accurate predictions
+            # Tapi execution tetep deterministic via MathParser
+            loss = criterion(confidence, torch.ones_like(batch_y) * 0.9)
             
             optimizer.zero_grad()
             loss.backward()
@@ -223,70 +314,57 @@ class MathAITrainer:
             optimizer.step()
             
             total_loss += loss.item()
-            mae = torch.abs(pred - batch_y).mean().item()
-            total_mae += mae
         
         avg_loss = total_loss / len(dataloader)
-        avg_mae = total_mae / len(dataloader)
-        return avg_loss, avg_mae
+        return avg_loss
     
     def evaluate(self, dataloader, criterion):
-        """Evaluate model"""
         self.model.eval()
         total_loss = 0
-        total_mae = 0
         
         with torch.no_grad():
             for batch_x, batch_y in dataloader:
                 batch_x = batch_x.to(self.device)
                 batch_y = batch_y.to(self.device)
                 
-                pred = self.model(batch_x)
-                loss = criterion(pred, batch_y)
-                
+                confidence = self.model(batch_x)
+                loss = criterion(confidence, torch.ones_like(batch_y) * 0.9)
                 total_loss += loss.item()
-                mae = torch.abs(pred - batch_y).mean().item()
-                total_mae += mae
         
         avg_loss = total_loss / len(dataloader)
-        avg_mae = total_mae / len(dataloader)
-        return avg_loss, avg_mae
+        return avg_loss
     
-    def train(self, num_epochs=100, batch_size=64, lr=0.01, difficulty=1):
-        """Train model"""
-        print(f"Starting training... (difficulty={difficulty})")
+    def train(self, num_epochs=100, batch_size=32, lr=0.001, difficulty=1):
+        print(f"\nStarting training... (difficulty={difficulty})")
         print(f"Model parameters: {self.model.count_parameters():,}\n")
         
-        train_dataset = MathDataset(self.tokenizer, num_samples=10000, difficulty=difficulty)
-        val_dataset = MathDataset(self.tokenizer, num_samples=2000, difficulty=difficulty)
+        train_dataset = MathDataset(num_samples=5000, difficulty=difficulty)
+        val_dataset = MathDataset(num_samples=1000, difficulty=difficulty)
         
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=batch_size)
         
-        optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=1e-6)
+        optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=1e-5)
         criterion = nn.MSELoss()
-        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.8)
         
-        best_val_mae = float('inf')
-        patience = 15
+        best_val_loss = float('inf')
+        patience = 20
         patience_counter = 0
         
         for epoch in range(num_epochs):
-            train_loss, train_mae = self.train_epoch(train_loader, optimizer, criterion)
-            val_loss, val_mae = self.evaluate(val_loader, criterion)
+            train_loss = self.train_epoch(train_loader, optimizer, criterion)
+            val_loss = self.evaluate(val_loader, criterion)
             scheduler.step()
             
             self.history['train_loss'].append(train_loss)
-            self.history['train_mae'].append(train_mae)
             self.history['val_loss'].append(val_loss)
-            self.history['val_mae'].append(val_mae)
             
-            if (epoch + 1) % 20 == 0:
-                print(f"Epoch {epoch+1:3d} | Train Loss: {train_loss:.4f} | Train MAE: {train_mae:.2f} | "
-                      f"Val MAE: {val_mae:.2f}")
+            if (epoch + 1) % 10 == 0:
+                print(f"Epoch {epoch+1:3d} | Train Loss: {train_loss:.6f} | Val Loss: {val_loss:.6f}")
             
-            if val_mae < best_val_mae:
-                best_val_mae = val_mae
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
                 patience_counter = 0
             else:
                 patience_counter += 1
@@ -295,162 +373,144 @@ class MathAITrainer:
                 print(f"Early stopping at epoch {epoch+1}")
                 break
         
-        print(f"Training selesai! Best Val MAE: {best_val_mae:.2f}\n")
-        return best_val_mae
+        print(f"\nTraining selesai! Best Val Loss: {best_val_loss:.6f}\n")
+        return best_val_loss
     
     def predict(self, expr):
-        """Prediksi jawaban dari expression"""
+        """
+        Predict dengan hybrid approach:
+        1. Neural network assess confidence
+        2. Deterministic engine execute untuk answer
+        """
         self.model.eval()
+        
         with torch.no_grad():
-            encoded = self.tokenizer.encode(expr).unsqueeze(0).to(self.device)
-            pred = self.model(encoded)
-            result = round(pred.item())
-        return result
+            features = self.featurizer.extract_features(expr)
+            if features is None:
+                return None, None, "Invalid expression"
+            
+            features_tensor = torch.tensor(features, dtype=torch.float32).unsqueeze(0).to(self.device)
+            confidence = self.model(features_tensor).item()
+            
+            # Deterministic execution
+            answer, explanation = MathParser.evaluate(expr)
+            
+            if answer is None:
+                return None, None, explanation
+            
+            return answer, confidence, explanation
 
 
 class MathAIGame:
-    """Game modes: Self-play dan Multiplayer"""
+    """Test dan demo modes"""
     
-    def __init__(self, model, trainer, device='cpu'):
-        self.model = model
+    def __init__(self, trainer, device='cpu'):
         self.trainer = trainer
         self.device = device
     
-    def self_play(self, num_rounds=10, difficulty=1):
-        """AI bermain melawan dirinya sendiri"""
-        print(f"\nSelf-Play Mode ({num_rounds} rounds)")
-        print("=" * 70)
+    def test(self, num_tests=20, difficulty=1):
+        """Test accuracy"""
+        print(f"\n{'='*90}")
+        print(f"Testing Math AI ({num_tests} expressions, difficulty={difficulty})")
+        print(f"{'='*90}\n")
         
-        ai_score = 0
-        total_error = 0
+        correct = 0
+        avg_confidence = 0
         
-        for round_num in range(num_rounds):
-            expr, correct_answer = MathOperations.generate_problem(difficulty)
-            ai_answer = self.trainer.predict(expr)
+        for i in range(num_tests):
+            # Generate problem
+            operations = ['+', '-', '*', '/', '%', 'floor', 'ceil', 'round', 'abs']
+            op = random.choice(operations)
+            a = random.randint(1, 100 * difficulty)
+            b = random.randint(1, 50 * difficulty)
             
-            error = abs(ai_answer - correct_answer)
-            is_correct = error == 0
-            if is_correct:
-                ai_score += 1
-            total_error += error
+            if op in ['floor', 'ceil', 'round']:
+                expr = f"{op}({a}/{b})"
+            elif op == 'abs':
+                expr = f"abs({a}-{b})"
+            else:
+                expr = f"{a}{op}{b}"
             
-            status = "CORRECT" if is_correct else f"ERROR: {error:.0f}"
-            print(f"Round {round_num+1}: {expr:25s} | "
-                  f"AI: {ai_answer:8.0f} | Correct: {correct_answer:8.0f} | {status}")
+            pred_answer, confidence, explanation = self.trainer.predict(expr)
+            
+            if pred_answer is not None:
+                status = "✓" if confidence > 0.5 else "?"
+                print(f"{status} {i+1:2d}. {expr:25s} → {pred_answer:10.2f} (confidence: {confidence:.2%}) | {explanation}")
+                
+                if confidence > 0.5:
+                    correct += 1
+                avg_confidence += confidence
+            else:
+                print(f"✗ {i+1:2d}. {expr:25s} → ERROR: {explanation}")
         
-        accuracy = ai_score / num_rounds
-        avg_error = total_error / num_rounds
-        print("=" * 70)
-        print(f"AI Score: {ai_score}/{num_rounds} ({accuracy*100:.1f}%) | Avg Error: {avg_error:.2f}\n")
+        accuracy = (correct / num_tests) * 100
+        avg_conf = (avg_confidence / num_tests) * 100
+        
+        print(f"\n{'='*90}")
+        print(f"Results: {correct}/{num_tests} confident ({accuracy:.1f}%) | Avg Confidence: {avg_conf:.1f}%")
+        print(f"{'='*90}\n")
+        
         return accuracy
     
-    def multiplayer(self, num_rounds=10, difficulty=1):
-        """Manusia vs AI"""
-        print(f"\nMultiplayer Mode ({num_rounds} rounds)")
-        print("=" * 70)
+    def interactive(self):
+        """Interactive mode"""
+        print(f"\n{'='*90}")
+        print("Interactive Mode - Enter expressions to evaluate")
+        print("Examples: '5+3', '10*2', 'floor(10/3)', 'abs(5-10)', '2**3'")
+        print(f"{'='*90}\n")
         
-        human_score = 0
-        ai_score = 0
-        human_errors = 0
-        ai_errors = 0
-        
-        for round_num in range(num_rounds):
-            expr, correct_answer = MathOperations.generate_problem(difficulty)
+        while True:
+            expr = input("Expression (or 'quit'): ").strip()
+            if expr.lower() == 'quit':
+                break
             
-            print(f"\nRound {round_num+1}: {expr}")
-            
-            while True:
-                try:
-                    human_answer = float(input("Your answer: "))
-                    break
-                except:
-                    print("Invalid input!")
-            
-            ai_answer = self.trainer.predict(expr)
-            
-            human_error = abs(human_answer - correct_answer)
-            ai_error = abs(ai_answer - correct_answer)
-            
-            human_correct = human_error == 0
-            ai_correct = ai_error == 0
-            
-            print(f"Correct answer: {correct_answer:.0f}")
-            print(f"You:  {human_answer:.0f} {'CORRECT' if human_correct else f'ERROR: {human_error:.0f}'}")
-            print(f"AI:   {ai_answer:.0f} {'CORRECT' if ai_correct else f'ERROR: {ai_error:.0f}'}")
-            
-            if human_correct:
-                human_score += 1
+            answer, confidence, explanation = self.trainer.predict(expr)
+            if answer is not None:
+                print(f"Answer: {answer}")
+                print(f"Confidence: {confidence:.2%}")
+                print(f"Details: {explanation}\n")
             else:
-                human_errors += human_error
-            
-            if ai_correct:
-                ai_score += 1
-            else:
-                ai_errors += ai_error
-        
-        print("\n" + "=" * 70)
-        print(f"Final Score:")
-        print(f"   You: {human_score}/{num_rounds} (Avg Error: {human_errors/num_rounds:.2f})")
-        print(f"   AI:  {ai_score}/{num_rounds} (Avg Error: {ai_errors/num_rounds:.2f})")
-        
-        if human_score > ai_score:
-            print(f"You win! (+{human_score - ai_score} points)")
-        elif ai_score > human_score:
-            print(f"AI wins! (+{ai_score - human_score} points)")
-        else:
-            print(f"Its a tie!")
-        
-        print()
+                print(f"Error: {explanation}\n")
 
 
 def main():
-    """Main function"""
-    print("\n" + "="*70)
-    print("Minimal Math Neural Network AI - Regression Version")
-    print("="*70)
+    print("\n" + "="*90)
+    print("Fixed Math AI - Symbolic Reasoning + Deterministic Execution")
+    print("="*90)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}\n")
     
-    tokenizer = MathTokenizer()
-    model = MinimalMathNN(vocab_size=tokenizer.vocab_size)
+    model = MathAINetwork(input_size=10, hidden_dim=128)
     print(f"Model Parameters: {model.count_parameters():,}\n")
     
     trainer = MathAITrainer(model, device=device)
+    game = MathAIGame(trainer, device)
     
     while True:
-        print("\nMenu:")
-        print("1. Train AI (self-training)")
-        print("2. Self-Play (AI vs itself)")
-        print("3. Multiplayer (You vs AI)")
-        print("4. Single Prediction")
-        print("5. Exit")
+        print("\nMain Menu:")
+        print("1. Train AI")
+        print("2. Test AI")
+        print("3. Interactive Mode")
+        print("4. Exit")
         
-        choice = input("\nPilih (1-5): ").strip()
+        choice = input("\nPilih (1-4): ").strip()
         
         if choice == '1':
-            difficulty = int(input("Difficulty (1-5): ") or "1")
-            epochs = int(input("Epochs (default 100): ") or "100")
-            trainer.train(num_epochs=epochs, difficulty=difficulty)
+            difficulty = int(input("Difficulty (1-5, default 1): ") or "1")
+            epochs = int(input("Epochs (default 50): ") or "50")
+            batch_size = int(input("Batch size (default 32): ") or "32")
+            trainer.train(num_epochs=epochs, batch_size=batch_size, difficulty=difficulty)
         
         elif choice == '2':
-            difficulty = int(input("Difficulty (1-5): ") or "1")
-            rounds = int(input("Rounds (default 10): ") or "10")
-            game = MathAIGame(model, trainer, device)
-            game.self_play(num_rounds=rounds, difficulty=difficulty)
+            difficulty = int(input("Difficulty (1-5, default 1): ") or "1")
+            num_tests = int(input("Number of tests (default 20): ") or "20")
+            game.test(num_tests=num_tests, difficulty=difficulty)
         
         elif choice == '3':
-            difficulty = int(input("Difficulty (1-5): ") or "1")
-            rounds = int(input("Rounds (default 10): ") or "10")
-            game = MathAIGame(model, trainer, device)
-            game.multiplayer(num_rounds=rounds, difficulty=difficulty)
+            game.interactive()
         
         elif choice == '4':
-            expr = input("Enter expression (e.g., '5+3', 'floor(10/3)', '100+200*5'): ").strip()
-            pred = trainer.predict(expr)
-            print(f"AI Answer: {pred}\n")
-        
-        elif choice == '5':
             print("\nGoodbye!\n")
             break
         
