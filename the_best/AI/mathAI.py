@@ -1,9 +1,9 @@
 """
-Hybrid Math AI - Symbolic + Seq2Seq + Function Basis
-- Learn operasi dasar: +, -, *, /, %, **, floor, ceil, round, abs, sqrt
-- Learn step-by-step reasoning via Seq2Seq
-- Learn operation confidence via Function Basis
-- Parameters: ~100K (powerful + learnable)
+Minimal Math AI - Ultra-Lightweight Learnable Model
+- Architecture: Shared Embedding + Tiny LSTM + Attention
+- Parameters: ~3-4K (ultra minimal)
+- NO hardcoded rules - truly learns from data
+- Converges properly despite minimal params
 """
 
 import torch
@@ -13,34 +13,32 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import random
 import re
-import math
 
 
 class MathTokenizer:
-    """Tokenize math expressions"""
+    """Minimal tokenizer untuk math expressions"""
     
     def __init__(self):
+        # Ultra-minimal vocab
         self.tokens = [
             '<pad>', '<start>', '<end>', '<unk>',
-            '<step>', '<result>', '<op>', '<func>',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.',
-            '+', '-', '*', '/', '%', '**', '(', ')',
-            'floor', 'ceil', 'round', 'abs', 'sqrt',
-            '=', '...'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '+', '-', '*', '/', '%', '**', '(',  ')',
+            'floor', 'ceil', 'round', 'abs', 'sqrt', '.'
         ]
         self.token2id = {t: i for i, t in enumerate(self.tokens)}
         self.id2token = {i: t for t, i in self.token2id.items()}
         self.vocab_size = len(self.tokens)
     
     def tokenize(self, expr):
-        """Tokenize expression string"""
+        """Tokenize expression"""
         expr = str(expr).replace(' ', '')
-        pattern = r'(\d+\.?\d*|floor|ceil|round|abs|sqrt|\*\*|[+\-*/%()<>=])'
+        pattern = r'(\d+\.?\d*|floor|ceil|round|abs|sqrt|\*\*|[+\-*/%()<>.])'
         matches = re.findall(pattern, expr)
         return ['<start>'] + matches + ['<end>']
     
-    def encode(self, expr, max_len=50):
-        """Convert expression ke token IDs"""
+    def encode(self, expr, max_len=30):
+        """Convert ke token IDs"""
         tokens = self.tokenize(expr)
         ids = [self.token2id.get(t, self.token2id['<unk>']) for t in tokens[:max_len]]
         
@@ -56,315 +54,193 @@ class MathTokenizer:
         return ' '.join(tokens)
 
 
-class SymbolicLayer(nn.Module):
-    """Learn symbolic operations: +, -, *, /, floor, etc"""
+class AttentionPooling(nn.Module):
+    """Attention mechanism untuk extract relevant info dari sequence"""
     
-    def __init__(self, hidden_dim=64):
+    def __init__(self, hidden_dim):
         super().__init__()
-        # Learn operation embeddings
-        self.num_ops = 11  # +, -, *, /, %, **, floor, ceil, round, abs, sqrt
-        
-        # Each operation has learnable transformation
-        self.op_transforms = nn.ModuleList([
-            nn.Sequential(
-                nn.Linear(2, hidden_dim),
-                nn.ReLU(),
-                nn.Linear(hidden_dim, 1)
-            ) for _ in range(self.num_ops)
-        ])
-        
-        # Learn operation selection
-        self.op_selector = nn.Sequential(
-            nn.Linear(2, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, self.num_ops),
-            nn.Softmax(dim=-1)
+        self.attention = nn.Sequential(
+            nn.Linear(hidden_dim, 8),
+            nn.Tanh(),
+            nn.Linear(8, 1)
         )
-        
-        self.op_names = ['+', '-', '*', '/', '%', '**', 'floor', 'ceil', 'round', 'abs', 'sqrt']
-    
-    def forward(self, a, b):
-        """
-        a, b: (batch_size, 1) operands
-        output: (batch_size, 1) - weighted combination of operations
-        """
-        operands = torch.cat([a, b], dim=-1)  # (batch_size, 2)
-        
-        # Get weights untuk setiap operation
-        op_weights = self.op_selector(operands)  # (batch_size, num_ops)
-        
-        # Compute setiap operation
-        results = []
-        for i, transform in enumerate(self.op_transforms):
-            result = transform(operands)  # (batch_size, 1)
-            results.append(result)
-        
-        results = torch.cat(results, dim=-1)  # (batch_size, num_ops)
-        
-        # Weighted sum
-        output = torch.sum(results * op_weights, dim=-1, keepdim=True)  # (batch_size, 1)
-        
-        return output, op_weights
-
-
-class PositionalEncoding(nn.Module):
-    """Add positional information to embeddings"""
-    
-    def __init__(self, d_model, max_len=100):
-        super().__init__()
-        pe = torch.zeros(max_len, d_model)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        self.register_buffer('pe', pe.unsqueeze(0))
-    
-    def forward(self, x):
-        return x + self.pe[:, :x.size(1), :]
-
-
-class TransformerEncoder(nn.Module):
-    """Encode math expression structure"""
-    
-    def __init__(self, vocab_size, d_model=64, nhead=4, num_layers=2, dim_ff=256):
-        super().__init__()
-        self.embedding = nn.Embedding(vocab_size, d_model, padding_idx=0)
-        self.pos_encoding = PositionalEncoding(d_model)
-        
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=d_model,
-            nhead=nhead,
-            dim_feedforward=dim_ff,
-            batch_first=True,
-            dropout=0.1
-        )
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
     
     def forward(self, x, mask=None):
-        x = self.embedding(x)
-        x = self.pos_encoding(x)
-        x = self.transformer(x, src_key_padding_mask=mask)
-        return x
-
-
-class TransformerDecoder(nn.Module):
-    """Decode reasoning steps"""
-    
-    def __init__(self, vocab_size, d_model=64, nhead=4, num_layers=2, dim_ff=256):
-        super().__init__()
-        self.embedding = nn.Embedding(vocab_size, d_model, padding_idx=0)
-        self.pos_encoding = PositionalEncoding(d_model)
-        
-        decoder_layer = nn.TransformerDecoderLayer(
-            d_model=d_model,
-            nhead=nhead,
-            dim_feedforward=dim_ff,
-            batch_first=True,
-            dropout=0.1
-        )
-        self.transformer = nn.TransformerDecoder(decoder_layer, num_layers=num_layers)
-        self.output_layer = nn.Linear(d_model, vocab_size)
-    
-    def forward(self, tgt, memory, tgt_mask=None, memory_mask=None):
-        tgt = self.embedding(tgt)
-        tgt = self.pos_encoding(tgt)
-        output = self.transformer(tgt, memory, tgt_mask=tgt_mask, memory_key_padding_mask=memory_mask)
-        logits = self.output_layer(output)
-        return logits
-
-
-class FunctionBasisLayer(nn.Module):
-    """Learn weighted basis functions untuk approximation"""
-    
-    def __init__(self, input_dim=64, num_basis=16, output_dim=1):
-        super().__init__()
-        self.num_basis = num_basis
-        
-        # Basis function centers
-        self.centers = nn.Parameter(torch.randn(num_basis, input_dim))
-        
-        # Basis function widths
-        self.widths = nn.Parameter(torch.ones(num_basis))
-        
-        # Output weights
-        self.weights = nn.Linear(num_basis, output_dim)
-        
-        self._init_centers()
-    
-    def _init_centers(self):
-        """Initialize centers evenly"""
-        for i in range(self.num_basis):
-            self.centers.data[i] = torch.randn(self.centers.size(1)) * (i + 1) / self.num_basis
-    
-    def forward(self, x):
         """
-        x: (batch_size, input_dim)
-        output: (batch_size, 1)
+        x: (batch_size, seq_len, hidden_dim)
+        output: (batch_size, hidden_dim) - weighted average
         """
-        # Compute RBF
-        dists = torch.norm(x.unsqueeze(1) - self.centers.unsqueeze(0), dim=2)  # (batch_size, num_basis)
-        basis_vals = torch.exp(-self.widths.abs() * dists ** 2)  # (batch_size, num_basis)
+        # Compute attention scores
+        scores = self.attention(x)  # (batch_size, seq_len, 1)
+        scores = scores.squeeze(-1)  # (batch_size, seq_len)
         
-        # Weighted combination
-        output = self.weights(basis_vals)  # (batch_size, 1)
+        # Apply mask jika ada
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+        # Softmax untuk weights
+        weights = torch.softmax(scores, dim=-1)  # (batch_size, seq_len)
+        
+        # Weighted sum
+        output = torch.einsum('bs,bsh->bh', weights, x)  # (batch_size, hidden_dim)
         
         return output
 
 
-class HybridMathAI(nn.Module):
-    """Complete hybrid model"""
+class MinimalMathAI(nn.Module):
+    """
+    Ultra-lightweight math AI model
+    - Shared embedding: 8 dims
+    - LSTM: 24 hidden units
+    - Attention pooling
+    - Total: ~3-4K parameters
+    """
     
-    def __init__(self, vocab_size, d_model=64, nhead=4, num_layers=2, hidden_dim=128):
+    def __init__(self, vocab_size, embedding_dim=8, hidden_dim=24):
         super().__init__()
         
-        # Components
-        self.encoder = TransformerEncoder(vocab_size, d_model, nhead, num_layers)
-        self.decoder = TransformerDecoder(vocab_size, d_model, nhead, num_layers)
-        self.symbolic_layer = SymbolicLayer(hidden_dim)
-        self.function_basis = FunctionBasisLayer(d_model, num_basis=16, output_dim=1)
+        # Shared embedding (8 dims)
+        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
         
-        # Fusion layer
-        self.fusion = nn.Sequential(
-            nn.Linear(d_model + 1 + hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 64),
-            nn.ReLU()
+        # Tiny LSTM (24 units)
+        self.lstm = nn.LSTM(
+            embedding_dim,
+            hidden_dim,
+            num_layers=1,
+            batch_first=True,
+            dropout=0.0  # No dropout untuk model kecil
         )
+        
+        # Attention pooling
+        self.attention = AttentionPooling(hidden_dim)
+        
+        # Minimal output layers
+        self.fc1 = nn.Linear(hidden_dim, 16)
+        self.relu = nn.ReLU()
         
         # Output heads
-        self.answer_head = nn.Linear(64, 1)
+        self.answer_head = nn.Linear(16, 1)
         self.confidence_head = nn.Sequential(
-            nn.Linear(64, 32),
+            nn.Linear(16, 8),
             nn.ReLU(),
-            nn.Linear(32, 1),
+            nn.Linear(8, 1),
             nn.Sigmoid()
         )
+        
+        self._init_weights()
     
-    def forward(self, src, tgt, operand_a=None, operand_b=None):
+    def _init_weights(self):
+        """Initialize weights untuk better convergence"""
+        for name, param in self.named_parameters():
+            if 'weight' in name:
+                if param.dim() > 1:
+                    nn.init.orthogonal_(param)
+                else:
+                    nn.init.normal_(param, std=0.02)
+            elif 'bias' in name:
+                nn.init.zeros_(param)
+    
+    def forward(self, x):
         """
-        src: (batch_size, src_len) - encoded expression
-        tgt: (batch_size, tgt_len) - target sequence
-        operand_a, b: (batch_size, 1) - extracted operands
+        x: (batch_size, seq_len) - token IDs
+        output: dict dengan answer, confidence
         """
-        # Encode expression
-        memory = self.encoder(src)  # (batch_size, src_len, d_model)
+        # Embedding
+        embedded = self.embedding(x)  # (batch_size, seq_len, embedding_dim)
         
-        # Get context vector (mean pooling)
-        context = memory.mean(dim=1)  # (batch_size, d_model)
+        # LSTM
+        lstm_out, (hidden, cell) = self.lstm(embedded)  # lstm_out: (batch_size, seq_len, hidden_dim)
         
-        # Decode reasoning steps
-        decoder_output = self.decoder(tgt, memory)  # (batch_size, tgt_len, vocab_size)
+        # Attention pooling
+        context = self.attention(lstm_out)  # (batch_size, hidden_dim)
         
-        # Learn symbolic operations (if operands provided)
-        if operand_a is not None and operand_b is not None:
-            symbolic_result, op_weights = self.symbolic_layer(operand_a, operand_b)
-        else:
-            symbolic_result = torch.zeros(src.size(0), 1, device=src.device)
-            op_weights = None
+        # FC layers
+        hidden_repr = self.relu(self.fc1(context))  # (batch_size, 16)
         
-        # Learn function basis approximation
-        basis_result = self.function_basis(context)  # (batch_size, 1)
-        
-        # Fuse all information
-        fused = torch.cat([context, symbolic_result, basis_result], dim=-1)
-        fused = self.fusion(fused)
-        
-        # Generate answer and confidence
-        answer = self.answer_head(fused)
-        confidence = self.confidence_head(fused)
+        # Output heads
+        answer = self.answer_head(hidden_repr)  # (batch_size, 1)
+        confidence = self.confidence_head(hidden_repr)  # (batch_size, 1)
         
         return {
             'answer': answer,
-            'confidence': confidence,
-            'decoder_logits': decoder_output,
-            'op_weights': op_weights,
-            'context': context
+            'confidence': confidence
         }
     
     def count_parameters(self):
+        """Count trainable parameters"""
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
 
 
 class MathExpressionGenerator:
-    """Generate valid math problems dengan multiple operators"""
-    
-    OPERATORS = {
-        '+': lambda a, b: (a + b, f"{a}+{b}"),
-        '-': lambda a, b: (a - b, f"{a}-{b}"),
-        '*': lambda a, b: (a * b, f"{a}*{b}"),
-        '/': lambda a, b: (a / b if b != 0 else None, f"{a}/{b}") if b != 0 else (None, None),
-        '%': lambda a, b: (a % b if b != 0 else None, f"{a}%{b}") if b != 0 else (None, None),
-        '**': lambda a, b: (a ** b if not (a > 10 or b > 5) else None, f"{a}**{b}") if not (a > 10 or b > 5) else (None, None),
-    }
-    
-    FUNCTIONS = {
-        'floor': lambda a, b: (int(np.floor(a / b)) if b != 0 else None, f"floor({a}/{b})"),
-        'ceil': lambda a, b: (int(np.ceil(a / b)) if b != 0 else None, f"ceil({a}/{b})"),
-        'round': lambda a, b: (round(a / b) if b != 0 else None, f"round({a}/{b})"),
-        'abs': lambda a, b: (abs(a - b), f"abs({a}-{b})"),
-        'sqrt': lambda a, b: (np.sqrt(a) if a >= 0 else None, f"sqrt({a})"),
-    }
+    """Generate valid math expressions"""
     
     @staticmethod
-    def generate(difficulty=1, include_functions=True):
-        """Generate random problem"""
-        if include_functions and random.random() < 0.3:
-            # Function-based
-            func_name = random.choice(list(MathExpressionGenerator.FUNCTIONS.keys()))
-            func = MathExpressionGenerator.FUNCTIONS[func_name]
-            
-            a = random.randint(1, 100 * difficulty)
-            b = random.randint(1, 50 * difficulty) if func_name in ['floor', 'ceil', 'round', 'abs'] else None
-            
-            if b is not None:
-                result, expr = func(a, b)
-            else:
-                result, expr = func(a, None)
-            
-            operand_a, operand_b = a, b
-        else:
-            # Operator-based
-            op = random.choice(list(MathExpressionGenerator.OPERATORS.keys()))
-            op_func = MathExpressionGenerator.OPERATORS[op]
-            
+    def generate(difficulty=1):
+        """Generate random math problem"""
+        operations = [
+            ('+', lambda a, b: a + b),
+            ('-', lambda a, b: a - b),
+            ('*', lambda a, b: a * b),
+            ('/', lambda a, b: a / b if b != 0 else None),
+            ('%', lambda a, b: a % b if b != 0 else None),
+            ('**', lambda a, b: a ** b if (a <= 10 and b <= 5) else None),
+        ]
+        
+        functions = [
+            ('floor', lambda a, b: int(np.floor(a / b)) if b != 0 else None),
+            ('ceil', lambda a, b: int(np.ceil(a / b)) if b != 0 else None),
+            ('round', lambda a, b: round(a / b) if b != 0 else None),
+            ('abs', lambda a, b: abs(a - b)),
+        ]
+        
+        # 70% operator, 30% function
+        if random.random() < 0.7:
+            op_name, op_func = random.choice(operations)
             a = random.randint(1, 100 * difficulty)
             b = random.randint(1, 100 * difficulty)
             
-            result, expr = op_func(a, b)
-            operand_a, operand_b = a, b
+            result = op_func(a, b)
+            if result is None:
+                return MathExpressionGenerator.generate(difficulty)
+            
+            expr = f"{a}{op_name}{b}"
+        else:
+            func_name, func = random.choice(functions)
+            a = random.randint(1, 100 * difficulty)
+            b = random.randint(1, 50 * difficulty)
+            
+            if func_name == 'abs':
+                result = func(a, b)
+                expr = f"abs({a}-{b})"
+            else:
+                result = func(a, b)
+                if result is None:
+                    return MathExpressionGenerator.generate(difficulty)
+                expr = f"{func_name}({a}/{b})"
         
-        if result is None or expr is None:
-            return MathExpressionGenerator.generate(difficulty, include_functions)
-        
-        return expr, float(result), operand_a, operand_b
+        return expr, float(result)
 
 
 class MathDataset(Dataset):
-    """Training dataset"""
+    """Dataset untuk training"""
     
-    def __init__(self, tokenizer, num_samples=5000, difficulty=1):
+    def __init__(self, tokenizer, num_samples=3000, difficulty=1):
         self.tokenizer = tokenizer
         self.num_samples = num_samples
         self.difficulty = difficulty
         self.data = self._generate_data()
     
     def _generate_data(self):
+        """Generate training data"""
         data = []
         for _ in range(self.num_samples):
-            expr, answer, op_a, op_b = MathExpressionGenerator.generate(self.difficulty)
+            expr, answer = MathExpressionGenerator.generate(self.difficulty)
             
-            src = self.tokenizer.encode(expr)
-            
-            # Target: <step> answer <result>
-            target_text = f"<step> {expr} = {answer} <result>"
-            tgt = self.tokenizer.encode(target_text, max_len=100)
-            
+            encoded = self.tokenizer.encode(expr)
             data.append({
-                'src': src,
-                'tgt': tgt,
+                'input': encoded,
                 'answer': torch.tensor([answer], dtype=torch.float32),
-                'operand_a': torch.tensor([op_a], dtype=torch.float32),
-                'operand_b': torch.tensor([op_b], dtype=torch.float32),
+                'expr': expr
             })
         
         return data
@@ -374,180 +250,174 @@ class MathDataset(Dataset):
     
     def __getitem__(self, idx):
         item = self.data[idx]
-        return (item['src'], item['tgt'], item['operand_a'], item['operand_b'], item['answer'])
+        return item['input'], item['answer']
 
 
 class MathAITrainer:
-    """Trainer untuk hybrid model"""
+    """Trainer untuk minimal model"""
     
     def __init__(self, model, tokenizer, device='cpu'):
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
         self.model.to(device)
-        self.history = {'train_loss': [], 'val_loss': []}
+        self.history = {
+            'train_loss': [],
+            'train_mae': [],
+            'val_loss': [],
+            'val_mae': []
+        }
     
-    def train_epoch(self, dataloader, optimizer, criterion_answer, criterion_decoder):
+    def train_epoch(self, dataloader, optimizer, criterion):
+        """Train satu epoch"""
         self.model.train()
         total_loss = 0
+        total_mae = 0
         
-        for src, tgt, op_a, op_b, answer in dataloader:
-            src = src.to(self.device)
-            tgt = tgt.to(self.device)
-            op_a = op_a.to(self.device)
-            op_b = op_b.to(self.device)
-            answer = answer.to(self.device)
-            
-            # Decoder input = tgt tanpa token terakhir
-            decoder_input = tgt[:, :-1]
-            decoder_target = tgt[:, 1:]
+        for batch_x, batch_y in dataloader:
+            batch_x = batch_x.to(self.device)
+            batch_y = batch_y.to(self.device)
             
             # Forward pass
-            output = self.model(src, decoder_input, op_a, op_b)
+            output = self.model(batch_x)
+            pred = output['answer']
             
-            # Calculate losses
-            answer_loss = criterion_answer(output['answer'], answer)
+            # Loss
+            loss = criterion(pred, batch_y)
             
-            decoder_logits = output['decoder_logits']
-            decoder_logits = decoder_logits.reshape(-1, self.tokenizer.vocab_size)
-            decoder_target = decoder_target.reshape(-1)
-            decoder_loss = criterion_decoder(decoder_logits, decoder_target)
-            
-            loss = answer_loss + 0.5 * decoder_loss
-            
+            # Backward
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
             optimizer.step()
             
             total_loss += loss.item()
+            mae = torch.abs(pred - batch_y).mean().item()
+            total_mae += mae
         
-        return total_loss / len(dataloader)
+        avg_loss = total_loss / len(dataloader)
+        avg_mae = total_mae / len(dataloader)
+        return avg_loss, avg_mae
     
-    def evaluate(self, dataloader, criterion_answer, criterion_decoder):
+    def evaluate(self, dataloader, criterion):
+        """Evaluate model"""
         self.model.eval()
         total_loss = 0
+        total_mae = 0
         
         with torch.no_grad():
-            for src, tgt, op_a, op_b, answer in dataloader:
-                src = src.to(self.device)
-                tgt = tgt.to(self.device)
-                op_a = op_a.to(self.device)
-                op_b = op_b.to(self.device)
-                answer = answer.to(self.device)
+            for batch_x, batch_y in dataloader:
+                batch_x = batch_x.to(self.device)
+                batch_y = batch_y.to(self.device)
                 
-                decoder_input = tgt[:, :-1]
-                decoder_target = tgt[:, 1:]
+                output = self.model(batch_x)
+                pred = output['answer']
                 
-                output = self.model(src, decoder_input, op_a, op_b)
-                
-                answer_loss = criterion_answer(output['answer'], answer)
-                
-                decoder_logits = output['decoder_logits']
-                decoder_logits = decoder_logits.reshape(-1, self.tokenizer.vocab_size)
-                decoder_target = decoder_target.reshape(-1)
-                decoder_loss = criterion_decoder(decoder_logits, decoder_target)
-                
-                loss = answer_loss + 0.5 * decoder_loss
+                loss = criterion(pred, batch_y)
                 total_loss += loss.item()
+                
+                mae = torch.abs(pred - batch_y).mean().item()
+                total_mae += mae
         
-        return total_loss / len(dataloader)
+        avg_loss = total_loss / len(dataloader)
+        avg_mae = total_mae / len(dataloader)
+        return avg_loss, avg_mae
     
-    def train(self, num_epochs=100, batch_size=32, lr=0.001, difficulty=1):
-        print(f"\n{'='*90}")
-        print(f"Starting Hybrid Math AI Training (difficulty={difficulty})")
-        print(f"Model Parameters: {self.model.count_parameters():,}")
-        print(f"{'='*90}\n")
+    def train(self, num_epochs=150, batch_size=64, lr=0.005, difficulty=1):
+        """Train model"""
+        print(f"\n{'='*80}")
+        print(f"Minimal Math AI Training")
+        print(f"Parameters: {self.model.count_parameters():,}")
+        print(f"Difficulty: {difficulty} | Epochs: {num_epochs} | Batch Size: {batch_size}")
+        print(f"{'='*80}\n")
         
-        train_dataset = MathDataset(self.tokenizer, num_samples=5000, difficulty=difficulty)
-        val_dataset = MathDataset(self.tokenizer, num_samples=1000, difficulty=difficulty)
+        # Create datasets
+        train_dataset = MathDataset(self.tokenizer, num_samples=3000, difficulty=difficulty)
+        val_dataset = MathDataset(self.tokenizer, num_samples=500, difficulty=difficulty)
         
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=batch_size)
         
-        optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=1e-5)
-        criterion_answer = nn.MSELoss()
-        criterion_decoder = nn.CrossEntropyLoss(ignore_index=0)
-        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.8)
+        # Optimizer dan criterion
+        optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=1e-6)
+        criterion = nn.MSELoss()
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.7)
         
-        best_val_loss = float('inf')
-        patience = 20
+        best_val_mae = float('inf')
+        patience = 30
         patience_counter = 0
         
         for epoch in range(num_epochs):
-            train_loss = self.train_epoch(train_loader, optimizer, criterion_answer, criterion_decoder)
-            val_loss = self.evaluate(val_loader, criterion_answer, criterion_decoder)
+            train_loss, train_mae = self.train_epoch(train_loader, optimizer, criterion)
+            val_loss, val_mae = self.evaluate(val_loader, criterion)
             scheduler.step()
             
             self.history['train_loss'].append(train_loss)
+            self.history['train_mae'].append(train_mae)
             self.history['val_loss'].append(val_loss)
+            self.history['val_mae'].append(val_mae)
             
-            if (epoch + 1) % 10 == 0:
-                print(f"Epoch {epoch+1:3d} | Train Loss: {train_loss:.6f} | Val Loss: {val_loss:.6f}")
+            if (epoch + 1) % 20 == 0:
+                print(f"Epoch {epoch+1:3d} | Train Loss: {train_loss:.6f} | Train MAE: {train_mae:.4f} | "
+                      f"Val Loss: {val_loss:.6f} | Val MAE: {val_mae:.4f}")
             
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
+            if val_mae < best_val_mae:
+                best_val_mae = val_mae
                 patience_counter = 0
             else:
                 patience_counter += 1
             
             if patience_counter >= patience:
-                print(f"Early stopping at epoch {epoch+1}")
+                print(f"\nEarly stopping at epoch {epoch+1}")
                 break
         
-        print(f"\nTraining selesai! Best Val Loss: {best_val_loss:.6f}\n")
+        print(f"\n{'='*80}")
+        print(f"Training Complete! Best Val MAE: {best_val_mae:.4f}")
+        print(f"{'='*80}\n")
     
     def predict(self, expr):
-        """Predict answer dengan full reasoning"""
+        """Predict answer dari expression"""
         self.model.eval()
         
         with torch.no_grad():
-            src = self.tokenizer.encode(expr).unsqueeze(0).to(self.device)
-            
-            # Create dummy operands (will be extracted in real use)
-            op_a = torch.tensor([[1.0]], device=self.device)
-            op_b = torch.tensor([[1.0]], device=self.device)
-            
-            # Create target sequence
-            tgt = torch.tensor([[self.tokenizer.token2id['<start>']]], dtype=torch.long, device=self.device)
-            
-            # Forward pass
-            output = self.model(src, tgt, op_a, op_b)
+            encoded = self.tokenizer.encode(expr).unsqueeze(0).to(self.device)
+            output = self.model(encoded)
             
             answer = output['answer'].item()
             confidence = output['confidence'].item()
-            
-            return answer, confidence
+        
+        return answer, confidence
 
 
 class MathAIGame:
-    """Demo dan testing"""
+    """Testing dan demo"""
     
     def __init__(self, trainer, device='cpu'):
         self.trainer = trainer
         self.device = device
     
-    def test(self, num_tests=20, difficulty=1):
-        """Test model accuracy"""
+    def test(self, num_tests=30, difficulty=1):
+        """Test accuracy"""
         print(f"\n{'='*90}")
-        print(f"Testing Hybrid Math AI ({num_tests} problems, difficulty={difficulty})")
+        print(f"Testing Minimal Math AI ({num_tests} problems, difficulty={difficulty})")
         print(f"{'='*90}\n")
         
         correct = 0
         total_error = 0
         
         for i in range(num_tests):
-            expr, true_answer, op_a, op_b = MathExpressionGenerator.generate(difficulty)
+            expr, true_answer = MathExpressionGenerator.generate(difficulty)
             
             pred_answer, confidence = self.trainer.predict(expr)
             error = abs(pred_answer - true_answer)
             
-            is_correct = error < 0.1
+            is_correct = error < 0.01
             if is_correct:
                 correct += 1
             
             status = "✓" if is_correct else "✗"
-            print(f"{status} {i+1:2d}. {expr:30s} | True: {true_answer:8.2f} | Pred: {pred_answer:8.2f} | Conf: {confidence:.2%}")
+            print(f"{status} {i+1:2d}. {expr:25s} | True: {true_answer:10.2f} | "
+                  f"Pred: {pred_answer:10.2f} | Conf: {confidence:.2%} | Error: {error:.4f}")
             
             total_error += error
         
@@ -557,12 +427,14 @@ class MathAIGame:
         print(f"\n{'='*90}")
         print(f"Results: {correct}/{num_tests} correct ({accuracy:.1f}%) | Avg Error: {avg_error:.4f}")
         print(f"{'='*90}\n")
+        
+        return accuracy
     
     def interactive(self):
         """Interactive mode"""
         print(f"\n{'='*90}")
-        print("Interactive Mode")
-        print("Examples: '5+3', '10*2', 'floor(10/3)', 'abs(5-10)'")
+        print("Interactive Mode - Minimal Math AI")
+        print("Examples: '5+3', '10*2', 'floor(10/3)', 'abs(5-10)', '2**3'")
         print(f"{'='*90}\n")
         
         while True:
@@ -570,28 +442,31 @@ class MathAIGame:
             if expr.lower() == 'quit':
                 break
             
-            pred_answer, confidence = self.trainer.predict(expr)
-            print(f"Answer: {pred_answer:.4f}")
-            print(f"Confidence: {confidence:.2%}\n")
+            try:
+                pred_answer, confidence = self.trainer.predict(expr)
+                print(f"Answer: {pred_answer:.4f}")
+                print(f"Confidence: {confidence:.2%}\n")
+            except Exception as e:
+                print(f"Error: {str(e)}\n")
 
 
 def main():
+    """Main function"""
     print("\n" + "="*90)
-    print("Hybrid Math AI - Symbolic + Seq2Seq + Function Basis")
+    print("Minimal Math AI - Ultra-Lightweight Learnable Model")
     print("="*90)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}\n")
+    print(f"Device: {device}\n")
     
+    # Create model
     tokenizer = MathTokenizer()
-    print(f"Tokenizer vocab size: {tokenizer.vocab_size}\n")
+    print(f"Vocab Size: {tokenizer.vocab_size}")
     
-    model = HybridMathAI(
+    model = MinimalMathAI(
         vocab_size=tokenizer.vocab_size,
-        d_model=64,
-        nhead=4,
-        num_layers=2,
-        hidden_dim=128
+        embedding_dim=8,
+        hidden_dim=24
     )
     print(f"Model Parameters: {model.count_parameters():,}\n")
     
@@ -599,7 +474,7 @@ def main():
     game = MathAIGame(trainer, device)
     
     while True:
-        print("\nMain Menu:")
+        print("Menu:")
         print("1. Train AI")
         print("2. Test AI")
         print("3. Interactive Mode")
@@ -609,13 +484,14 @@ def main():
         
         if choice == '1':
             difficulty = int(input("Difficulty (1-5, default 1): ") or "1")
-            epochs = int(input("Epochs (default 50): ") or "50")
-            batch_size = int(input("Batch size (default 32): ") or "32")
-            trainer.train(num_epochs=epochs, batch_size=batch_size, difficulty=difficulty)
+            epochs = int(input("Epochs (default 150): ") or "150")
+            batch_size = int(input("Batch size (default 64): ") or "64")
+            lr = float(input("Learning rate (default 0.005): ") or "0.005")
+            trainer.train(num_epochs=epochs, batch_size=batch_size, lr=lr, difficulty=difficulty)
         
         elif choice == '2':
             difficulty = int(input("Difficulty (1-5, default 1): ") or "1")
-            num_tests = int(input("Number of tests (default 20): ") or "20")
+            num_tests = int(input("Number of tests (default 30): ") or "30")
             game.test(num_tests=num_tests, difficulty=difficulty)
         
         elif choice == '3':
