@@ -175,7 +175,7 @@ void advanced_shell() {
 void kernel_main(void) {
     // Clear screen pas boot supaya bersih
     clear_screen();
-    print_string("Kernel v2.0 - Security Patched & Upgraded\n");
+    print_string("Kernel v0.0.2 - Security Patched & Upgraded\n");
     print_string("=========================================\n");
     advanced_shell();
 }
