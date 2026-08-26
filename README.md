@@ -13,6 +13,7 @@ Tempat saya nyimpan semua ide gila pas lagi gabut.
 
 ### Ohh ya, check out **TiniMind** & GabutOS , Transformer dekoder ringan buatan saya sendiri yang dibangun dari awal menggunakan PyTorch, dan low level shit 32 bit yang ku buat.
 nih linknya: https://github.com/Makluk-Gabut/TiniMind
+
 sekalian yang OS juga: https://github.com/Makluk-Gabut/OS/tree/x86-legacy-version
 
 update 25/08/2026
