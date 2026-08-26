@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkers Dark Theme - Chess.com Style</title>
+<style>
+    body {
+        background-color: #312e2b;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    
+    #game-container {
+        background-color: #262421;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    #board {
+        display: grid;
+        grid-template-columns: repeat(8, 60px);
+        grid-template-rows: repeat(8, 60px);
+        border: 4px solid #4a4845;
+    }
+    
+    .square {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    
+    .light { background-color: #ebecd0; }
+    .dark { background-color: #779556; }
+    
+    .piece {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        position: absolute;
+        transition: transform 0.2s;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 20px;
+        user-select: none;
+    }
+    
+    .piece.white {
+        background-color: #f9f9f9;
+        border: 2px solid #ccc;
+        color: #312e2b;
+    }
+    
+    .piece.black {
+        background-color: #2c2c2c;
+        border: 2px solid #111;
+        color: #f9f9f9;
+    }
+    
+    .piece.selected {
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+    }
+    
+    .piece.king::after {
+        content: "K";
+        color: #d4af37;
+        font-size: 22px;
+        font-weight: 900;
+    }
+    
+    .piece.black.king::after {
+        color: #f39c12;
+    }
+
+    .hint {
+        width: 20px;
+        height: 20px;
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 5;
+    }
+    
+    .square.valid-target {
+        cursor: pointer;
+    }
+
+    #sidebar {
+        width: 220px;
+        background-color: #1e1d1b;
+        border-radius: 6px;
+        padding: 15px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #sidebar h3 {
+        margin-top: 0;
+        font-size: 18px;
+        border-bottom: 1px solid #3a3835;
+        padding-bottom: 8px;
+    }
+
+    #turn-indicator {
+        font-size: 15px;
+        margin-bottom: 15px;
+        background: #2b2926;
+        padding: 8px 12px;
+        border-radius: 4px;
+    }
+
+    #turn-text {
+        font-weight: bold;
+        color: #779556;
+    }
+
+    .stats-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .player-card {
+        background-color: #2b2926;
+        padding: 12px;
+        border-radius: 6px;
+        border-left: 4px solid transparent;
+    }
+
+    .player-card.white-card {
+        border-left-color: #f9f9f9;
+    }
+
+    .player-card.black-card {
+        border-left-color: #4a4845;
+    }
+
+    .player-name {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #fff;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 4px;
+    }
+
+    .stat-value {
+        font-weight: bold;
+        color: #fff;
+    }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="board"></div>
+    <div id="sidebar">
+        <h3>CHECKERS</h3>
+        <div id="turn-indicator">Giliran: <span id="turn-text">Putih</span></div>
+        
+        <div class="stats-container">
+            <div class="player-card white-card">
+                <div class="player-name">Pemain Putih</div>
+                <div class="stat-row">
+                    <span>Sisa Bidak:</span>
+                    <span id="white-pieces" class="stat-value">12</span>
+                </div>
+                <div class="stat-row">
+                    <span>Jumlah Raja:</span>
+                    <span id="white-kings" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="player-card black-card">
+                <div class="player-name">Pemain Hitam</div>
+                <div class="stat-row">
+                    <span>Sisa Bidak:</span>
+                    <span id="black-pieces" class="stat-value">12</span>
+                </div>
+                <div class="stat-row">
+                    <span>Jumlah Raja:</span>
+                    <span id="black-kings" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const boardEl = document.getElementById('board');
+    const turnTextEl = document.getElementById('turn-text');
+    const whitePiecesEl = document.getElementById('white-pieces');
+    const whiteKingsEl = document.getElementById('white-kings');
+    const blackPiecesEl = document.getElementById('black-pieces');
+    const blackKingsEl = document.getElementById('black-kings');
+
+    const boardSize = 8;
+    
+    // 0: Kosong, 1: Putih, 2: Hitam, 3: Raja Putih, 4: Raja Hitam
+    let board = [];
+    let turn = 'white';
+    let selectedPiece = null;
+    let validMoves = [];
+    let isComboMode = false;
+
+    const initialBoard = [
+        [0, 2, 0, 2, 0, 2, 0, 2],
+        [2, 0, 2, 0, 2, 0, 2, 0],
+        [0, 2, 0, 2, 0, 2, 0, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0]
+    ];
+
+    function initGame() {
+        board = initialBoard.map(row => [...row]);
+        renderBoard();
+    }
+
+    function renderBoard() {
+        boardEl.innerHTML = '';
+        turnTextEl.textContent = turn === 'white' ? 'Putih' : 'Hitam';
+        
+        let whitePieces = 0;
+        let whiteKings = 0;
+        let blackPieces = 0;
+        let blackKings = 0;
+
+        for (let r = 0; r < boardSize; r++) {
+            for (let c = 0; c < boardSize; c++) {
+                const square = document.createElement('div');
+                square.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+                
+                const pieceVal = board[r][c];
+                
+                // Hitung Statistik Bidak
+                if (pieceVal === 1) {
+                    whitePieces++;
+                } else if (pieceVal === 3) {
+                    whitePieces++;
+                    whiteKings++;
+                } else if (pieceVal === 2) {
+                    blackPieces++;
+                } else if (pieceVal === 4) {
+                    blackPieces++;
+                    blackKings++;
+                }
+
+                if (pieceVal !== 0) {
+                    const piece = document.createElement('div');
+                    const isWhite = pieceVal === 1 || pieceVal === 3;
+                    const isKing = pieceVal === 3 || pieceVal === 4;
+                    
+                    piece.className = `piece ${isWhite ? 'white' : 'black'} ${isKing ? 'king' : ''}`;
+                    
+                    if (selectedPiece && selectedPiece.r === r && selectedPiece.c === c) {
+                        piece.classList.add('selected');
+                    }
+                    
+                    piece.onclick = (e) => {
+                        e.stopPropagation();
+                        if (isComboMode) return;
+
+                        if ((turn === 'white' && isWhite) || (turn === 'black' && !isWhite)) {
+                            selectedPiece = { r, c };
+                            calculateValidMoves(r, c, false);
+                            renderBoard();
+                        }
+                    };
+                    square.appendChild(piece);
+                }
+
+                const isHint = validMoves.find(m => m.toR === r && m.toC === c);
+                if (isHint) {
+                    square.classList.add('valid-target');
+                    const hint = document.createElement('div');
+                    hint.className = 'hint';
+                    square.appendChild(hint);
+
+                    square.onclick = () => {
+                        movePiece(selectedPiece, isHint);
+                    };
+                }
+
+                boardEl.appendChild(square);
+            }
+        }
+
+        // Update UI Statistik
+        whitePiecesEl.textContent = whitePieces;
+        whiteKingsEl.textContent = whiteKings;
+        blackPiecesEl.textContent = blackPieces;
+        blackKingsEl.textContent = blackKings;
+    }
+
+    function calculateValidMoves(r, c, captureOnly = false) {
+        validMoves = [];
+        const pieceVal = board[r][c];
+        const isWhite = pieceVal === 1 || pieceVal === 3;
+        const isKing = pieceVal === 3 || pieceVal === 4;
+
+        let directions = [];
+        if (isKing) {
+            directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+        } else if (isWhite) {
+            directions = [[-1, -1], [-1, 1]];
+        } else {
+            directions = [[1, -1], [1, 1]];
+        }
+
+        directions.forEach(([dr, dc]) => {
+            const toR = r + dr;
+            const toC = c + dc;
+
+            if (toR >= 0 && toR < boardSize && toC >= 0 && toC < boardSize) {
+                if (board[toR][toC] === 0 && !captureOnly) {
+                    validMoves.push({ toR, toC });
+                } else if (board[toR][toC] !== 0) {
+                    const targetVal = board[toR][toC];
+                    const isTargetEnemy = isWhite ? (targetVal === 2 || targetVal === 4) : (targetVal === 1 || targetVal === 3);
+                    
+                    if (isTargetEnemy) {
+                        const capR = toR + dr;
+                        const capC = toC + dc;
+                        if (capR >= 0 && capR < boardSize && capC >= 0 && capC < boardSize) {
+                            if (board[capR][capC] === 0) {
+                                validMoves.push({ toR: capR, toC: capC, captureR: toR, captureC: toC });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function movePiece(from, move) {
+        const pieceVal = board[from.r][from.c];
+        board[move.toR][move.toC] = pieceVal;
+        board[from.r][from.c] = 0;
+        
+        let isCapture = false;
+        if (move.captureR !== undefined) {
+            board[move.captureR][move.captureC] = 0;
+            isCapture = true;
+        }
+
+        let becameKing = false;
+        if (pieceVal === 1 && move.toR === 0) {
+            board[move.toR][move.toC] = 3;
+            becameKing = true;
+        } else if (pieceVal === 2 && move.toR === 7) {
+            board[move.toR][move.toC] = 4;
+            becameKing = true;
+        }
+
+        isComboMode = false;
+
+        if (isCapture && !becameKing) {
+            calculateValidMoves(move.toR, move.toC, true);
+            if (validMoves.length > 0) {
+                isComboMode = true;
+            }
+        }
+
+        if (isComboMode) {
+            selectedPiece = { r: move.toR, c: move.toC };
+        } else {
+            selectedPiece = null;
+            validMoves = [];
+            turn = turn === 'white' ? 'black' : 'white';
+        }
+        
+        renderBoard();
+    }
+
+    initGame();
+</script>
+
+</body>
+</html>

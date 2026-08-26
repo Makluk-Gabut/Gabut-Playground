@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Sudoku Dark Theme - Sistem Nyawa</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #bb86fc;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+        }
+
+        #status-bar {
+            display: flex;
+            justify-content: space-between;
+            width: 360px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #health {
+            color: #cf6679;
+            transition: color 0.3s ease;
+        }
+
+        #sudoku-board {
+            display: grid;
+            grid-template-columns: repeat(9, 40px);
+            grid-template-rows: repeat(9, 40px);
+            gap: 0;
+            border: 3px solid #666;
+            background-color: #333;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #444;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            user-select: none;
+        }
+
+        .cell:hover:not(.initial):not(.locked) {
+            background-color: #2c2c2c;
+        }
+
+        .cell.selected {
+            background-color: #383838;
+            outline: 2px solid #bb86fc;
+            outline-offset: -2px;
+            z-index: 2;
+        }
+
+        .cell.initial {
+            color: #bb86fc;
+            font-weight: bold;
+            background-color: #252525;
+            cursor: default;
+        }
+
+        .cell.locked {
+            color: #03dac6;
+            cursor: default;
+        }
+
+        .cell.error-anim {
+            background-color: #cf6679 !important;
+            color: #121212 !important;
+            transform: scale(0.9);
+        }
+
+        /* Styling batas blok 3x3 */
+        .cell:nth-child(3n) { border-right: 2px solid #666; }
+        .cell:nth-child(9n+1) { border-left: 2px solid #666; }
+        .cell-row-3, .cell-row-6 { border-bottom: 2px solid #666 !important; }
+
+        #numpad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 25px;
+            width: 360px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .num-btn {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border: 1px solid #555;
+            padding: 15px 0;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .num-btn:hover {
+            background-color: #bb86fc;
+            color: #121212;
+            transform: translateY(-2px);
+        }
+
+        .num-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            margin-top: 25px;
+        }
+
+        .ctrl-btn {
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #555555;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .ctrl-btn:hover { background-color: #4d4d4d; }
+        .ctrl-btn:active { transform: scale(0.95); }
+
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 24px;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sudoku</h1>
+    <div id="status-bar">
+        <div id="health">Nyawa: 3</div>
+        <div id="progress">Sisa: 0</div>
+    </div>
+    
+    <div id="sudoku-board"></div>
+    
+    <div id="numpad"></div>
+
+    <div class="controls">
+        <button class="ctrl-btn" onclick="generateGame()">Mulai Ulang</button>
+    </div>
+    
+    <div id="message"></div>
+
+    <script>
+        const baseSolution = [
+            5, 3, 4, 6, 7, 8, 9, 1, 2,
+            6, 7, 2, 1, 9, 5, 3, 4, 8,
+            1, 9, 8, 3, 4, 2, 5, 6, 7,
+            8, 5, 9, 7, 6, 1, 4, 2, 3,
+            4, 2, 6, 8, 5, 3, 7, 9, 1,
+            7, 1, 3, 9, 2, 4, 8, 5, 6,
+            9, 6, 1, 5, 3, 7, 2, 8, 4,
+            2, 8, 7, 4, 1, 9, 6, 3, 5,
+            3, 4, 5, 2, 8, 6, 1, 7, 9
+        ];
+
+        let currentPuzzle = [];
+        let selectedCellIndex = null;
+        let health = 3;
+        let cellsRemaining = 0;
+        let isGameOver = false;
+
+        function initNumpad() {
+            const numpad = document.getElementById('numpad');
+            numpad.innerHTML = '';
+            for (let i = 1; i <= 9; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'num-btn';
+                btn.innerText = i;
+                btn.onclick = () => handleNumberInput(i);
+                numpad.appendChild(btn);
+            }
+        }
+
+        function generateGame() {
+            const board = document.getElementById('sudoku-board');
+            board.innerHTML = '';
+            
+            health = 3;
+            isGameOver = false;
+            selectedCellIndex = null;
+            cellsRemaining = 40; 
+            
+            updateStatusBar();
+            showMessage('', '#e0e0e0');
+            currentPuzzle = [...baseSolution];
+
+            // Menghapus kotak acak
+            let removedCount = 0;
+            while(removedCount < cellsRemaining) {
+                let randomIndex = Math.floor(Math.random() * 81);
+                if(currentPuzzle[randomIndex] !== '') {
+                    currentPuzzle[randomIndex] = '';
+                    removedCount++;
+                }
+            }
+
+            for (let i = 0; i < 81; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = 'cell-' + i;
+
+                const row = Math.floor(i / 9);
+                if (row === 2) cell.classList.add('cell-row-3');
+                if (row === 5) cell.classList.add('cell-row-6');
+
+                if (currentPuzzle[i] !== '') {
+                    cell.innerText = currentPuzzle[i];
+                    cell.classList.add('initial');
+                } else {
+                    cell.onclick = () => selectCell(i);
+                }
+                board.appendChild(cell);
+            }
+            
+            initNumpad();
+        }
+
+        function selectCell(index) {
+            if (isGameOver) return;
+            
+            const cell = document.getElementById('cell-' + index);
+            if (cell.classList.contains('initial') || cell.classList.contains('locked')) return;
+
+            // Hapus seleksi sebelumnya
+            if (selectedCellIndex !== null) {
+                document.getElementById('cell-' + selectedCellIndex).classList.remove('selected');
+            }
+
+            selectedCellIndex = index;
+            cell.classList.add('selected');
+        }
+
+        function handleNumberInput(num) {
+            if (isGameOver || selectedCellIndex === null) return;
+
+            const cell = document.getElementById('cell-' + selectedCellIndex);
+            
+            // Validasi tebakan
+            if (num === baseSolution[selectedCellIndex]) {
+                // Jawaban Benar
+                cell.innerText = num;
+                cell.classList.remove('selected');
+                cell.classList.add('locked'); // Kunci agar tidak bisa diklik lagi
+                selectedCellIndex = null;
+                
+                cellsRemaining--;
+                updateStatusBar();
+
+                if (cellsRemaining === 0) {
+                    isGameOver = true;
+                    showMessage('Luar biasa! Anda berhasil menyelesaikan Sudoku!', '#03dac6');
+                }
+            } else {
+                // Jawaban Salah
+                health--;
+                updateStatusBar();
+                
+                // Efek visual error
+                cell.classList.add('error-anim');
+                setTimeout(() => {
+                    cell.classList.remove('error-anim');
+                }, 300);
+
+                if (health <= 0) {
+                    isGameOver = true;
+                    cell.classList.remove('selected');
+                    showMessage('Game Over! Nyawa Anda habis.', '#cf6679');
+                } else {
+                    showMessage('Jawaban salah! Coba lagi.', '#cf6679');
+                    setTimeout(() => showMessage('', '#e0e0e0'), 2000);
+                }
+            }
+        }
+
+        function updateStatusBar() {
+            document.getElementById('health').innerText = 'Nyawa: ' + health;
+            document.getElementById('progress').innerText = 'Sisa: ' + cellsRemaining;
+        }
+
+        function showMessage(text, color) {
+            const msgEl = document.getElementById('message');
+            msgEl.innerText = text;
+            msgEl.style.color = color;
+        }
+
+        // Mulai otomatis saat halaman dimuat
+        window.onload = generateGame;
+    </script>
+</body>
+</html>

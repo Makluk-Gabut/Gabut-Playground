@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 2048 - Dark Theme</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+
+        .score-container {
+            margin-top: 10px;
+            font-size: 20px;
+            background-color: #1e1e1e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        #score {
+            font-weight: bold;
+            color: #00e676;
+        }
+
+        .grid-container {
+            width: 400px;
+            height: 400px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 12px;
+            padding: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .cell {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            transition: all 0.15s ease-in-out;
+        }
+
+        /* Colors for different tile values */
+        .cell[data-value="2"]    { background-color: #37474f; color: #ffffff; }
+        .cell[data-value="4"]    { background-color: #455a64; color: #ffffff; }
+        .cell[data-value="8"]    { background-color: #f57c00; color: #ffffff; }
+        .cell[data-value="16"]   { background-color: #e65100; color: #ffffff; }
+        .cell[data-value="32"]   { background-color: #d84315; color: #ffffff; }
+        .cell[data-value="64"]   { background-color: #c62828; color: #ffffff; }
+        .cell[data-value="128"]  { background-color: #fbc02d; color: #121212; font-size: 28px; }
+        .cell[data-value="256"]  { background-color: #f9a825; color: #121212; font-size: 28px; }
+        .cell[data-value="512"]  { background-color: #f57f17; color: #121212; font-size: 28px; }
+        .cell[data-value="1024"] { background-color: #00b0ff; color: #ffffff; font-size: 24px; }
+        .cell[data-value="2048"] { background-color: #00e676; color: #121212; font-size: 24px; }
+
+        .controls-info {
+            margin-top: 20px;
+            color: #a0a0a0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #bb86fc;
+            color: #121212;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #9965f4;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>2048</h1>
+        <div class="score-container">Skor: <span id="score">0</span></div>
+    </header>
+
+    <div class="grid-container" id="grid"></div>
+
+    <div class="controls-info">
+        Gunakan tombol <strong>W, A, S, D</strong> atau <strong>Panah Keyboard</strong> untuk bermain.
+    </div>
+
+    <button onclick="resetGame()">Game Baru</button>
+
+    <script>
+        const gridElement = document.getElementById('grid');
+        const scoreElement = document.getElementById('score');
+        let board = [];
+        let score = 0;
+
+        function initGame() {
+            board = Array(4).fill().map(() => Array(4).fill(0));
+            score = 0;
+            updateScore();
+            addRandomTile();
+            addRandomTile();
+            renderBoard();
+        }
+
+        function renderBoard() {
+            gridElement.innerHTML = '';
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    const value = board[r][c];
+                    if (value > 0) {
+                        cell.textContent = value;
+                        cell.setAttribute('data-value', value);
+                    }
+                    gridElement.appendChild(cell);
+                }
+            }
+        }
+
+        function addRandomTile() {
+            let emptyCells = [];
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (board[r][c] === 0) {
+                        emptyCells.push({ r, c });
+                    }
+                }
+            }
+            if (emptyCells.length > 0) {
+                let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                board[randomCell.r][randomCell.c] = Math.random() < 0.9 ? 2 : 4;
+            }
+        }
+
+        function updateScore() {
+            scoreElement.textContent = score;
+        }
+
+        function slide(row) {
+            let arr = row.filter(val => val !== 0);
+            for (let i = 0; i < arr.length - 1; i++) {
+                if (arr[i] === arr[i + 1]) {
+                    arr[i] *= 2;
+                    score += arr[i];
+                    arr[i + 1] = 0;
+                }
+            }
+            arr = arr.filter(val => val !== 0);
+            while (arr.length < 4) {
+                arr.push(0);
+            }
+            return arr;
+        }
+
+        function moveLeft() {
+            let changed = false;
+            for (let r = 0; r < 4; r++) {
+                let newRow = slide(board[r]);
+                if (JSON.stringify(board[r]) !== JSON.stringify(newRow)) {
+                    changed = true;
+                }
+                board[r] = newRow;
+            }
+            return changed;
+        }
+
+        function rotateBoard() {
+            let newBoard = Array(4).fill().map(() => Array(4).fill(0));
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    newBoard[c][3 - r] = board[r][c];
+                }
+            }
+            board = newBoard;
+        }
+
+        function move(direction) {
+            let moved = false;
+            let rotations = 0;
+
+            if (direction === 'UP') rotations = 3;
+            else if (direction === 'RIGHT') rotations = 2;
+            else if (direction === 'DOWN') rotations = 1;
+
+            for (let i = 0; i < rotations; i++) {
+                rotateBoard();
+            }
+
+            moved = moveLeft();
+
+            for (let i = 0; i < (4 - rotations) % 4; i++) {
+                rotateBoard();
+            }
+
+            if (moved) {
+                addRandomTile();
+                updateScore();
+                renderBoard();
+                checkGameOver();
+            }
+        }
+
+        function checkGameOver() {
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (board[r][c] === 0) return;
+                    if (c < 3 && board[r][c] === board[r][c + 1]) return;
+                    if (r < 3 && board[r][c] === board[r + 1][c]) return;
+                }
+            }
+            setTimeout(() => alert("Game Over! Skor Akhir: " + score), 100);
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if (key === 'w' || key === 'arrowup') move('UP');
+            else if (key === 's' || key === 'arrowdown') move('DOWN');
+            else if (key === 'a' || key === 'arrowleft') move('LEFT');
+            else if (key === 'd' || key === 'arrowright') move('RIGHT');
+        });
+
+        initGame();
+    </script>
+</body>
+</html>

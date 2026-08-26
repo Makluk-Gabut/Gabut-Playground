@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minesweeper - Dark Mode</title>
+<style>
+  :root {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --board-bg: #1e1e1e;
+    --cell-unrevealed: #2c2c2c;
+    --cell-hover: #3d3d3d;
+    --cell-revealed: #1a1a1a;
+    --border-color: #333;
+    --primary: #bb86fc;
+    --danger: #cf6679;
+  }
+  
+  body { 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    background-color: var(--bg-color); 
+    color: var(--text-color);
+    margin: 0;
+    padding: 30px 20px;
+    box-sizing: border-box;
+  }
+
+  h2 {
+    margin: 0 0 25px 0;
+    font-weight: 400;
+    letter-spacing: 3px;
+    color: #ffffff;
+  }
+
+  .controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  select, button {
+    background-color: var(--cell-unrevealed);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    outline: none;
+  }
+
+  select:hover, button:hover {
+    background-color: var(--cell-hover);
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0 5px;
+    box-sizing: border-box;
+  }
+
+  #board { 
+    display: grid; 
+    gap: 2px; 
+    background-color: var(--board-bg); 
+    border: 2px solid var(--border-color); 
+    padding: 4px; 
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+
+  .cell { 
+    width: 32px; 
+    height: 32px; 
+    background-color: var(--cell-unrevealed); 
+    border-radius: 4px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-weight: 700; 
+    font-size: 1.1rem;
+    cursor: pointer; 
+    user-select: none; 
+    transition: background-color 0.1s ease;
+  }
+
+  .cell:hover:not(.revealed) { 
+    background-color: var(--cell-hover); 
+  }
+
+  .cell.revealed { 
+    background-color: var(--cell-revealed); 
+    cursor: default; 
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+  }
+
+  .cell.mine { 
+    background-color: var(--danger); 
+    color: white; 
+    border: none;
+  }
+
+  .cell.flag { 
+    color: var(--danger); 
+  }
+
+  /* Warna angka berdasarkan jumlah ranjau di sekitarnya */
+  .c1 { color: #64b5f6; }
+  .c2 { color: #81c784; }
+  .c3 { color: #e57373; }
+  .c4 { color: #ba68c8; }
+  .c5 { color: #ffb74d; }
+  .c6 { color: #4dd0e1; }
+  .c7 { color: #f06292; }
+  .c8 { color: #a1887f; }
+
+  #message { 
+    margin-top: 25px; 
+    font-size: 1.3rem; 
+    font-weight: 600; 
+    height: 30px; 
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<h2>MINESWEEPER</h2>
+
+<div class="controls">
+  <select id="difficulty" onchange="setDifficulty()">
+    <option value="easy">Mudah (9x9, 10 Ranjau)</option>
+    <option value="medium">Sedang (16x16, 40 Ranjau)</option>
+    <option value="hard">Sulit (30x16, 99 Ranjau)</option>
+  </select>
+  <button onclick="initGame()">Mulai Ulang</button>
+</div>
+
+<div class="status-bar" id="statusBar">
+  <span id="minesLeft">Ranjau: 10</span>
+  <span id="timer">Waktu: 0s</span>
+</div>
+
+<div id="board"></div>
+<div id="message"></div>
+
+<script>
+  let rows = 9;
+  let cols = 9;
+  let totalMines = 10;
+  let board = [];
+  let gameOver = false;
+  let cellsRevealed = 0;
+  let flagsPlaced = 0;
+  
+  let timerInterval = null;
+  let seconds = 0;
+  let firstClick = true;
+
+  const boardEl = document.getElementById('board');
+  const messageEl = document.getElementById('message');
+  const minesLeftEl = document.getElementById('minesLeft');
+  const timerEl = document.getElementById('timer');
+  const difficultyEl = document.getElementById('difficulty');
+  const statusBar = document.getElementById('statusBar');
+
+  function setDifficulty() {
+    const val = difficultyEl.value;
+    if (val === 'easy') { rows = 9; cols = 9; totalMines = 10; }
+    else if (val === 'medium') { rows = 16; cols = 16; totalMines = 40; }
+    else if (val === 'hard') { rows = 16; cols = 30; totalMines = 99; }
+    
+    // Menyesuaikan lebar status bar dengan lebar papan
+    statusBar.style.width = (cols * 34 + 8) + 'px'; // 32px cell + 2px gap + border padding
+    initGame();
+  }
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    seconds = 0;
+    timerEl.textContent = `Waktu: ${seconds}s`;
+    timerInterval = setInterval(() => {
+      seconds++;
+      timerEl.textContent = `Waktu: ${seconds}s`;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+  }
+
+  function initGame() {
+    stopTimer();
+    seconds = 0;
+    timerEl.textContent = `Waktu: 0s`;
+    firstClick = true;
+    
+    boardEl.innerHTML = '';
+    messageEl.textContent = '';
+    board = [];
+    gameOver = false;
+    cellsRevealed = 0;
+    flagsPlaced = 0;
+    
+    minesLeftEl.textContent = `Ranjau: ${totalMines}`;
+    boardEl.style.gridTemplateColumns = `repeat(${cols}, 32px)`;
+
+    for (let r = 0; r < rows; r++) {
+      let row = [];
+      for (let c = 0; c < cols; c++) {
+        row.push({ isMine: false, revealed: false, flagged: false, count: 0, el: null });
+      }
+      board.push(row);
+    }
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let cell = board[r][c];
+        let div = document.createElement('div');
+        div.classList.add('cell');
+        
+        // Event click kiri & kanan
+        div.addEventListener('click', () => handleLeftClick(r, c));
+        div.addEventListener('contextmenu', (e) => { 
+          e.preventDefault(); 
+          toggleFlag(r, c); 
+        });
+        
+        cell.el = div;
+        boardEl.appendChild(div);
+      }
+    }
+  }
+
+  function placeMinesAndCalculate(firstR, firstC) {
+    let minesPlaced = 0;
+    while (minesPlaced < totalMines) {
+      let r = Math.floor(Math.random() * rows);
+      let c = Math.floor(Math.random() * cols);
+      
+      // Pastikan klik pertama tidak pernah mengenai ranjau
+      if (!board[r][c].isMine && !(r === firstR && c === firstC)) {
+        board[r][c].isMine = true;
+        minesPlaced++;
+      }
+    }
+
+    // Hitung jumlah ranjau di sekitar kotak
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let cell = board[r][c];
+        if (!cell.isMine) {
+          let count = 0;
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              let nr = r + dr, nc = c + dc;
+              if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].isMine) {
+                count++;
+              }
+            }
+          }
+          cell.count = count;
+        }
+      }
+    }
+  }
+
+  function handleLeftClick(r, c) {
+    if (gameOver || board[r][c].revealed || board[r][c].flagged) return;
+    
+    // Klik pertama memulai timer dan menanam ranjau
+    if (firstClick) {
+      firstClick = false;
+      placeMinesAndCalculate(r, c);
+      startTimer();
+    }
+    
+    reveal(r, c);
+  }
+
+  function reveal(r, c) {
+    let cell = board[r][c];
+    cell.revealed = true;
+    cell.el.classList.add('revealed');
+    cellsRevealed++;
+
+    if (cell.isMine) {
+      cell.el.textContent = 'M';
+      cell.el.classList.add('mine');
+      messageEl.textContent = 'Game Over!';
+      messageEl.style.color = 'var(--danger)';
+      gameOver = true;
+      stopTimer();
+      revealAllMines();
+    } else {
+      if (cell.count > 0) {
+        cell.el.textContent = cell.count;
+        cell.el.classList.add(`c${cell.count}`);
+      } else {
+        // Otomatis buka kotak kosong di sekitarnya
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            let nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !board[nr][nc].revealed && !board[nr][nc].flagged) {
+              reveal(nr, nc);
+            }
+          }
+        }
+      }
+      
+      // Cek kemenangan
+      if (cellsRevealed === rows * cols - totalMines) {
+        messageEl.textContent = 'Menang!';
+        messageEl.style.color = 'var(--primary)';
+        gameOver = true;
+        stopTimer();
+      }
+    }
+  }
+
+  function toggleFlag(r, c) {
+    if (gameOver || board[r][c].revealed) return;
+    
+    let cell = board[r][c];
+    
+    // Batasi bendera maksimal
+    if (!cell.flagged && flagsPlaced >= totalMines) return; 
+    
+    cell.flagged = !cell.flagged;
+    cell.el.textContent = cell.flagged ? 'F' : '';
+    
+    if (cell.flagged) {
+      cell.el.classList.add('flag');
+      flagsPlaced++;
+    } else {
+      cell.el.classList.remove('flag');
+      flagsPlaced--;
+    }
+    
+    minesLeftEl.textContent = `Ranjau: ${totalMines - flagsPlaced}`;
+  }
+
+  function revealAllMines() {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let cell = board[r][c];
+        if (cell.isMine && !cell.flagged) {
+          cell.el.textContent = 'M';
+          cell.el.classList.add('mine');
+        } else if (!cell.isMine && cell.flagged) {
+          // Tandai jika salah meletakkan bendera
+          cell.el.textContent = 'X';
+          cell.el.style.color = 'var(--danger)';
+        }
+      }
+    }
+  }
+
+  // Inisialisasi awal saat halaman dimuat
+  setDifficulty();
+</script>
+</body>
+</html>

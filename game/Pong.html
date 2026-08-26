@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Pong Classic</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            border: 4px solid #fff;
+            background-color: #000;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .controls {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .btn-start {
+            margin-top: 12px;
+            padding: 8px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-start:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Game Pong</h1>
+    <canvas id="pongCanvas" width="800" height="400"></canvas>
+    
+    <button id="startButton" class="btn-start" onclick="launchBall()">Mulai (SPASI)</button>
+
+    <div class="controls">
+        <p><strong>Pemain 1 (Kiri):</strong> W (Atas) / S (Bawah)</p>
+        <p><strong>Pemain 2 (Kanan):</strong> Panah Atas / Panah Bawah</p>
+        <p><strong>Meluncurkan Bola:</strong> Tekan Tombol SPASI atau Klik Tombol Mulai</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pongCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ukuran Raket
+        const paddleWidth = 12;
+        const paddleHeight = 80;
+
+        // Data Pemain 1
+        const player1 = {
+            x: 20,
+            y: canvas.height / 2 - paddleHeight / 2,
+            score: 0
+        };
+
+        // Data Pemain 2
+        const player2 = {
+            x: canvas.width - 20 - paddleWidth,
+            y: canvas.height / 2 - paddleHeight / 2,
+            score: 0
+        };
+
+        // Data Bola
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 7,
+            speed: 5,
+            dx: 0,
+            dy: 0,
+            isLaunched: false,
+            serveDirection: 1
+        };
+
+        // Pelacak Tombol Keyboard
+        const keys = {};
+
+        document.addEventListener('keydown', (e) => {
+            // Mencegah halaman bergulir
+            if (['ArrowUp', 'ArrowDown', 'w', 's', 'W', 'S', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
+
+            // Tekan SPASI untuk meluncurkan bola
+            if (e.key === ' ' || e.code === 'Space') {
+                launchBall();
+            }
+
+            keys[e.key] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Fungsi Meluncurkan Bola
+        function launchBall() {
+            if (!ball.isLaunched) {
+                ball.isLaunched = true;
+                ball.dx = ball.serveDirection * ball.speed;
+                ball.dy = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
+            }
+            document.getElementById('startButton').blur();
+        }
+
+        function update() {
+            // Pergerakan Pemain 1
+            if (keys['w'] || keys['W']) {
+                player1.y -= 6;
+            }
+            if (keys['s'] || keys['S']) {
+                player1.y += 6;
+            }
+
+            // Pergerakan Pemain 2
+            if (keys['ArrowUp']) {
+                player2.y -= 6;
+            }
+            if (keys['ArrowDown']) {
+                player2.y += 6;
+            }
+
+            // Pembatas Lapangan untuk Raket
+            player1.y = Math.max(0, Math.min(canvas.height - paddleHeight, player1.y));
+            player2.y = Math.max(0, Math.min(canvas.height - paddleHeight, player2.y));
+
+            // Pergerakan Bola (Hanya jika bola sudah diluncurkan)
+            if (ball.isLaunched) {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                // Pantulan Dinding Atas & Bawah
+                if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+                    ball.dy *= -1;
+                }
+
+                // Tabrakan dengan Raket Pemain 1
+                if (
+                    ball.x - ball.radius < player1.x + paddleWidth &&
+                    ball.y > player1.y &&
+                    ball.y < player1.y + paddleHeight
+                ) {
+                    ball.dx = Math.abs(ball.dx) + 0.2;
+                    ball.x = player1.x + paddleWidth + ball.radius;
+                }
+
+                // Tabrakan dengan Raket Pemain 2
+                if (
+                    ball.x + ball.radius > player2.x &&
+                    ball.y > player2.y &&
+                    ball.y < player2.y + paddleHeight
+                ) {
+                    ball.dx = -Math.abs(ball.dx) - 0.2;
+                    ball.x = player2.x - ball.radius;
+                }
+
+                // Gol Pemain 2
+                if (ball.x < 0) {
+                    player2.score++;
+                    resetBall(1);
+                }
+
+                // Gol Pemain 1
+                if (ball.x > canvas.width) {
+                    player1.score++;
+                    resetBall(-1);
+                }
+            }
+        }
+
+        function resetBall(nextServeDirection) {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speed = 5;
+            ball.dx = 0;
+            ball.dy = 0;
+            ball.isLaunched = false;
+            ball.serveDirection = nextServeDirection;
+        }
+
+        function draw() {
+            // Bersihkan Layar
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Garis Tengah Lapangan
+            ctx.setLineDash([6, 6]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Gambar Raket Pemain 1 & Pemain 2
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(player1.x, player1.y, paddleWidth, paddleHeight);
+            ctx.fillRect(player2.x, player2.y, paddleWidth, paddleHeight);
+
+            // Gambar Bola
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Gambar Skor
+            ctx.font = '32px Arial';
+            ctx.fillText(player1.score, canvas.width / 4, 50);
+            ctx.fillText(player2.score, (3 * canvas.width) / 4, 50);
+
+            // Teks Petunjuk saat Bola Diam
+            if (!ball.isLaunched) {
+                ctx.font = '20px Arial';
+                ctx.fillStyle = '#ffff00';
+                ctx.textAlign = 'center';
+                ctx.fillText('Tekan SPASI atau Klik Mulai', canvas.width / 2, canvas.height / 2 + 50);
+                ctx.textAlign = 'start';
+            }
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>

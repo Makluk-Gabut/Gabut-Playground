@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe Pro - Dark Theme & AI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      background-color: #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      max-width: 850px;
+      width: 100%;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 300px;
+      background-color: #0f172a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 2px solid #334155;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #38bdf8;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .control-group {
+      margin-bottom: 15px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-group select {
+      width: 100%;
+      padding: 10px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      outline: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .turn-box {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .turn-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .badge-player {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 auto 4px auto;
+      line-height: 1;
+    }
+
+    .player-x {
+      color: #38bdf8;
+    }
+
+    .player-o {
+      color: #f43f5e;
+    }
+
+    .player-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .score-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .status-message {
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      min-height: 24px;
+      color: #38bdf8;
+      margin-bottom: 15px;
+    }
+
+    .btn-reset {
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background-color: #0369a1;
+    }
+
+    /* Game Area Styling */
+    .game-area {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 12px;
+      background-color: #334155;
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .cell {
+      background-color: #0f172a;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .cell:hover {
+      background-color: #1e293b;
+    }
+
+    .cell.x {
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+
+    .cell.o {
+      color: #f43f5e;
+      text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+    }
+
+    .cell.winning {
+      animation: pulse 0.8s infinite alternate;
+      background-color: #1e293b;
+      border: 2px solid #ffffff;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.05);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #334155;
+      }
+      .board {
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 8px;
+      }
+      .cell {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <h1>Tic Tac Toe</h1>
+        </div>
+
+        <div class="control-group">
+          <label for="gameMode">Mode Permainan</label>
+          <select id="gameMode">
+            <option value="pvp">2 Player (Lawan Teman)</option>
+            <option value="ai">1 Player (Lawan AI)</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="difficultyGroup" style="display: none;">
+          <label for="aiDifficulty">Tingkat Kesulitan AI</label>
+          <select id="aiDifficulty">
+            <option value="easy">Easy (Mudah)</option>
+            <option value="medium">Medium (Sedang)</option>
+            <option value="hard" selected>Hard (Tak Terkalahkan)</option>
+          </select>
+        </div>
+
+        <div class="scoreboard">
+          <div class="score-item">
+            <span class="score-label" id="labelP1">P1 (X)</span>
+            <span class="score-value" id="scoreP1">0</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label" id="labelP2">P2 (O)</span>
+            <span class="score-value" id="scoreP2">0</span>
+          </div>
+        </div>
+
+        <div class="turn-box">
+          <div class="turn-label">Giliran Saat Ini</div>
+          <div id="badge" class="badge-player player-x">X</div>
+          <div id="playerName" class="player-name">Pemain 1</div>
+        </div>
+
+        <div id="statusMessage" class="status-message">Permainan Dimulai!</div>
+      </div>
+
+      <button id="resetBtn" class="btn-reset">Mulai Ulang Papan</button>
+    </aside>
+
+    <main class="game-area">
+      <div id="board" class="board"></div>
+    </main>
+  </div>
+
+  <script>
+    let boardState = Array(9).fill(null);
+    let currentPlayer = 'X';
+    let gameOver = false;
+    let isAiProcessing = false;
+
+    let scoreP1 = 0;
+    let scoreP2 = 0;
+
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    const boardElement = document.getElementById('board');
+    const badgeElement = document.getElementById('badge');
+    const playerNameElement = document.getElementById('playerName');
+    const statusMessageElement = document.getElementById('statusMessage');
+    const resetBtn = document.getElementById('resetBtn');
+    const gameModeSelect = document.getElementById('gameMode');
+    const aiDifficultySelect = document.getElementById('aiDifficulty');
+    const difficultyGroup = document.getElementById('difficultyGroup');
+    const scoreP1Element = document.getElementById('scoreP1');
+    const scoreP2Element = document.getElementById('scoreP2');
+    const labelP2Element = document.getElementById('labelP2');
+
+    function createBoard() {
+      boardElement.innerHTML = '';
+      boardState = Array(9).fill(null);
+      gameOver = false;
+      isAiProcessing = false;
+      currentPlayer = 'X';
+
+      updateSidebarUI();
+      statusMessageElement.textContent = 'Permainan Dimulai!';
+
+      for (let i = 0; i < 9; i++) {
+        const cellDiv = document.createElement('div');
+        cellDiv.classList.add('cell');
+        cellDiv.dataset.index = i;
+        cellDiv.addEventListener('click', () => handleCellClick(i));
+        boardElement.appendChild(cellDiv);
+      }
+    }
+
+    function handleCellClick(index) {
+      if (gameOver || isAiProcessing || boardState[index] !== null) return;
+      if (gameModeSelect.value === 'ai' && currentPlayer === 'O') return;
+
+      makeMove(index, currentPlayer);
+    }
+
+    function makeMove(index, player) {
+      boardState[index] = player;
+      const cellElement = boardElement.children[index];
+      cellElement.textContent = player;
+      cellElement.classList.add(player.toLowerCase());
+
+      const winCombo = checkWin(boardState, player);
+      if (winCombo) {
+        gameOver = true;
+        highlightWinningCells(winCombo);
+        updateScore(player);
+        const winnerName = player === 'X' ? 'Pemain 1 (X)' : (gameModeSelect.value === 'ai' ? 'AI (O)' : 'Pemain 2 (O)');
+        statusMessageElement.textContent = winnerName + ' Menang!';
+        return;
+      }
+
+      if (checkDraw(boardState)) {
+        gameOver = true;
+        statusMessageElement.textContent = 'Permainan Seri!';
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      updateSidebarUI();
+
+      if (gameModeSelect.value === 'ai' && currentPlayer === 'O' && !gameOver) {
+        isAiProcessing = true;
+        statusMessageElement.textContent = 'AI sedang berpikir...';
+        setTimeout(triggerAiMove, 200);
+      }
+    }
+
+    function triggerAiMove() {
+      if (gameOver) return;
+      const difficulty = aiDifficultySelect.value;
+      let chosenIndex;
+
+      if (difficulty === 'easy') {
+        chosenIndex = getEasyAiMove();
+      } else if (difficulty === 'medium') {
+        chosenIndex = Math.random() < 0.5 ? getBestAiMove() : getEasyAiMove();
+      } else {
+        chosenIndex = getBestAiMove();
+      }
+
+      isAiProcessing = false;
+      statusMessageElement.textContent = 'Giliran Anda!';
+      makeMove(chosenIndex, 'O');
+    }
+
+    // Move Ordering: Prioritas Tengah (4) -> Sudut (0, 2, 6, 8) -> Sisi (1, 3, 5, 7)
+    function getEmptyIndices(board) {
+      const empty = [];
+      const moveOrder = [4, 0, 2, 6, 8, 1, 3, 5, 7];
+      for (let idx of moveOrder) {
+        if (board[idx] === null) empty.push(idx);
+      }
+      return empty;
+    }
+
+    function getEasyAiMove() {
+      const empty = getEmptyIndices(boardState);
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    function getBestAiMove() {
+      let bestScore = -Infinity;
+      let bestMove = -1;
+      const availableMoves = getEmptyIndices(boardState);
+
+      for (let move of availableMoves) {
+        boardState[move] = 'O';
+        let score = minimaxAlphaBeta(boardState, 0, false, -Infinity, Infinity);
+        boardState[move] = null;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = move;
+        }
+      }
+      return bestMove;
+    }
+
+    function minimaxAlphaBeta(board, depth, isMaximizing, alpha, beta) {
+      if (checkWin(board, 'O')) return 10 - depth;
+      if (checkWin(board, 'X')) return depth - 10;
+      if (checkDraw(board)) return 0;
+
+      const availableMoves = getEmptyIndices(board);
+
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (let move of availableMoves) {
+          board[move] = 'O';
+          let evalScore = minimaxAlphaBeta(board, depth + 1, false, alpha, beta);
+          board[move] = null;
+
+          maxEval = Math.max(maxEval, evalScore);
+          alpha = Math.max(alpha, evalScore);
+          if (beta <= alpha) break; // Alpha-Beta Pruning
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (let move of availableMoves) {
+          board[move] = 'X';
+          let evalScore = minimaxAlphaBeta(board, depth + 1, true, alpha, beta);
+          board[move] = null;
+
+          minEval = Math.min(minEval, evalScore);
+          beta = Math.min(beta, evalScore);
+          if (beta <= alpha) break; // Alpha-Beta Pruning
+        }
+        return minEval;
+      }
+    }
+
+    function checkWin(board, player) {
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (board[a] === player && board[b] === player && board[c] === player) {
+          return pattern;
+        }
+      }
+      return null;
+    }
+
+    function checkDraw(board) {
+      return board.every(cell => cell !== null);
+    }
+
+    function highlightWinningCells(pattern) {
+      for (let idx of pattern) {
+        boardElement.children[idx].classList.add('winning');
+      }
+    }
+
+    function updateSidebarUI() {
+      const isAiMode = gameModeSelect.value === 'ai';
+      labelP2Element.textContent = isAiMode ? 'AI (O)' : 'P2 (O)';
+
+      if (currentPlayer === 'X') {
+        badgeElement.className = 'badge-player player-x';
+        badgeElement.textContent = 'X';
+        playerNameElement.textContent = 'Pemain 1';
+      } else {
+        badgeElement.className = 'badge-player player-o';
+        badgeElement.textContent = 'O';
+        playerNameElement.textContent = isAiMode ? 'AI (Komputer)' : 'Pemain 2';
+      }
+    }
+
+    function updateScore(winner) {
+      if (winner === 'X') {
+        scoreP1++;
+        scoreP1Element.textContent = scoreP1;
+      } else {
+        scoreP2++;
+        scoreP2Element.textContent = scoreP2;
+      }
+    }
+
+    resetBtn.addEventListener('click', createBoard);
+
+    gameModeSelect.addEventListener('change', () => {
+      difficultyGroup.style.display = gameModeSelect.value === 'ai' ? 'block' : 'none';
+      scoreP1 = 0;
+      scoreP2 = 0;
+      scoreP1Element.textContent = '0';
+      scoreP2Element.textContent = '0';
+      createBoard();
+    });
+
+    aiDifficultySelect.addEventListener('change', createBoard);
+
+    createBoard();
+  </script>
+</body>
+</html>

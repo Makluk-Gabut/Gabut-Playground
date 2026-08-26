@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect Four Pro - Dark Theme & AI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      background-color: #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      max-width: 950px;
+      width: 100%;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 300px;
+      background-color: #0f172a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 2px solid #334155;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #38bdf8;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .control-group {
+      margin-bottom: 15px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-group select {
+      width: 100%;
+      padding: 10px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      outline: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .turn-box {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .turn-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .badge-player {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin: 0 auto 8px auto;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .player-red {
+      background-color: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+    }
+
+    .player-yellow {
+      background-color: #eab308;
+      box-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
+    }
+
+    .player-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .score-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .status-message {
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      min-height: 24px;
+      color: #38bdf8;
+      margin-bottom: 15px;
+    }
+
+    .btn-reset {
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background-color: #0369a1;
+    }
+
+    /* Game Area Styling */
+    .game-area {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .board {
+      background-color: #1e293b;
+      border: 4px solid #334155;
+      border-radius: 12px;
+      display: flex;
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .column:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .cell {
+      width: 55px;
+      height: 55px;
+      background-color: #0f172a;
+      border-radius: 50%;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.6);
+      transition: background-color 0.2s ease;
+      position: relative;
+    }
+
+    .cell.red {
+      background-color: #ef4444;
+      box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.3), 0 0 10px rgba(239, 68, 68, 0.4);
+      animation: drop 0.3s ease-out;
+    }
+
+    .cell.yellow {
+      background-color: #eab308;
+      box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.3), 0 0 10px rgba(234, 179, 8, 0.4);
+      animation: drop 0.3s ease-out;
+    }
+
+    .cell.winning {
+      animation: pulse 0.8s infinite alternate;
+      border: 3px solid #ffffff;
+    }
+
+    @keyframes drop {
+      0% {
+        transform: translateY(-200px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 5px #fff;
+      }
+      100% {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px #fff;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #334155;
+      }
+      .cell {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <h1>Connect Four</h1>
+        </div>
+
+        <div class="control-group">
+          <label for="gameMode">Mode Permainan</label>
+          <select id="gameMode">
+            <option value="pvp">2 Player (Lawan Teman)</option>
+            <option value="ai">1 Player (Lawan AI)</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="difficultyGroup" style="display: none;">
+          <label for="aiDifficulty">Tingkat Kesulitan AI</label>
+          <select id="aiDifficulty">
+            <option value="easy">Easy (Mudah)</option>
+            <option value="medium" selected>Medium (Sedang)</option>
+            <option value="hard">Hard (Sangat Sulit)</option>
+          </select>
+        </div>
+
+        <div class="scoreboard">
+          <div class="score-item">
+            <span class="score-label" id="labelP1">P1 (Merah)</span>
+            <span class="score-value" id="scoreP1">0</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label" id="labelP2">P2 (Kuning)</span>
+            <span class="score-value" id="scoreP2">0</span>
+          </div>
+        </div>
+
+        <div class="turn-box">
+          <div class="turn-label">Giliran Saat Ini</div>
+          <div id="badge" class="badge-player player-red"></div>
+          <div id="playerName" class="player-name">Pemain 1</div>
+        </div>
+
+        <div id="statusMessage" class="status-message">Permainan Dimulai!</div>
+      </div>
+
+      <button id="resetBtn" class="btn-reset">Mulai Ulang Papan</button>
+    </aside>
+
+    <main class="game-area">
+      <div id="board" class="board"></div>
+    </main>
+  </div>
+
+  <script>
+    const ROWS = 6;
+    const COLS = 7;
+    let boardState = [];
+    let currentPlayer = 1;
+    let gameOver = false;
+    let isAiProcessing = false;
+
+    let scoreP1 = 0;
+    let scoreP2 = 0;
+
+    const boardElement = document.getElementById('board');
+    const badgeElement = document.getElementById('badge');
+    const playerNameElement = document.getElementById('playerName');
+    const statusMessageElement = document.getElementById('statusMessage');
+    const resetBtn = document.getElementById('resetBtn');
+    const gameModeSelect = document.getElementById('gameMode');
+    const aiDifficultySelect = document.getElementById('aiDifficulty');
+    const difficultyGroup = document.getElementById('difficultyGroup');
+    const scoreP1Element = document.getElementById('scoreP1');
+    const scoreP2Element = document.getElementById('scoreP2');
+    const labelP2Element = document.getElementById('labelP2');
+
+    function createBoard() {
+      boardElement.innerHTML = '';
+      boardState = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      gameOver = false;
+      isAiProcessing = false;
+      currentPlayer = 1;
+
+      updateSidebarUI();
+      statusMessageElement.textContent = 'Permainan Dimulai!';
+
+      for (let c = 0; c < COLS; c++) {
+        const colDiv = document.createElement('div');
+        colDiv.classList.add('column');
+        colDiv.dataset.col = c;
+        colDiv.addEventListener('click', () => handleColumnClick(c));
+
+        for (let r = 0; r < ROWS; r++) {
+          const cellDiv = document.createElement('div');
+          cellDiv.classList.add('cell');
+          cellDiv.dataset.row = r;
+          cellDiv.dataset.col = c;
+          colDiv.appendChild(cellDiv);
+        }
+
+        boardElement.appendChild(colDiv);
+      }
+    }
+
+    function handleColumnClick(col) {
+      if (gameOver || isAiProcessing) return;
+      if (gameModeSelect.value === 'ai' && currentPlayer === 2) return;
+      makeMove(col);
+    }
+
+    function makeMove(col) {
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (boardState[r][col] === 0) {
+          boardState[r][col] = currentPlayer;
+          updateCellUI(r, col, currentPlayer);
+
+          const winningCells = getWinningCells(boardState, r, col);
+          if (winningCells) {
+            gameOver = true;
+            highlightWinningCells(winningCells);
+            updateScore(currentPlayer);
+            const winnerName = currentPlayer === 1 ? 'Pemain 1' : (gameModeSelect.value === 'ai' ? 'AI' : 'Pemain 2');
+            statusMessageElement.textContent = winnerName + ' Menang!';
+            return;
+          }
+
+          if (checkDraw(boardState)) {
+            gameOver = true;
+            statusMessageElement.textContent = 'Permainan Seri!';
+            return;
+          }
+
+          currentPlayer = currentPlayer === 1 ? 2 : 1;
+          updateSidebarUI();
+
+          if (gameModeSelect.value === 'ai' && currentPlayer === 2 && !gameOver) {
+            isAiProcessing = true;
+            statusMessageElement.textContent = 'AI sedang berpikir...';
+            setTimeout(triggerAiMove, 50);
+          }
+          return;
+        }
+      }
+    }
+
+    function triggerAiMove() {
+      if (gameOver) return;
+      const difficulty = aiDifficultySelect.value;
+      let chosenCol;
+
+      if (difficulty === 'easy') {
+        chosenCol = getEasyAiMove();
+      } else if (difficulty === 'medium') {
+        chosenCol = getAlphaBetaAiMove(2); 
+      } else {
+        chosenCol = getAlphaBetaAiMove(5); 
+      }
+
+      isAiProcessing = false;
+      statusMessageElement.textContent = 'Giliran Anda!';
+      makeMove(chosenCol);
+    }
+
+    function getAvailableRow(tempBoard, col) {
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (tempBoard[r][col] === 0) return r;
+      }
+      return -1;
+    }
+
+    function getOrderedValidColumns(board, player) {
+      const validCols = [];
+      const baseOrder = [3, 2, 4, 1, 5, 0, 6]; 
+
+      for (let c of baseOrder) {
+        if (board[0][c] === 0) validCols.push(c);
+      }
+
+      return validCols.sort((a, b) => {
+        let rA = getAvailableRow(board, a);
+        let rB = getAvailableRow(board, b);
+
+        board[rA][a] = player;
+        let scoreA = evaluateBoardScore(board);
+        board[rA][a] = 0;
+
+        board[rB][b] = player;
+        let scoreB = evaluateBoardScore(board);
+        board[rB][b] = 0;
+
+        return player === 2 ? scoreB - scoreA : scoreA - scoreB;
+      });
+    }
+
+    function getEasyAiMove() {
+      const validCols = getOrderedValidColumns(boardState, 2);
+      return validCols[Math.floor(Math.random() * validCols.length)];
+    }
+
+    function getAlphaBetaAiMove(depth) {
+      let bestScore = -Infinity;
+      let validCols = getOrderedValidColumns(boardState, 2);
+      let bestCol = validCols[0];
+
+      for (let c of validCols) {
+        let r = getAvailableRow(boardState, c);
+        boardState[r][c] = 2;
+        
+        if (getWinningCells(boardState, r, c)) {
+          boardState[r][c] = 0;
+          return c;
+        }
+
+        let score = minimaxAlphaBeta(boardState, depth - 1, false, -Infinity, Infinity);
+        boardState[r][c] = 0;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestCol = c;
+        }
+      }
+      return bestCol;
+    }
+
+    function minimaxAlphaBeta(board, depth, isMaximizing, alpha, beta) {
+      const player = isMaximizing ? 2 : 1;
+      const validCols = getOrderedValidColumns(board, player);
+      
+      if (depth === 0 || validCols.length === 0) {
+        return evaluateBoardScore(board);
+      }
+
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (let c of validCols) {
+          let r = getAvailableRow(board, c);
+          board[r][c] = 2;
+
+          if (getWinningCells(board, r, c)) {
+            board[r][c] = 0;
+            return 10000 + depth;
+          }
+
+          let evalScore = minimaxAlphaBeta(board, depth - 1, false, alpha, beta);
+          board[r][c] = 0;
+          
+          maxEval = Math.max(maxEval, evalScore);
+          alpha = Math.max(alpha, evalScore);
+          if (beta <= alpha) break; 
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (let c of validCols) {
+          let r = getAvailableRow(board, c);
+          board[r][c] = 1;
+
+          if (getWinningCells(board, r, c)) {
+            board[r][c] = 0;
+            return -10000 - depth;
+          }
+
+          let evalScore = minimaxAlphaBeta(board, depth - 1, true, alpha, beta);
+          board[r][c] = 0;
+          
+          minEval = Math.min(minEval, evalScore);
+          beta = Math.min(beta, evalScore);
+          if (beta <= alpha) break; 
+        }
+        return minEval;
+      }
+    }
+
+    function evaluateBoardScore(board) {
+      let score = 0;
+
+      for (let r = 0; r < ROWS; r++) {
+        if (board[r][3] === 2) score += 6;
+        if (board[r][3] === 1) score -= 6;
+      }
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS - 3; c++) {
+          let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]];
+          score += evaluateWindow(window);
+        }
+      }
+
+      for (let c = 0; c < COLS; c++) {
+        for (let r = 0; r < ROWS - 3; r++) {
+          let window = [board[r][c], board[r+1][c], board[r+2][c], board[r+3][c]];
+          score += evaluateWindow(window);
+        }
+      }
+
+      for (let r = 0; r < ROWS - 3; r++) {
+        for (let c = 0; c < COLS - 3; c++) {
+          let window = [board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3]];
+          score += evaluateWindow(window);
+        }
+      }
+
+      for (let r = 3; r < ROWS; r++) {
+        for (let c = 0; c < COLS - 3; c++) {
+          let window = [board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3]];
+          score += evaluateWindow(window);
+        }
+      }
+
+      return score;
+    }
+
+    function evaluateWindow(window) {
+      let score = 0;
+      const aiCount = window.filter(cell => cell === 2).length;
+      const playerCount = window.filter(cell => cell === 1).length;
+      const emptyCount = window.filter(cell => cell === 0).length;
+
+      if (aiCount === 3 && emptyCount === 1) score += 10;
+      else if (aiCount === 2 && emptyCount === 2) score += 4;
+
+      if (playerCount === 3 && emptyCount === 1) score -= 12;
+      else if (playerCount === 2 && emptyCount === 2) score -= 3;
+
+      return score;
+    }
+
+    function updateCellUI(row, col, player) {
+      const columnElement = boardElement.children[col];
+      const cellElement = columnElement.children[row];
+      cellElement.classList.add(player === 1 ? 'red' : 'yellow');
+    }
+
+    function updateSidebarUI() {
+      const isAiMode = gameModeSelect.value === 'ai';
+      labelP2Element.textContent = isAiMode ? 'AI (Kuning)' : 'P2 (Kuning)';
+
+      if (currentPlayer === 1) {
+        badgeElement.className = 'badge-player player-red';
+        playerNameElement.textContent = 'Pemain 1';
+      } else {
+        badgeElement.className = 'badge-player player-yellow';
+        playerNameElement.textContent = isAiMode ? 'AI (Komputer)' : 'Pemain 2';
+      }
+    }
+
+    function updateScore(winner) {
+      if (winner === 1) {
+        scoreP1++;
+        scoreP1Element.textContent = scoreP1;
+      } else {
+        scoreP2++;
+        scoreP2Element.textContent = scoreP2;
+      }
+    }
+
+    function getWinningCells(board, r, c) {
+      const player = board[r][c];
+      if (player === 0) return null;
+
+      const directions = [
+        [[0, 1], [0, -1]],
+        [[1, 0], [-1, 0]],
+        [[1, 1], [-1, -1]],
+        [[1, -1], [-1, 1]]
+      ];
+
+      for (const dir of directions) {
+        let cells = [[r, c]];
+        for (const [dr, dc] of dir) {
+          let currR = r + dr;
+          let currC = c + dc;
+          while (
+            currR >= 0 && currR < ROWS &&
+            currC >= 0 && currC < COLS &&
+            board[currR][currC] === player
+          ) {
+            cells.push([currR, currC]);
+            currR += dr;
+            currC += dc;
+          }
+        }
+        if (cells.length >= 4) return cells;
+      }
+      return null;
+    }
+
+    function highlightWinningCells(cells) {
+      for (const [r, c] of cells) {
+        const columnElement = boardElement.children[c];
+        const cellElement = columnElement.children[r];
+        cellElement.classList.add('winning');
+      }
+    }
+
+    function checkDraw(board) {
+      return board[0].every(cell => cell !== 0);
+    }
+
+    resetBtn.addEventListener('click', createBoard);
+
+    gameModeSelect.addEventListener('change', () => {
+      difficultyGroup.style.display = gameModeSelect.value === 'ai' ? 'block' : 'none';
+      scoreP1 = 0;
+      scoreP2 = 0;
+      scoreP1Element.textContent = '0';
+      scoreP2Element.textContent = '0';
+      createBoard();
+    });
+
+    aiDifficultySelect.addEventListener('change', createBoard);
+
+    createBoard();
+  </script>
+</body>
+</html>
