@@ -34,6 +34,9 @@ Print "Gabut OS" di layar
 Handle keyboard
 Mungkin suatu saat bisa jalanin program sederhana (semoga)
 
+update: OSnya udah jadi tapi versi 32 bit doang :], kebutuhannya masih sama sih kayak yang di atas, ohh ya nih linknya
+        https://github.com/Makluk-Gabut/OS/tree/x86-legacy-version
+
 Kalau lu juga lagi gabut dan suka ngoprek low-level, silakan fork & ikut gabut bareng 😂
 
 Made with ❤️ + kopi + insomnia
