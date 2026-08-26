@@ -6,6 +6,7 @@ Tempat saya nyimpan semua ide gila pas lagi gabut.
 
 - Experiment AI setengah jadi
 - Proyek random & dangerous
+- Game yang kubuat kalau lagi ga ada internet buat main 
 - Belajar OS, low-level, dll
 - Hal-hal yang mungkin suatu hari jadi proyek serius
 
