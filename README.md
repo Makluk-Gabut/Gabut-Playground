@@ -10,7 +10,7 @@ Tempat saya nyimpan semua ide gila pas lagi gabut... ga gila juga sih lebih ke a
 - Belajar OS, low-level, dll
 - Hal-hal yang mungkin suatu hari jadi proyek serius
 
-**Semua open source** — bebas kamu pakai, tapi pakai risiko sendiri ya 😂
+**Semua open source** bebas kamu pakai, tapi pakai risiko sendiri ya 😂
 
 ### Ohh ya, check out **TiniMind** & GabutOS , Transformer dekoder stengah stengah buatan saya sendiri(dan temen saya satu tapi dia ga guna sih) yang dibangun dari awal menggunakan PyTorch, dan low level shit 32 bit yang ku buat.
 
