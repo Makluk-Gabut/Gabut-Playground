@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catur Pro - Chess.com Style</title>
+
+<!-- Standard Library dependencies needed for board rendering & logic -->
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #312e2b;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== PRE-GAME SCREEN ===== */
+#pregame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.pg-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #81b64c;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.pg-sub {
+  color: #bababa;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.pg-card {
+  background: #262421;
+  border: 1px solid #403d39;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 460px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.pg-card h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #bababa;
+  margin-bottom: 12px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.opt-btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: #312e2b;
+  border: 2px solid #403d39;
+  border-radius: 8px;
+  color: #bababa;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: center;
+}
+
+.opt-btn.active {
+  border-color: #81b64c;
+  color: #ffffff;
+  background: #364426;
+}
+
+.opt-btn:hover {
+  border-color: #58544e;
+  color: #ffffff;
+}
+
+#steal-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+  background: #312e2b;
+  border-radius: 8px;
+  border: 1px solid #403d39;
+}
+
+.toggle {
+  width: 44px;
+  height: 24px;
+  background: #403d39;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle.on {
+  background: #81b64c;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: 0.2s;
+}
+
+.toggle.on::after {
+  left: 23px;
+}
+
+#steal-label {
+  font-size: 0.85rem;
+  color: #bababa;
+  line-height: 1.3;
+}
+
+.start-btn {
+  width: 100%;
+  max-width: 460px;
+  padding: 16px;
+  background: #81b64c;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.start-btn:hover {
+  background: #a3d168;
+  transform: translateY(-1px);
+}
+
+/* ===== GAME SCREEN ===== */
+#gamescreen {
+  display: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-wrap {
+  display: flex;
+  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.board-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  min-width: 0;
+}
+
+.sidebar {
+  width: 320px;
+  background: #262421;
+  border-left: 1px solid #403d39;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  margin-bottom: 8px;
+}
+
+.back-btn, .new-btn {
+  background: #312e2b;
+  border: 1px solid #403d39;
+  color: #bababa;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.back-btn:hover, .new-btn:hover {
+  background: #403d39;
+  color: #ffffff;
+}
+
+.top-title {
+  font-weight: 700;
+  color: #81b64c;
+  font-size: 1.05rem;
+}
+
+/* Player Bar (Chess.com Style) */
+.player-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  padding: 8px 12px;
+  background: #262421;
+  border-radius: 6px;
+  margin: 4px 0;
+  border: 1px solid #363431;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: #403d39;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #bababa;
+}
+
+.player-name-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.player-elo {
+  font-size: 0.75rem;
+  color: #bababa;
+}
+
+/* Clock Display (Chess.com High-Contrast) */
+.clock {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #bababa;
+  background: #1e1e1c;
+  padding: 6px 14px;
+  border-radius: 4px;
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.player-bar.active-turn .clock {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+.clock.low-time {
+  background: #cc3333 !important;
+  color: #ffffff !important;
+  animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.7; }
+}
+
+/* ===== CHESS.COM BOARD STYLING ===== */
+#board {
+  width: 520px;
+  height: 520px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  #board { width: 92vw; height: 92vw; }
+  .game-wrap { flex-direction: column; }
+  .sidebar { width: 100%; height: 300px; }
+}
+
+/* Chess.com Classic Green Theme */
+.white-1e1d7 {
+  background-color: #eeeed2 !important;
+  color: #769656 !important;
+}
+
+.black-3c85d {
+  background-color: #769656 !important;
+  color: #eeeed2 !important;
+}
+
+/* Move Highlights (Chess.com Yellow/Green tint) */
+.highlight-from, .highlight-to {
+  background-color: rgba(245, 246, 130, 0.8) !important;
+}
+
+.check-sq {
+  background: radial-gradient(circle, rgba(235, 64, 52, 0.95) 0%, rgba(235, 64, 52, 0.3) 70%) !important;
+}
+
+.status-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #bababa;
+  min-height: 24px;
+  text-align: center;
+  margin: 6px 0;
+}
+
+/* Sidebar History */
+.sb-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #403d39;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sb-header span {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.turn-badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #81b64c;
+  color: #fff;
+  font-weight: 700;
+}
+
+.sb-info {
+  padding: 10px 16px;
+  border-bottom: 1px solid #312e2b;
+  font-size: 0.82rem;
+  color: #bababa;
+}
+
+#move-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  gap: 2px;
+  align-content: start;
+  background: #262421;
+}
+
+#move-list::-webkit-scrollbar {
+  width: 6px;
+}
+#move-list::-webkit-scrollbar-thumb {
+  background: #403d39;
+  border-radius: 3px;
+}
+
+.move-num {
+  font-size: 0.82rem;
+  color: #bababa;
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  background: #2b2926;
+  font-weight: 600;
+}
+
+.move-cell {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: #dadada;
+  cursor: default;
+  font-weight: 600;
+}
+
+.move-cell.last-move {
+  background: #363431;
+  color: #81b64c;
+}
+
+.sb-controls {
+  padding: 12px 16px;
+  border-top: 1px solid #403d39;
+  display: flex;
+  gap: 8px;
+}
+
+.undo-btn, .resign-btn {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.undo-btn {
+  background: #363431;
+  color: #ffffff;
+}
+.undo-btn:hover { background: #45423e; }
+
+.resign-btn {
+  background: #452423;
+  color: #ff8888;
+}
+.resign-btn:hover { background: #5e2e2d; }
+
+/* Promotion modal */
+#promo-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+
+#promo-modal.show { display: flex; }
+
+.promo-box {
+  background: #262421;
+  border: 1px solid #403d39;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+.promo-box h3 {
+  margin-bottom: 16px;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.promo-pieces {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.promo-piece {
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  border: 2px solid #403d39;
+  background: #312e2b;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.promo-piece:hover {
+  border-color: #81b64c;
+  background: #364426;
+}
+
+/* Result overlay */
+#result-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 900;
+  align-items: center;
+  justify-content: center;
+}
+
+#result-overlay.show { display: flex; }
+
+.result-box {
+  background: #262421;
+  border: 1px solid #403d39;
+  border-radius: 14px;
+  padding: 28px;
+  text-align: center;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+.result-box h2 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  color: #81b64c;
+}
+
+.result-box p {
+  color: #bababa;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.result-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.r-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.r-btn.primary { background: #81b64c; color: #fff; }
+.r-btn.secondary { background: #363431; color: #fff; }
+.r-btn:hover { filter: brightness(1.1); }
+</style>
+</head>
+<body>
+
+<!-- PRE-GAME MENU -->
+<div id="pregame">
+  <div class="pg-title">Catur Pro</div>
+  <div class="pg-sub">Pengaturan Permainan</div>
+
+  <div class="pg-card">
+    <h3>Mode Permainan</h3>
+    <div class="btn-group">
+      <button class="opt-btn active" id="mode-bot" onclick="setMode('bot')">vs Bot</button>
+      <button class="opt-btn" id="mode-friend" onclick="setMode('friend')">vs Teman</button>
+    </div>
+  </div>
+
+  <div class="pg-card" id="diff-card">
+    <h3>Kesulitan Bot</h3>
+    <div class="btn-group">
+      <button class="opt-btn" id="diff-easy" onclick="setDiff('easy')">Easy<br><small style="color:#bababa">ELO ~600</small></button>
+      <button class="opt-btn active" id="diff-normal" onclick="setDiff('normal')">Normal<br><small style="color:#bababa">ELO ~1500</small></button>
+      <button class="opt-btn" id="diff-hard" onclick="setDiff('hard')">Hard<br><small style="color:#bababa">ELO ~2500</small></button>
+    </div>
+    <div id="steal-row">
+      <div class="toggle" id="steal-toggle" onclick="toggleSteal()"></div>
+      <span id="steal-label">
+        <strong style="color:#fff">Steal Timer</strong><br>
+        Bot mencuri waktu dari jam Anda saat bergerak
+      </span>
+    </div>
+  </div>
+
+  <div class="pg-card">
+    <h3>Kontrol Waktu</h3>
+    <div class="btn-group">
+      <button class="opt-btn" onclick="setTime(3600,0)" id="t-3600">1 Jam</button>
+      <button class="opt-btn" onclick="setTime(1800,0)" id="t-1800">30 Min</button>
+      <button class="opt-btn active" onclick="setTime(900,5)" id="t-900">15|5</button>
+      <button class="opt-btn" onclick="setTime(600,0)" id="t-600">10 Min</button>
+      <button class="opt-btn" onclick="setTime(300,0)" id="t-300">5 Min</button>
+      <button class="opt-btn" onclick="setTime(180,2)" id="t-180">3|2</button>
+      <button class="opt-btn" onclick="setTime(120,0)" id="t-120">2 Min</button>
+      <button class="opt-btn" onclick="setTime(60,1)" id="t-60">1|1</button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startGame()">Mulai Permainan</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gamescreen">
+  <div class="game-wrap">
+    <div class="board-col">
+      <div class="top-bar">
+        <button class="back-btn" onclick="goMenu()">Menu</button>
+        <span class="top-title">Catur Pro</span>
+        <button class="new-btn" onclick="newGame()">Baru</button>
+      </div>
+
+      <!-- Black Player Bar -->
+      <div class="player-bar" id="bar-black">
+        <div class="player-info">
+          <div class="player-avatar" id="avatar-black">B</div>
+          <div>
+            <div class="player-name-label" id="black-label">Hitam</div>
+            <div class="player-elo" id="black-elo"></div>
+          </div>
+        </div>
+        <div class="clock" id="clock-black">15:00</div>
+      </div>
+
+      <!-- Main Chess Board -->
+      <div id="board"></div>
+
+      <!-- White Player Bar -->
+      <div class="player-bar" id="bar-white">
+        <div class="player-info">
+          <div class="player-avatar" id="avatar-white">W</div>
+          <div>
+            <div class="player-name-label" id="white-label">Putih</div>
+            <div class="player-elo" id="white-elo"></div>
+          </div>
+        </div>
+        <div class="clock" id="clock-white">15:00</div>
+      </div>
+
+      <div class="status-text" id="status-msg">Giliran: Putih</div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-header">
+        <span>Riwayat Langkah</span>
+        <div class="turn-badge" id="turn-badge">Putih</div>
+      </div>
+      <div class="sb-info" id="sb-info">Mode: Bot Normal</div>
+      <div id="move-list"></div>
+      <div class="sb-controls">
+        <button class="undo-btn" onclick="undoMove()">Undo</button>
+        <button class="resign-btn" onclick="resign()">Menyerah</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Promotion Modal -->
+<div id="promo-modal">
+  <div class="promo-box">
+    <h3>Promosi Pion - Pilih Bidak</h3>
+    <div class="promo-pieces" id="promo-pieces-container"></div>
+  </div>
+</div>
+
+<!-- Result Overlay -->
+<div id="result-overlay">
+  <div class="result-box">
+    <h2 id="result-title">Hasil Permainan</h2>
+    <p id="result-desc"></p>
+    <div class="result-btns">
+      <button class="r-btn primary" onclick="newGame()">Main Lagi</button>
+      <button class="r-btn secondary" onclick="goMenu()">Menu Utama</button>
+    </div>
+  </div>
+</div>
+
+<!-- Essential JS Dependencies for Game Mechanics -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+
+<script>
+// ===== GAME CONFIG & STATE =====
+let cfg = { mode: 'bot', diff: 'normal', timeBase: 900, inc: 5, steal: false };
+let game, board;
+let clocks = { w: 900, b: 900 };
+let clockTick = null;
+let pendingPromo = null;
+let botThinking = false;
+let gameActive = false;
+
+// ===== CDN GRAPHICS MAPPING =====
+// Mengganti pencarian aset lokal dengan CDN agar bidak otomatis muncul
+function getPieceGraphic(piece) {
+  const color = piece[0];          // 'w' or 'b'
+  const type  = piece[1].toLowerCase(); // k q r b n p
+  const c     = color === 'w' ? 'l' : 'd';
+  return 'Sprite/Chess_' + type + c + 't45.svg';
+}
+
+// ===== PREGAME UI CONTROLS =====
+function setMode(m) {
+  cfg.mode = m;
+  document.getElementById('mode-bot').classList.toggle('active', m === 'bot');
+  document.getElementById('mode-friend').classList.toggle('active', m === 'friend');
+  document.getElementById('diff-card').style.display = m === 'bot' ? '' : 'none';
+}
+
+function setDiff(d) {
+  cfg.diff = d;
+  ['easy', 'normal', 'hard'].forEach(x => {
+    document.getElementById('diff-' + x).classList.toggle('active', x === d);
+  });
+}
+
+function setTime(s, inc) {
+  cfg.timeBase = s;
+  cfg.inc = inc;
+  document.querySelectorAll('.pg-card .opt-btn[id^=t-]').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('t-' + s);
+  if (el) el.classList.add('active');
+}
+
+function toggleSteal() {
+  cfg.steal = !cfg.steal;
+  document.getElementById('steal-toggle').classList.toggle('on', cfg.steal);
+}
+
+// ===== GAME INITIALIZATION =====
+function startGame() {
+  clocks.w = cfg.timeBase;
+  clocks.b = cfg.timeBase;
+  document.getElementById('pregame').style.display = 'none';
+  document.getElementById('gamescreen').style.display = '';
+
+  const isBot = cfg.mode === 'bot';
+  document.getElementById('white-label').textContent = 'Putih (Anda)';
+  document.getElementById('black-label').textContent = isBot ? 'Bot' : 'Hitam';
+  
+  const eloMap = { easy: 'ELO ~600', normal: 'ELO ~1500', hard: 'ELO ~2500' };
+  document.getElementById('black-elo').textContent = isBot ? eloMap[cfg.diff] : '';
+  document.getElementById('white-elo').textContent = '';
+  document.getElementById('sb-info').textContent = isBot
+    ? 'Mode: Bot ' + cfg.diff.charAt(0).toUpperCase() + cfg.diff.slice(1) + (cfg.steal ? ' | Steal Timer' : '')
+    : 'Mode: 2 Pemain';
+
+  initBoard();
+}
+
+function initBoard() {
+  if (board) board.destroy();
+  game = new Chess();
+  botThinking = false;
+  gameActive = true;
+
+  board = Chessboard('board', {
+    draggable: true,
+    position: 'start',
+    pieceTheme: getPieceGraphic, 
+    onDragStart: onDragStart,
+    onDrop: onDrop,
+    onSnapEnd: onSnapEnd
+  });
+
+  clocks.w = cfg.timeBase;
+  clocks.b = cfg.timeBase;
+  updateClockUI();
+  updateStatus();
+  renderMoves();
+  clearHighlights();
+  stopClock();
+  startClockFor('w');
+}
+
+// ===== BOARD EVENTS =====
+function onDragStart(src, piece) {
+  if (!gameActive || game.game_over() || botThinking) return false;
+  if (cfg.mode === 'bot' && game.turn() !== 'w') return false;
+  if (piece.search(/^b/) !== -1 && game.turn() === 'w') return false;
+  if (piece.search(/^w/) !== -1 && game.turn() === 'b') return false;
+  return true;
+}
+
+function onDrop(src, tgt) {
+  removeHighlights();
+  if (src === tgt) return 'snapback';
+
+  const piece = game.get(src);
+  if (piece && piece.type === 'p') {
+    const promRank = piece.color === 'w' ? '8' : '1';
+    if (tgt[1] === promRank) {
+      const moves = game.moves({ verbose: true });
+      const valid = moves.find(m => m.from === src && m.to === tgt);
+      if (!valid) return 'snapback';
+      
+      pendingPromo = { from: src, to: tgt, color: piece.color };
+      showPromoModal(piece.color);
+      return 'snapback';
+    }
+  }
+
+  const move = tryMove(src, tgt, 'q');
+  if (move === null) return 'snapback';
+
+  afterHumanMove(src, tgt);
+}
+
+function onSnapEnd() {
+  board.position(game.fen());
+}
+
+function tryMove(from, to, promo) {
+  return game.move({ from: from, to: to, promotion: promo });
+}
+
+function showPromoModal(color) {
+  const c = color === 'w' ? 'w' : 'b';
+  const container = document.getElementById('promo-pieces-container');
+  // Menyesuaikan gambar promosi agar mengambil dari CDN juga
+  const cl = c === 'w' ? 'l' : 'd';
+  container.innerHTML = `
+    <div class="promo-piece" onclick="doPromotion('q')"><img src="Sprite/Chess_q${cl}t45.svg" alt="Ratu"></div>
+    <div class="promo-piece" onclick="doPromotion('r')"><img src="Sprite/Chess_r${cl}t45.svg" alt="Benteng"></div>
+    <div class="promo-piece" onclick="doPromotion('b')"><img src="Sprite/Chess_b${cl}t45.svg" alt="Gajah"></div>
+    <div class="promo-piece" onclick="doPromotion('n')"><img src="Sprite/Chess_n${cl}t45.svg" alt="Kuda"></div>
+  `;
+  document.getElementById('promo-modal').classList.add('show');
+}
+
+function doPromotion(pieceType) {
+  document.getElementById('promo-modal').classList.remove('show');
+  if (!pendingPromo) return;
+  const { from, to } = pendingPromo;
+  pendingPromo = null;
+  const move = tryMove(from, to, pieceType);
+  if (!move) return;
+  board.position(game.fen());
+  afterHumanMove(from, to);
+}
+
+function afterHumanMove(from, to) {
+  addIncrementTo(game.turn() === 'w' ? 'b' : 'w');
+  highlightMove(from, to);
+  updateAll();
+  if (!game.game_over()) {
+    switchClock();
+    if (cfg.mode === 'bot') scheduleBotMove();
+  } else {
+    endGame();
+  }
+}
+
+// ===== BOT ENGINE LOGIC =====
+function scheduleBotMove() {
+  if (botThinking) return;
+  botThinking = true;
+  document.getElementById('status-msg').textContent = 'Bot sedang berpikir...';
+  const delay = cfg.diff === 'easy' ? 400 : cfg.diff === 'normal' ? 700 : 1000;
+  
+  setTimeout(() => {
+    if (!gameActive) { botThinking = false; return; }
+    const move = getBotMove();
+    if (!move) { botThinking = false; return; }
+    
+    game.move(move);
+    board.position(game.fen());
+    addIncrementTo('b');
+
+    if (cfg.steal) {
+      const steal = Math.max(1, Math.min(10, Math.floor(clocks.w * 0.05)));
+      clocks.w = Math.max(0, clocks.w - steal);
+    }
+
+    highlightMove(move.from, move.to);
+    botThinking = false;
+    updateAll();
+    
+    if (!game.game_over()) {
+      switchClock();
+    } else {
+      endGame();
+    }
+  }, delay);
+}
+
+const PIECE_VAL = { p:100, n:320, b:330, r:500, q:900, k:20000 };
+const PST = {
+  p:[ 0,0,0,0,0,0,0,0, 50,50,50,50,50,50,50,50, 10,10,20,30,30,20,10,10, 5,5,10,25,25,10,5,5, 0,0,0,20,20,0,0,0, 5,-5,-10,0,0,-10,-5,5, 5,10,10,-20,-20,10,10,5, 0,0,0,0,0,0,0,0 ],
+  n:[ -50,-40,-30,-30,-30,-30,-40,-50, -40,-20,0,0,0,0,-20,-40, -30,0,10,15,15,10,0,-30, -30,5,15,20,20,15,5,-30, -30,0,15,20,20,15,0,-30, -30,5,10,15,15,10,5,-30, -40,-20,0,5,5,0,-20,-40, -50,-40,-30,-30,-30,-30,-40,-50 ],
+  b:[ -20,-10,-10,-10,-10,-10,-10,-20, -10,0,0,0,0,0,0,-10, -10,0,5,10,10,5,0,-10, -10,5,5,10,10,5,5,-10, -10,0,10,10,10,10,0,-10, -10,10,10,10,10,10,10,-10, -10,5,0,0,0,0,5,-10, -20,-10,-10,-10,-10,-10,-10,-20 ],
+  r:[ 0,0,0,0,0,0,0,0, 5,10,10,10,10,10,10,5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, 0,0,0,5,5,0,0,0 ],
+  q:[ -20,-10,-10,-5,-5,-10,-10,-20, -10,0,0,0,0,0,0,-10, -10,0,5,5,5,5,0,-10, -5,0,5,5,5,5,0,-5, 0,0,5,5,5,5,0,-5, -10,5,5,5,5,5,0,-10, -10,0,5,0,0,0,0,-10, -20,-10,-10,-5,-5,-10,-10,-20 ],
+  k:[ -30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -20,-30,-30,-40,-40,-30,-30,-20, -10,-20,-20,-20,-20,-20,-20,-10, 20,20,0,0,0,0,20,20, 20,30,10,0,0,10,30,20 ]
+};
+
+function evalBoard() {
+  if (game.in_checkmate()) return game.turn() === 'w' ? -99999 : 99999;
+  if (game.in_draw()) return 0;
+  const bd = game.board();
+  let score = 0;
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const p = bd[r][c];
+      if (!p) continue;
+      const v = PIECE_VAL[p.type];
+      const idx = p.color === 'w' ? r*8+c : (7-r)*8+c;
+      const pst = PST[p.type][idx];
+      score += p.color === 'w' ? v + pst : -(v + pst);
+    }
+  }
+  return score;
+}
+
+let searchStart;
+function minimax(depth, alpha, beta, isMax) {
+  if (Date.now() - searchStart > 2000) return evalBoard();
+  if (depth === 0 || game.game_over()) return evalBoard();
+  const moves = game.moves();
+  if (isMax) {
+    let best = -Infinity;
+    for (const m of moves) {
+      game.move(m); const s = minimax(depth - 1, alpha, beta, false); game.undo();
+      if (s > best) best = s;
+      if (s > alpha) alpha = s;
+      if (beta <= alpha) break;
+    }
+    return best;
+  } else {
+    let best = Infinity;
+    for (const m of moves) {
+      game.move(m); const s = minimax(depth - 1, alpha, beta, true); game.undo();
+      if (s < best) best = s;
+      if (s < beta) beta = s;
+      if (beta <= alpha) break;
+    }
+    return best;
+  }
+}
+
+function getBotMove() {
+  const moves = game.moves({ verbose: true });
+  if (!moves.length) return null;
+
+  if (cfg.diff === 'easy') {
+    const caps = moves.filter(m => m.flags.includes('c') || m.flags.includes('e'));
+    if (caps.length && Math.random() < 0.35) return caps[Math.floor(Math.random() * caps.length)];
+    return moves[Math.floor(Math.random() * moves.length)];
+  }
+
+  const depth = cfg.diff === 'normal' ? 3 : 4;
+  searchStart = Date.now();
+  const shuffle = [...moves].sort(() => Math.random() - 0.5);
+  let bestMove = shuffle[0], bestScore = -Infinity;
+
+  for (const m of shuffle) {
+    game.move(m);
+    const score = minimax(depth - 1, -Infinity, Infinity, false);
+    game.undo();
+    if (score > bestScore) { bestScore = score; bestMove = m; }
+  }
+  return bestMove;
+}
+
+// ===== CLOCK CONTROLS =====
+function startClockFor(color) {
+  stopClock();
+  updateClockUI();
+  clockTick = setInterval(() => {
+    clocks[color] -= 1;
+    if (clocks[color] <= 0) {
+      clocks[color] = 0;
+      updateClockUI();
+      stopClock();
+      endGameByTime(color === 'w' ? 'Putih' : 'Hitam');
+    } else {
+      updateClockUI();
+    }
+  }, 1000);
+}
+
+function switchClock() {
+  startClockFor(game.turn());
+}
+
+function stopClock() {
+  if (clockTick) { clearInterval(clockTick); clockTick = null; }
+}
+
+function addIncrementTo(color) {
+  clocks[color] += cfg.inc;
+}
+
+function updateClockUI() {
+  document.getElementById('clock-white').textContent = formatTime(clocks.w);
+  document.getElementById('clock-black').textContent = formatTime(clocks.b);
+  document.getElementById('clock-white').classList.toggle('low-time', clocks.w <= 30);
+  document.getElementById('clock-black').classList.toggle('low-time', clocks.b <= 30);
+
+  const turn = game.turn();
+  document.getElementById('bar-white').classList.toggle('active-turn', turn === 'w');
+  document.getElementById('bar-black').classList.toggle('active-turn', turn === 'b');
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = Math.max(0, s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+// ===== STATUS & MOVES =====
+function updateStatus() {
+  if (!game) return;
+  const turn = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  document.getElementById('turn-badge').textContent = turn;
+
+  let msg = `Giliran: ${turn}`;
+  if (game.in_check()) msg += ' - SKAK!';
+  if (game.in_checkmate()) msg = `Skakmat! ${turn === 'Putih' ? 'Hitam' : 'Putih'} menang!`;
+  else if (game.in_draw()) msg = 'Seri (Draw)!';
+  document.getElementById('status-msg').textContent = msg;
+
+  highlightCheck();
+}
+
+function renderMoves() {
+  const hist = game.history({ verbose: true });
+  const ml = document.getElementById('move-list');
+  ml.innerHTML = '';
+  for (let i = 0; i < hist.length; i += 2) {
+    const num = Math.floor(i / 2) + 1;
+    const w = hist[i];
+    const b = hist[i + 1];
+
+    const numEl = document.createElement('div');
+    numEl.className = 'move-num'; numEl.textContent = num + '.';
+    ml.appendChild(numEl);
+
+    const wEl = document.createElement('div');
+    wEl.className = 'move-cell' + (i === hist.length - 1 ? ' last-move' : '');
+    wEl.textContent = w.san; ml.appendChild(wEl);
+
+    const bEl = document.createElement('div');
+    bEl.className = 'move-cell' + (b && i + 1 === hist.length - 1 ? ' last-move' : '');
+    bEl.textContent = b ? b.san : ''; ml.appendChild(bEl);
+  }
+  ml.scrollTop = ml.scrollHeight;
+}
+
+function updateAll() {
+  board.position(game.fen());
+  updateStatus();
+  renderMoves();
+  updateClockUI();
+}
+
+// ===== HIGHLIGHTS =====
+function highlightMove(from, to) {
+  removeHighlights();
+  $(`[data-square="${from}"]`).addClass('highlight-from');
+  $(`[data-square="${to}"]`).addClass('highlight-to');
+}
+
+function removeHighlights() {
+  $('.square-55d63').removeClass('highlight-from highlight-to check-sq');
+}
+
+function clearHighlights() {
+  $('.square-55d63').removeClass('highlight-from highlight-to check-sq');
+}
+
+function highlightCheck() {
+  $('.square-55d63').removeClass('check-sq');
+  if (game.in_check()) {
+    const bd = game.board();
+    const color = game.turn();
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const p = bd[r][c];
+        if (p && p.type === 'k' && p.color === color) {
+          const file = String.fromCharCode(97 + c);
+          const rank = 8 - r;
+          $(`[data-square="${file}${rank}"]`).addClass('check-sq');
+        }
+      }
+    }
+  }
+}
+
+// ===== GAME END =====
+function endGame() {
+  stopClock();
+  gameActive = false;
+  let title, desc;
+  if (game.in_checkmate()) {
+    const winner = game.turn() === 'w' ? 'Hitam' : 'Putih';
+    title = `${winner} Menang!`;
+    desc = 'Skakmat!';
+  } else if (game.in_draw()) {
+    title = 'Seri / Draw';
+    desc = game.in_stalemate() ? 'Stalemate' : game.in_threefold_repetition() ? 'Pengulangan 3x' : 'Draw';
+  }
+  showResult(title, desc);
+}
+
+function endGameByTime(loser) {
+  gameActive = false;
+  const winner = loser === 'Putih' ? 'Hitam' : 'Putih';
+  showResult(`${winner} Menang!`, `${loser} kehabisan waktu!`);
+}
+
+function showResult(title, desc) {
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-desc').textContent = desc;
+  document.getElementById('result-overlay').classList.add('show');
+}
+
+function resign() {
+  if (!gameActive) return;
+  const resigner = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  const winner = resigner === 'Putih' ? 'Hitam' : 'Putih';
+  stopClock();
+  gameActive = false;
+  showResult(`${winner} Menang!`, `${resigner} menyerah`);
+}
+
+function undoMove() {
+  if (!gameActive || botThinking) return;
+  if (cfg.mode === 'bot') {
+    game.undo(); game.undo();
+  } else {
+    game.undo();
+  }
+  removeHighlights();
+  updateAll();
+}
+
+function newGame() {
+  document.getElementById('result-overlay').classList.remove('show');
+  initBoard();
+}
+
+function goMenu() {
+  stopClock();
+  gameActive = false;
+  document.getElementById('result-overlay').classList.remove('show');
+  document.getElementById('gamescreen').style.display = 'none';
+  document.getElementById('pregame').style.display = 'flex';
+}
+</script>
+</body>
+</html>
