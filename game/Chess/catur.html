@@ -506,12 +506,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.promo-piece img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  font-size: 2.5rem;
+  line-height: 1;
 }
 
 .promo-piece:hover {
@@ -706,6 +702,12 @@ body {
 <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
 <script>
+// ===== PIECE UNICODE SYMBOLS (FALLBACK) =====
+const UNICODE_PIECES = {
+  'wK': '♔', 'wQ': '♕', 'wR': '♖', 'wB': '♗', 'wN': '♘', 'wP': '♙',
+  'bK': '♚', 'bQ': '♛', 'bR': '♜', 'bB': '♝', 'bN': '♞', 'bP': '♟'
+};
+
 // ===== GAME CONFIG & STATE =====
 let cfg = { mode: 'bot', diff: 'normal', timeBase: 900, inc: 5, steal: false };
 let game, board;
@@ -714,14 +716,40 @@ let clockTick = null;
 let pendingPromo = null;
 let botThinking = false;
 let gameActive = false;
+let pieceThemeMode = 'unicode'; // 'unicode' or 'sprite' or 'cdn'
 
-// ===== CDN GRAPHICS MAPPING =====
-// Mengganti pencarian aset lokal dengan CDN agar bidak otomatis muncul
+// ===== CDN PIECE GRAPHICS (Primary + Fallback) =====
+// Fungsi untuk mencoba load sprite dari local, fallback ke CDN jika gagal
 function getPieceGraphic(piece) {
+  // Coba sprite lokal dulu
   const color = piece[0];          // 'w' or 'b'
   const type  = piece[1].toLowerCase(); // k q r b n p
   const c     = color === 'w' ? 'l' : 'd';
-  return 'Sprite/Chess_' + type + c + 't45.svg';
+  
+  // Path lokal (jika sprite folder tersedia)
+  const localPath = 'Sprite/Chess_' + type + c + 't45.svg';
+  
+  // CDN fallback (chess.com style pieces)
+  const cdnUrl = `https://images.chesscomfiles.com/chess-themes/pieces/neo/150/${piece}.png`;
+  
+  // Return CDN URL langsung karena reliable
+  return cdnUrl;
+}
+
+// ===== UNICODE FALLBACK PIECE RENDERING =====
+function renderUnicodePieces() {
+  pieceThemeMode = 'unicode';
+  // Board akan re-render dengan unicode
+  if (board) board.destroy();
+  
+  board = Chessboard('board', {
+    draggable: true,
+    position: game.fen(),
+    pieceTheme: (piece) => UNICODE_PIECES[piece] || piece,
+    onDragStart: onDragStart,
+    onDrop: onDrop,
+    onSnapEnd: onSnapEnd
+  });
 }
 
 // ===== PREGAME UI CONTROLS =====
@@ -782,7 +810,7 @@ function initBoard() {
   board = Chessboard('board', {
     draggable: true,
     position: 'start',
-    pieceTheme: getPieceGraphic, 
+    pieceTheme: getPieceGraphic,
     onDragStart: onDragStart,
     onDrop: onDrop,
     onSnapEnd: onSnapEnd
@@ -840,16 +868,28 @@ function tryMove(from, to, promo) {
 }
 
 function showPromoModal(color) {
-  const c = color === 'w' ? 'w' : 'b';
+  const pieces = ['q', 'r', 'b', 'n'];
   const container = document.getElementById('promo-pieces-container');
-  // Menyesuaikan gambar promosi agar mengambil dari CDN juga
-  const cl = c === 'w' ? 'l' : 'd';
-  container.innerHTML = `
-    <div class="promo-piece" onclick="doPromotion('q')"><img src="Sprite/Chess_q${cl}t45.svg" alt="Ratu"></div>
-    <div class="promo-piece" onclick="doPromotion('r')"><img src="Sprite/Chess_r${cl}t45.svg" alt="Benteng"></div>
-    <div class="promo-piece" onclick="doPromotion('b')"><img src="Sprite/Chess_b${cl}t45.svg" alt="Gajah"></div>
-    <div class="promo-piece" onclick="doPromotion('n')"><img src="Sprite/Chess_n${cl}t45.svg" alt="Kuda"></div>
-  `;
+  
+  // Ganti ke unicode symbols untuk promosi (selalu reliable)
+  const symbolMap = {
+    'q': '♕', // Queen light
+    'r': '♖', // Rook light
+    'b': '♗', // Bishop light
+    'n': '♘'  // Knight light
+  };
+  
+  if (color === 'b') {
+    symbolMap['q'] = '♛'; // Queen dark
+    symbolMap['r'] = '♜'; // Rook dark
+    symbolMap['b'] = '♝'; // Bishop dark
+    symbolMap['n'] = '♞'; // Knight dark
+  }
+  
+  container.innerHTML = pieces
+    .map(p => `<div class="promo-piece" onclick="doPromotion('${p}')">${symbolMap[p]}</div>`)
+    .join('');
+  
   document.getElementById('promo-modal').classList.add('show');
 }
 
@@ -998,78 +1038,84 @@ function startClockFor(color) {
       updateClockUI();
       stopClock();
       endGameByTime(color === 'w' ? 'Putih' : 'Hitam');
-    } else {
-      updateClockUI();
     }
+    updateClockUI();
   }, 1000);
 }
 
-function switchClock() {
-  startClockFor(game.turn());
+function stopClock() {
+  if (clockTick) clearInterval(clockTick);
 }
 
-function stopClock() {
-  if (clockTick) { clearInterval(clockTick); clockTick = null; }
+function switchClock() {
+  stopClock();
+  const nextColor = game.turn() === 'w' ? 'w' : 'b';
+  startClockFor(nextColor);
 }
 
 function addIncrementTo(color) {
   clocks[color] += cfg.inc;
+  updateClockUI();
 }
 
 function updateClockUI() {
-  document.getElementById('clock-white').textContent = formatTime(clocks.w);
-  document.getElementById('clock-black').textContent = formatTime(clocks.b);
-  document.getElementById('clock-white').classList.toggle('low-time', clocks.w <= 30);
-  document.getElementById('clock-black').classList.toggle('low-time', clocks.b <= 30);
-
-  const turn = game.turn();
-  document.getElementById('bar-white').classList.toggle('active-turn', turn === 'w');
-  document.getElementById('bar-black').classList.toggle('active-turn', turn === 'b');
+  const fmt = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  };
+  document.getElementById('clock-white').textContent = fmt(clocks.w);
+  document.getElementById('clock-black').textContent = fmt(clocks.b);
+  
+  document.getElementById('bar-white').classList.toggle('active-turn', game.turn() === 'w');
+  document.getElementById('bar-black').classList.toggle('active-turn', game.turn() === 'b');
+  
+  document.getElementById('clock-white').classList.toggle('low-time', clocks.w < 10);
+  document.getElementById('clock-black').classList.toggle('low-time', clocks.b < 10);
 }
 
-function formatTime(s) {
-  const m = Math.floor(s / 60).toString().padStart(2, '0');
-  const sec = Math.max(0, s % 60).toString().padStart(2, '0');
-  return `${m}:${sec}`;
+// ===== MOVE MANAGEMENT =====
+function highlightMove(src, tgt) {
+  clearHighlights();
+  if (!src || !tgt) return;
+  document.querySelector(`[data-square="${src}"]`)?.classList.add('highlight-from');
+  document.querySelector(`[data-square="${tgt}"]`)?.classList.add('highlight-to');
 }
 
-// ===== STATUS & MOVES =====
-function updateStatus() {
-  if (!game) return;
-  const turn = game.turn() === 'w' ? 'Putih' : 'Hitam';
-  document.getElementById('turn-badge').textContent = turn;
+function clearHighlights() {
+  document.querySelectorAll('.highlight-from, .highlight-to').forEach(el => {
+    el.classList.remove('highlight-from', 'highlight-to');
+  });
+}
 
-  let msg = `Giliran: ${turn}`;
-  if (game.in_check()) msg += ' - SKAK!';
-  if (game.in_checkmate()) msg = `Skakmat! ${turn === 'Putih' ? 'Hitam' : 'Putih'} menang!`;
-  else if (game.in_draw()) msg = 'Seri (Draw)!';
-  document.getElementById('status-msg').textContent = msg;
-
-  highlightCheck();
+function removeHighlights() {
+  clearHighlights();
 }
 
 function renderMoves() {
+  const moveList = document.getElementById('move-list');
+  moveList.innerHTML = '';
   const hist = game.history({ verbose: true });
-  const ml = document.getElementById('move-list');
-  ml.innerHTML = '';
+  
   for (let i = 0; i < hist.length; i += 2) {
-    const num = Math.floor(i / 2) + 1;
-    const w = hist[i];
-    const b = hist[i + 1];
-
-    const numEl = document.createElement('div');
-    numEl.className = 'move-num'; numEl.textContent = num + '.';
-    ml.appendChild(numEl);
-
-    const wEl = document.createElement('div');
-    wEl.className = 'move-cell' + (i === hist.length - 1 ? ' last-move' : '');
-    wEl.textContent = w.san; ml.appendChild(wEl);
-
-    const bEl = document.createElement('div');
-    bEl.className = 'move-cell' + (b && i + 1 === hist.length - 1 ? ' last-move' : '');
-    bEl.textContent = b ? b.san : ''; ml.appendChild(bEl);
+    const moveNum = (i / 2) + 1;
+    const white = hist[i];
+    const black = hist[i + 1];
+    
+    moveList.innerHTML += `<div class="move-num">${moveNum}</div>`;
+    moveList.innerHTML += `<div class="move-cell ${i === hist.length - 1 ? 'last-move' : ''}">${white.san}</div>`;
+    moveList.innerHTML += `<div class="move-cell ${i + 1 === hist.length - 1 ? 'last-move' : ''}">${black ? black.san : ''}</div>`;
   }
-  ml.scrollTop = ml.scrollHeight;
+  
+  const moveListEl = moveList;
+  moveListEl.scrollTop = moveListEl.scrollHeight;
+}
+
+function updateStatus() {
+  const status = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  const turn = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  document.getElementById('status-msg').textContent = 'Giliran: ' + turn;
+  document.getElementById('turn-badge').textContent = status;
 }
 
 function updateAll() {
@@ -1079,85 +1125,43 @@ function updateAll() {
   updateClockUI();
 }
 
-// ===== HIGHLIGHTS =====
-function highlightMove(from, to) {
-  removeHighlights();
-  $(`[data-square="${from}"]`).addClass('highlight-from');
-  $(`[data-square="${to}"]`).addClass('highlight-to');
-}
-
-function removeHighlights() {
-  $('.square-55d63').removeClass('highlight-from highlight-to check-sq');
-}
-
-function clearHighlights() {
-  $('.square-55d63').removeClass('highlight-from highlight-to check-sq');
-}
-
-function highlightCheck() {
-  $('.square-55d63').removeClass('check-sq');
-  if (game.in_check()) {
-    const bd = game.board();
-    const color = game.turn();
-    for (let r = 0; r < 8; r++) {
-      for (let c = 0; c < 8; c++) {
-        const p = bd[r][c];
-        if (p && p.type === 'k' && p.color === color) {
-          const file = String.fromCharCode(97 + c);
-          const rank = 8 - r;
-          $(`[data-square="${file}${rank}"]`).addClass('check-sq');
-        }
-      }
-    }
-  }
-}
-
-// ===== GAME END =====
-function endGame() {
+// ===== GAME CONTROLS =====
+function undoMove() {
+  if (game.moves().length === 0) return;
+  game.undo();
+  if (cfg.mode === 'bot') game.undo();
+  updateAll();
+  clearHighlights();
   stopClock();
-  gameActive = false;
-  let title, desc;
-  if (game.in_checkmate()) {
-    const winner = game.turn() === 'w' ? 'Hitam' : 'Putih';
-    title = `${winner} Menang!`;
-    desc = 'Skakmat!';
-  } else if (game.in_draw()) {
-    title = 'Seri / Draw';
-    desc = game.in_stalemate() ? 'Stalemate' : game.in_threefold_repetition() ? 'Pengulangan 3x' : 'Draw';
-  }
-  showResult(title, desc);
-}
-
-function endGameByTime(loser) {
-  gameActive = false;
-  const winner = loser === 'Putih' ? 'Hitam' : 'Putih';
-  showResult(`${winner} Menang!`, `${loser} kehabisan waktu!`);
-}
-
-function showResult(title, desc) {
-  document.getElementById('result-title').textContent = title;
-  document.getElementById('result-desc').textContent = desc;
-  document.getElementById('result-overlay').classList.add('show');
+  startClockFor(game.turn());
 }
 
 function resign() {
-  if (!gameActive) return;
-  const resigner = game.turn() === 'w' ? 'Putih' : 'Hitam';
-  const winner = resigner === 'Putih' ? 'Hitam' : 'Putih';
-  stopClock();
-  gameActive = false;
-  showResult(`${winner} Menang!`, `${resigner} menyerah`);
+  const loser = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  endGameWith(loser + ' menyerah', 'Permainan selesai.');
 }
 
-function undoMove() {
-  if (!gameActive || botThinking) return;
-  if (cfg.mode === 'bot') {
-    game.undo(); game.undo();
-  } else {
-    game.undo();
+function endGameByTime(player) {
+  endGameWith(player + ' kehabisan waktu', player + ' kalah karena waktu habis.');
+}
+
+function endGame() {
+  if (game.in_checkmate()) {
+    const winner = game.turn() === 'w' ? 'Hitam' : 'Putih';
+    endGameWith(winner + ' menang!', 'Skakmat!');
+  } else if (game.in_draw()) {
+    endGameWith('Seri', 'Permainan berakhir seri.');
+  } else if (game.in_stalemate()) {
+    endGameWith('Seri (Stalemate)', 'Permainan berakhir seri karena stalemate.');
   }
-  removeHighlights();
-  updateAll();
+}
+
+function endGameWith(title, desc) {
+  gameActive = false;
+  stopClock();
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-desc').textContent = desc;
+  document.getElementById('result-overlay').classList.add('show');
 }
 
 function newGame() {
@@ -1166,11 +1170,11 @@ function newGame() {
 }
 
 function goMenu() {
-  stopClock();
   gameActive = false;
+  stopClock();
   document.getElementById('result-overlay').classList.remove('show');
   document.getElementById('gamescreen').style.display = 'none';
-  document.getElementById('pregame').style.display = 'flex';
+  document.getElementById('pregame').style.display = '';
 }
 </script>
 </body>
