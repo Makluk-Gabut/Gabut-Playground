@@ -1,206 +1,266 @@
+"""NanoLM: a small byte-level GPT-style language model.
+
+Train on a local text file (for example, Shakespeare):
+    python torchlm.py --data corpus.txt
+
+Optional Project Gutenberg download:
+    python torchlm.py --download-shakespeare
+
+The default model has about 1.9M parameters. This is an educational
+character/byte-level model, not a production language model.
+"""
+
+from __future__ import annotations
+
+import argparse
+import math
+import random
+import urllib.request
+from pathlib import Path
+
 import torch
 import torch.nn as nn
-import torch.optim as optim
-import time
-import random
+import torch.nn.functional as F
 
-# ==========================================
-# 1. KONFIGURASI DAN VOCABULARY (200 KATA)
-# ==========================================
 
-# Daftar 200 kata inti yang menjadi seluruh semesta model
-VOCAB = [
-    "<PAD>", "<UNK>", "<SOS>", "<EOS>",
-    # Ganti/tambah kata di bawah ini
-    "saya", "kamu", "dia", "kita", "mereka", "kami", "kalian", "ini", "itu", "apa",
-    "siapa", "mana", "kapan", "mengapa", "bagaimana", "seseorang", "sesuatu", "semua", "setiap", "beberapa",
-    "ada", "adalah", "bisa", "boleh", "harus", "ingin", "mau", "perlu", "punya", "tahu",
-    "paham", "kenal", "lihat", "dengar", "rasa", "pikir", "bicara", "kata", "tanya", "jawab",
-    "buat", "kerja", "cari", "temu", "bawa", "kasih", "beri", "dapat", "ambil", "taruh",
-    "masuk", "keluar", "mulai", "henti", "lanjut", "proses", "kirim", "terima", "simpan", "hapus",
-    "ubah", "tambah", "kurang", "bagi", "kali", "tulis", "baca", "jalan", "lari", "lompat",
-    "tidur", "bangun", "makan", "minum", "hidup", "mati", "datang", "pergi", "pulang", "pindah",
-    "baik", "buruk", "bagus", "jelek", "besar", "kecil", "panjang", "pendek", "tinggi", "rendah",
-    "jauh", "dekat", "panas", "dingin", "benar", "salah", "cepat", "lambat", "keras", "lunak",
-    "kuat", "lemah", "penting", "utama", "dasar", "akhir", "awal", "nyata", "palsu", "cerdas",
-    "bodoh", "mudah", "sulit", "murah", "mahal", "cantik", "tampan", "senang", "sedih", "marah",
-    "takut", "aman", "bahaya", "bersih", "kotor", "penuh", "kosong", "berat", "ringan", "tajam",
-    "manusia", "orang", "anak", "ayah", "ibu", "kakak", "adik", "teman", "guru", "dokter",
-    "rumah", "kota", "desa", "jalan", "negara", "dunia", "langit", "bumi", "air", "api",
-    "angin", "tanah", "batu", "pohon", "bunga", "hewan", "kucing", "anjing", "burung", "ikan",
-    "buku", "pena", "kertas", "meja", "kursi", "pintu", "lampu", "kaca", "tas", "baju",
-    "waktu", "hari", "jam", "menit", "detik", "pagi", "siang", "sore", "malam", "minggu",
-    "bulan", "tahun", "nama", "suara", "cahaya", "warna", "angka", "huruf", "bahasa", "kode",
-    "sistem", "data", "informasi", "mesin", "alat", "teknologi", "komputer", "jaringan", "internet", "sinyal",
-    "memori", "kernel", "prosesor", "instruksi", "alamat", "stack", "heap", "register", "bit", "byte",
-    "file", "folder", "direktori", "koneksi", "server", "client", "fungsi", "variabel", "loop", "array",
-    "objek", "kelas", "atribut", "metode", "error", "bug", "log", "interrupt", "buffer", "shell",
-    "pointer", "address", "scheduler", "semaphore", "lock", "mutex", "alignment", "vga", "terminal", "boot",
-    "hardware", "software", "firmware", "driver", "input", "output", "storage", "disk", "ram", "cache",
-    "ya", "tidak", "bukan", "belum", "sudah", "mungkin", "pasti", "sangat", "lebih", "kurang",
-    "cukup", "hampir", "hanya", "saja", "juga", "pun", "lagi", "terus", "kembali", "nanti",
-    "dan", "atau", "tapi", "jika", "karena", "sehingga", "dengan", "tanpa", "dari", "ke",
-    "di", "atas", "bawah", "depan", "belakang", "samping", "antara", "dalam", "luar", "untuk",
-    "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh",
-    "sebelas", "dua belas", "dua puluh", "tiga puluh", "seratus", "seribu", "juta", "nol", "pertama", "terakhir",
-    "merah", "biru", "hijau", "kuning", "hitam", "putih", "abu-abu", "cokelat", "jingga", "ungu",
-    "senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu", "januari", "februari", "maret",
-    "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember", "tengah",
-    "bagian", "bentuk", "ukuran", "jumlah", "jarak", "berat", "suhu", "kecepatan", "tekanan", "energi",
-    "ruang", "bidang", "titik", "garis", "sudut", "lingkaran", "persegi", "segitiga", "luas", "volume",
-    "pagi", "sarapan", "kerja", "istirahat", "belajar", "main", "olahraga", "mandi", "masak", "tidur",
-    "keluarga", "masyarakat", "hukum", "politik", "ekonomi", "budaya", "seni", "musik", "film", "berita",
-    "masalah", "solusi", "tujuan", "rencana", "hasil", "bukti", "alasan", "contoh", "cara", "jenis",
-    "sejarah", "masa", "depan", "lalu", "sekarang", "besok", "kemarin", "tadi", "nanti", "sering",
-    "jarang", "kadang", "pernah", "selalu", "biasa", "luar biasa", "mungkin", "tentu", "siap", "selesai",
-    "sebagai", "seperti", "tentang", "terhadap", "melalui", "secara", "bagi", "oleh", "pada", "sejak",
-    "sampai", "selama", "ketika", "saat", "sambil", "meskipun", "supaya", "agar", "yaitu", "yakni",
-    "head", "tail", "node", "tree", "graph", "hash", "map", "set", "queue", "list",
-    "link", "edge", "vertex", "path", "cost", "weight", "bias", "layer", "neuron", "train",
-    "test", "valid", "loss", "model", "epoch", "batch", "step", "learn", "rate", "adam",
-    "optim", "cross", "entropy", "activation", "sigmoid", "relu", "tanh", "softmax", "dropout", "norm",
-    "zero", "one", "ten", "hundred", "thousand", "million", "total", "count", "sum", "average",
-    "min", "max", "top", "bottom", "left", "right", "center", "global", "local", "static",
-    "dynamic", "public", "private", "protected", "const", "final", "void", "return", "break", "continue"
-]
+SHAKESPEARE_URL = "https://www.gutenberg.org/cache/epub/100/pg100.txt"
 
-# Tambahan token unik untuk mencapai tepat 500 jika ada yang kurang
-while len(VOCAB) < 500:
-    VOCAB.append(f"extra_word_{len(VOCAB)}")
 
-# Mengisi sisa hingga tepat 200 kata jika diperlukan
-while len(VOCAB) < 200:
-    VOCAB.append(f"token_{len(VOCAB)}")
+class ByteTokenizer:
+    """UTF-8 byte tokenizer with a fixed, consistent 256-token vocabulary."""
 
-class NanoTokenizer:
-    def __init__(self, vocab):
-        self.word2idx = {word: i for i, word in enumerate(vocab)}
-        self.idx2word = {i: word for i, word in enumerate(vocab)}
-        
-    def encode(self, text):
-        # Mengonversi teks ke list ID, kata asing jadi <UNK>
-        return [self.word2idx.get(w.lower(), 1) for w in text.split()]
-    
-    def decode(self, tokens):
-        # Mengonversi list ID kembali ke teks
-        return " ".join([self.idx2word.get(t, "<UNK>") for t in tokens])
+    vocab_size = 256
 
-tokenizer = NanoTokenizer(VOCAB)
+    @staticmethod
+    def encode(text: str) -> list[int]:
+        return list(text.encode("utf-8"))
 
-# ==========================================
-# 2. ARSITEKTUR NANO-TRANSFORMER
-# ==========================================
+    @staticmethod
+    def decode(tokens: list[int]) -> str:
+        return bytes(tokens).decode("utf-8", errors="replace")
+
 
 class NanoTransformer(nn.Module):
-    def __init__(self, vocab_size=200, embed_dim=64, nhead=4, num_layers=2, max_len=20):
+    """Decoder-only Transformer with learned token and position embeddings."""
+
+    def __init__(
+        self,
+        vocab_size: int = 256,
+        embed_dim: int = 128,
+        nhead: int = 4,
+        num_layers: int = 10,
+        ff_dim: int = 512,
+        max_len: int = 128,
+        dropout: float = 0.1,
+    ) -> None:
         super().__init__()
+        if embed_dim % nhead:
+            raise ValueError("embed_dim must be divisible by nhead")
+
+        self.max_len = max_len
         self.token_embedding = nn.Embedding(vocab_size, embed_dim)
         self.pos_embedding = nn.Embedding(max_len, embed_dim)
-        
-        # Decoder-only Transformer
-        decoder_layer = nn.TransformerEncoderLayer(
-            d_model=embed_dim, nhead=nhead, batch_first=True, dropout=0.1
+        layer = nn.TransformerEncoderLayer(
+            d_model=embed_dim,
+            nhead=nhead,
+            dim_feedforward=ff_dim,
+            dropout=dropout,
+            batch_first=True,
+            norm_first=True,
+            activation="gelu",
         )
-        self.transformer = nn.TransformerEncoder(decoder_layer, num_layers=num_layers)
-        self.fc_out = nn.Linear(embed_dim, vocab_size)
-        
-    def forward(self, x):
-        batch_size, seq_len = x.shape
-        positions = torch.arange(0, seq_len).expand(batch_size, seq_len).to(x.device)
-        
-        # Gabungkan token embedding dan positional embedding
-        x = self.token_embedding(x) + self.pos_embedding(positions)
-        
-        # Causal mask untuk autoregressive
-        mask = torch.triu(torch.ones(seq_len, seq_len) * float('-inf'), diagonal=1).to(x.device)
-        
-        x = self.transformer(x, mask=mask)
-        logits = self.fc_out(x)
-        return logits
+        self.transformer = nn.TransformerEncoder(layer, num_layers=num_layers)
+        self.final_norm = nn.LayerNorm(embed_dim)
+        self.lm_head = nn.Linear(embed_dim, vocab_size)
 
-# ==========================================
-# 3. TRAINING DAN EVALUASI
-# ==========================================
+    def forward(self, token_ids: torch.Tensor) -> torch.Tensor:
+        _, seq_len = token_ids.shape
+        if seq_len > self.max_len:
+            raise ValueError(f"Sequence length {seq_len} exceeds max_len={self.max_len}")
 
-def run_training():
-    model = NanoTransformer()
-    optimizer = optim.Adam(model.parameters(), lr=0.002)
-    criterion = nn.CrossEntropyLoss(ignore_index=0) # Abaikan <PAD>
-    
-    # Dataset sintetis terbatas pada 200 kata
-    dataset = [
-        "saya adalah mesin", "kamu adalah manusia", "sistem ini sangat baik",
-        "kita bicara bahasa", "apa kamu mengerti", "ini adalah data baru",
-        "dunia ini sangat besar", "saya ingin bantu kamu", "siapa nama kamu",
-        "hari ini sangat panas", "malam ini sangat dingin", "kode ini benar"
-    ]
-    
-    encoded_data = [tokenizer.encode(d) for d in dataset]
-    
-    print("--- Memulai Training NanoLM-200 ---")
-    for epoch in range(150):
-        model.train()
-        total_loss = 0
-        
-        for seq in encoded_data:
-            if len(seq) < 2: continue
-            
-            # Input: "saya adalah", Target: "adalah mesin"
-            inp = torch.tensor([seq[:-1]])
-            target = torch.tensor([seq[1:]])
-            
-            logits = model(inp)
-            loss = criterion(logits.view(-1, 200), target.view(-1))
-            
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-            
-        # Simulasi Validation Loss
-        val_loss = (total_loss / len(dataset)) * 1.2 + random.uniform(0.01, 0.05)
-            
-        if (epoch + 1) % 30 == 0:
-            print(f"Epoch {epoch+1:3d} | Train Loss: {total_loss/len(dataset):.4f} | Val Loss: {val_loss:.4f}")
-            
-    return model
+        positions = torch.arange(seq_len, device=token_ids.device)
+        x = self.token_embedding(token_ids) + self.pos_embedding(positions)[None, :, :]
+        # For PyTorch Transformer modules, True entries in a boolean mask are blocked.
+        causal_mask = torch.triu(
+            torch.ones(seq_len, seq_len, dtype=torch.bool, device=token_ids.device),
+            diagonal=1,
+        )
+        x = self.transformer(x, mask=causal_mask)
+        return self.lm_head(self.final_norm(x))
 
-# ==========================================
-# 4. CHAT INTERFACE
-# ==========================================
+    @torch.inference_mode()
+    def generate(
+        self,
+        prompt: str,
+        max_new_tokens: int = 300,
+        temperature: float = 0.8,
+        top_k: int = 40,
+    ) -> str:
+        if temperature <= 0:
+            raise ValueError("temperature must be greater than zero")
+        device = next(self.parameters()).device
+        prompt_ids = ByteTokenizer.encode(prompt) or [ord(" ")]
+        ids = torch.tensor([prompt_ids], dtype=torch.long, device=device)
+        was_training = self.training
+        self.eval()
 
-def chat(model):
+        for _ in range(max_new_tokens):
+            context = ids[:, -self.max_len :]
+            logits = self(context)[:, -1, :] / temperature
+            if top_k > 0:
+                k = min(top_k, logits.size(-1))
+                threshold = torch.topk(logits, k).values[:, -1, None]
+                logits = logits.masked_fill(logits < threshold, float("-inf"))
+            next_id = torch.multinomial(F.softmax(logits, dim=-1), num_samples=1)
+            ids = torch.cat((ids, next_id), dim=1)
+
+        self.train(was_training)
+        return ByteTokenizer.decode(ids[0].tolist())
+
+
+def count_parameters(model: nn.Module) -> int:
+    return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+
+
+def load_text(data_path: Path, download_shakespeare: bool) -> str:
+    if download_shakespeare:
+        print(f"Downloading Shakespeare corpus from {SHAKESPEARE_URL}")
+        request = urllib.request.Request(
+            SHAKESPEARE_URL,
+            headers={"User-Agent": "NanoLM educational experiment"},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            text = response.read().decode("utf-8", errors="replace")
+        data_path.parent.mkdir(parents=True, exist_ok=True)
+        data_path.write_text(text, encoding="utf-8")
+        print(f"Saved corpus to {data_path}")
+        return text
+
+    if not data_path.is_file():
+        raise FileNotFoundError(
+            f"Training text not found: {data_path}. Provide --data PATH or use --download-shakespeare."
+        )
+    return data_path.read_text(encoding="utf-8", errors="replace")
+
+
+def get_batch(data: torch.Tensor, batch_size: int, block_size: int) -> tuple[torch.Tensor, torch.Tensor]:
+    starts = torch.randint(0, data.numel() - block_size - 1, (batch_size,), device=data.device)
+    x = torch.stack([data[i : i + block_size] for i in starts])
+    y = torch.stack([data[i + 1 : i + block_size + 1] for i in starts])
+    return x, y
+
+
+@torch.no_grad()
+def estimate_loss(
+    model: NanoTransformer,
+    train_data: torch.Tensor,
+    val_data: torch.Tensor,
+    batch_size: int,
+    block_size: int,
+    eval_batches: int,
+) -> tuple[float, float]:
     model.eval()
-    print("\n--- Model Siap. Ketik kata-kata dari daftar 200 kata! ---")
-    print("(Ketik 'keluar' untuk berhenti)\n")
-    
-    while True:
-        user_input = input("User: ")
-        if user_input.lower() == 'keluar': break
-        
-        tokens = tokenizer.encode(user_input)
-        if not tokens: continue
-        
-        input_ids = torch.tensor([tokens])
-        
-        # Generate 5 kata berikutnya
-        for _ in range(5):
-            with torch.no_grad():
-                logits = model(input_ids)
-                next_token_logits = logits[0, -1, :]
-                # Greedy search
-                next_token = torch.argmax(next_token_logits).item()
-                
-                # Tambahkan token baru ke input untuk konteks berikutnya
-                input_ids = torch.cat([input_ids, torch.tensor([[next_token]])], dim=1)
-                tokens.append(next_token)
-                
-                if next_token == 3: # <EOS>
-                    break
-        
-        response = tokenizer.decode(tokens[len(tokenizer.encode(user_input)):])
-        print(f"NanoLM: {response}")
+    losses = []
+    for data in (train_data, val_data):
+        batch_losses = []
+        for _ in range(eval_batches):
+            x, y = get_batch(data, batch_size, block_size)
+            logits = model(x)
+            batch_losses.append(F.cross_entropy(logits.reshape(-1, 256), y.reshape(-1)).item())
+        losses.append(sum(batch_losses) / len(batch_losses))
+    model.train()
+    return losses[0], losses[1]
+
+
+def choose_device(requested: str) -> torch.device:
+    if requested != "auto":
+        return torch.device(requested)
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Train a small byte-level Shakespeare language model.")
+    parser.add_argument("--data", type=Path, default=Path("corpus.txt"), help="UTF-8 training text")
+    parser.add_argument("--download-shakespeare", action="store_true", help="Download Project Gutenberg's Complete Works")
+    parser.add_argument("--steps", type=int, default=5000)
+    parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--block-size", type=int, default=128)
+    parser.add_argument("--eval-interval", type=int, default=250)
+    parser.add_argument("--eval-batches", type=int, default=20)
+    parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument("--device", default="auto", help="auto, cpu, cuda, or mps")
+    parser.add_argument("--checkpoint", type=Path, default=Path("nanolm_shakespeare.pt"))
+    parser.add_argument("--prompt", default="To be, or not to be:")
+    parser.add_argument("--generate", type=int, default=300, help="Number of new bytes to generate")
+    args = parser.parse_args()
+
+    if args.steps < 1 or args.batch_size < 1 or args.block_size < 1:
+        parser.error("steps, batch-size, and block-size must be positive")
+
+    random.seed(42)
+    torch.manual_seed(42)
+    device = choose_device(args.device)
+    text = load_text(args.data, args.download_shakespeare)
+    encoded = torch.tensor(ByteTokenizer.encode(text), dtype=torch.long)
+    if encoded.numel() < args.block_size + 2:
+        parser.error(
+            f"Corpus has only {encoded.numel()} bytes; need more than block-size + 1 "
+            f"({args.block_size + 1}). Use a longer text or lower --block-size."
+        )
+
+    split = int(0.9 * encoded.numel())
+    train_data = encoded[:split].to(device)
+    val_data = encoded[split:].to(device)
+    if val_data.numel() < args.block_size + 2:
+        parser.error("Validation split is too short for this block size; use a larger corpus or smaller --block-size.")
+
+    model = NanoTransformer(max_len=args.block_size).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=0.1)
+    print(f"Device: {device} | Corpus: {encoded.numel():,} bytes | Parameters: {count_parameters(model):,}")
+
+    for step in range(1, args.steps + 1):
+        model.train()
+        x, y = get_batch(train_data, args.batch_size, args.block_size)
+        logits = model(x)
+        loss = F.cross_entropy(logits.reshape(-1, 256), y.reshape(-1))
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
+
+        if step == 1 or step % args.eval_interval == 0 or step == args.steps:
+            train_loss, val_loss = estimate_loss(
+                model, train_data, val_data, args.batch_size, args.block_size, args.eval_batches
+            )
+            print(
+                f"Step {step:>5}/{args.steps} | train loss {train_loss:.4f} "
+                f"| val loss {val_loss:.4f} | val perplexity {math.exp(min(val_loss, 20)):.2f}"
+            )
+
+    args.checkpoint.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "model_config": {
+                "vocab_size": 256,
+                "embed_dim": 128,
+                "nhead": 4,
+                "num_layers": 10,
+                "ff_dim": 512,
+                "max_len": args.block_size,
+            },
+            "training_data": str(args.data),
+        },
+        args.checkpoint,
+    )
+    print(f"Checkpoint saved to {args.checkpoint}")
+    print("\n--- Sample ---")
+    print(model.generate(args.prompt, max_new_tokens=args.generate))
+
 
 if __name__ == "__main__":
-    trained_model = run_training()
-    chat(trained_model)
+    main()
