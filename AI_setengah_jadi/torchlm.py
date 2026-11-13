@@ -1,14 +1,17 @@
-"""NanoLM: a small byte-level GPT-style language model.
+"""NanoLM: a small Shakespeare language model using BPE + byte fallback.
 
-Train on a local UTF-8 text file (for example, Shakespeare):
-    python torchlm.py --data corpus.txt
+Install dependencies:
+    pip install torch tokenizers
 
-Optional Project Gutenberg download:
-    python torchlm.py --download-shakespeare --data corpus.txt
+Train the tokenizer only (does NOT train the language model):
+    python torchlm.py --data corpus.txt --prepare-tokenizer \
+        --tokenizer nanolm_tokenizer.json --vocab-size 8000
 
-The default model has about 2.05M parameters. This educational model uses
-byte-level UTF-8 tokenization, RoPE, causal multi-head attention, optional
-CUDA mixed precision, and KV-cached generation.
+Train the model afterward:
+    python torchlm.py --data corpus.txt --tokenizer nanolm_tokenizer.json
+
+The tokenizer is byte-level BPE with byte fallback. It uses a 256-byte
+initial alphabet and merges frequent byte sequences into larger tokens.
 """
 
 from __future__ import annotations
@@ -17,7 +20,6 @@ import argparse
 import contextlib
 import math
 import random
-import re
 import urllib.request
 from pathlib import Path
 from typing import Optional
@@ -26,92 +28,89 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+try:
+    from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+except ImportError as exc:
+    raise SystemExit("Missing dependency. Install it with: pip install tokenizers") from exc
+
 
 SHAKESPEARE_URL = "https://www.gutenberg.org/cache/epub/100/pg100.txt"
 
 
-class ByteTokenizer:
-    """Fixed UTF-8 byte tokenizer. Every token ID is in [0, 255]."""
+def train_bpe_tokenizer(text: str, tokenizer_path: Path, vocab_size: int) -> Tokenizer:
+    """Train byte-level BPE with byte fallback and save the tokenizer JSON."""
+    if vocab_size < 300:
+        raise ValueError("BPE vocab size must be at least 300 to fit byte alphabet and special tokens")
+    tokenizer = Tokenizer(models.BPE(unk_token="[UNK]", byte_fallback=True))
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
+    tokenizer.decoder = decoders.Sequence([decoders.ByteFallback(), decoders.ByteLevel()])
+    trainer = trainers.BpeTrainer(
+        vocab_size=vocab_size,
+        min_frequency=2,
+        show_progress=True,
+        initial_alphabet=pre_tokenizers.ByteLevel.alphabet(),
+        special_tokens=["[UNK]"],
+    )
+    tokenizer.train_from_iterator([text], trainer=trainer)
+    tokenizer_path.parent.mkdir(parents=True, exist_ok=True)
+    tokenizer.save(str(tokenizer_path))
+    return tokenizer
 
-    vocab_size = 256
 
-    @staticmethod
-    def encode(text: str) -> list[int]:
-        return list(text.encode("utf-8"))
-
-    @staticmethod
-    def decode(tokens: list[int]) -> str:
-        # Generation constrains bytes to valid UTF-8, so strict decode is safe.
-        return bytes(tokens).decode("utf-8")
-
-
-def _rotate_half_pairs(x: torch.Tensor) -> torch.Tensor:
-    paired = x.reshape(*x.shape[:-1], x.shape[-1] // 2, 2)
-    even, odd = paired.unbind(dim=-1)
-    return torch.stack((-odd, even), dim=-1).flatten(-2)
+def load_tokenizer(tokenizer_path: Path) -> Tokenizer:
+    if not tokenizer_path.is_file():
+        raise FileNotFoundError(
+            f"Tokenizer not found: {tokenizer_path}. Run with --prepare-tokenizer first."
+        )
+    tokenizer = Tokenizer.from_file(str(tokenizer_path))
+    if tokenizer.get_vocab_size() < 257:
+        raise ValueError("Tokenizer vocabulary is too small; expected byte-level BPE with byte fallback")
+    return tokenizer
 
 
 def apply_rope(q: torch.Tensor, k: torch.Tensor, positions: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-    """Apply rotary position embeddings to (batch, heads, time, head_dim) tensors."""
     dim = q.size(-1)
     inv_freq = 1.0 / (10000 ** (torch.arange(0, dim, 2, device=q.device, dtype=torch.float32) / dim))
     angles = positions.to(torch.float32)[:, None] * inv_freq[None, :]
     angles = torch.cat((angles, angles), dim=-1)[None, None, :, :]
-    cos = angles.cos().to(dtype=q.dtype)
-    sin = angles.sin().to(dtype=q.dtype)
-    return q * cos + _rotate_half_pairs(q) * sin, k * cos + _rotate_half_pairs(k) * sin
+    cos, sin = angles.cos().to(q.dtype), angles.sin().to(q.dtype)
+
+    def rotate_half(x: torch.Tensor) -> torch.Tensor:
+        paired = x.reshape(*x.shape[:-1], dim // 2, 2)
+        even, odd = paired.unbind(dim=-1)
+        return torch.stack((-odd, even), dim=-1).flatten(-2)
+
+    return q * cos + rotate_half(q) * sin, k * cos + rotate_half(k) * sin
 
 
 class CausalSelfAttention(nn.Module):
-    """Multi-head causal self-attention with an optional inference KV cache."""
-
     def __init__(self, embed_dim: int, nhead: int, dropout: float) -> None:
         super().__init__()
-        if embed_dim % nhead != 0:
-            raise ValueError("embed_dim must be divisible by nhead")
+        if embed_dim % nhead or (embed_dim // nhead) % 2:
+            raise ValueError("embed_dim must divide evenly by nhead and head_dim must be even for RoPE")
         self.nhead = nhead
         self.head_dim = embed_dim // nhead
-        if self.head_dim % 2:
-            raise ValueError("head_dim must be even for RoPE")
         self.qkv = nn.Linear(embed_dim, 3 * embed_dim)
         self.out_proj = nn.Linear(embed_dim, embed_dim)
         self.dropout = dropout
 
-    def forward(
-        self,
-        x: torch.Tensor,
-        positions: torch.Tensor,
-        past_kv: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
-        use_cache: bool = False,
-    ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
+    def forward(self, x, positions, past_kv=None, use_cache=False):
         batch, time, channels = x.shape
         qkv = self.qkv(x).view(batch, time, 3, self.nhead, self.head_dim)
         q, k, v = qkv.permute(2, 0, 3, 1, 4).unbind(0)
         q, k = apply_rope(q, k, positions)
-
         has_past = past_kv is not None
         if has_past:
-            past_k, past_v = past_kv
-            k = torch.cat((past_k, k), dim=-2)
-            v = torch.cat((past_v, v), dim=-2)
-
-        # During incremental decoding the query is the newest token and every
-        # supplied key is from its past or present, so no causal mask is needed.
+            k = torch.cat((past_kv[0], k), dim=-2)
+            v = torch.cat((past_kv[1], v), dim=-2)
         y = F.scaled_dot_product_attention(
-            q,
-            k,
-            v,
-            attn_mask=None,
+            q, k, v,
             dropout_p=self.dropout if self.training else 0.0,
             is_causal=not has_past,
         )
         y = y.transpose(1, 2).contiguous().view(batch, time, channels)
-        y = self.out_proj(y)
-
-        new_kv = None
-        if use_cache:
-            new_kv = (k, v)
-        return y, new_kv
+        new_kv = (k, v) if use_cache else None
+        return self.out_proj(y), new_kv
 
 
 class TransformerBlock(nn.Module):
@@ -121,47 +120,22 @@ class TransformerBlock(nn.Module):
         self.attn = CausalSelfAttention(embed_dim, nhead, dropout)
         self.ln2 = nn.LayerNorm(embed_dim)
         self.mlp = nn.Sequential(
-            nn.Linear(embed_dim, ff_dim),
-            nn.GELU(),
-            nn.Linear(ff_dim, embed_dim),
-            nn.Dropout(dropout),
+            nn.Linear(embed_dim, ff_dim), nn.GELU(), nn.Linear(ff_dim, embed_dim), nn.Dropout(dropout)
         )
         self.resid_dropout = nn.Dropout(dropout)
 
-    def forward(
-        self,
-        x: torch.Tensor,
-        positions: torch.Tensor,
-        past_kv: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
-        use_cache: bool = False,
-    ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
+    def forward(self, x, positions, past_kv=None, use_cache=False):
         attn_out, kv = self.attn(self.ln1(x), positions, past_kv, use_cache)
         x = x + self.resid_dropout(attn_out)
-        x = x + self.mlp(self.ln2(x))
-        return x, kv
+        return x + self.mlp(self.ln2(x)), kv
 
 
 class NanoTransformer(nn.Module):
-    """Decoder-only Transformer with RoPE and cached incremental generation."""
-
-    def __init__(
-        self,
-        vocab_size: int = 256,
-        embed_dim: int = 128,
-        nhead: int = 4,
-        num_layers: int = 10,
-        ff_dim: int = 512,
-        max_len: int = 128,
-        dropout: float = 0.1,
-    ) -> None:
+    def __init__(self, vocab_size: int, embed_dim=128, nhead=4, num_layers=10, ff_dim=512, max_len=128, dropout=0.1):
         super().__init__()
-        if max_len < 1:
-            raise ValueError("max_len must be positive")
         self.max_len = max_len
         self.token_embedding = nn.Embedding(vocab_size, embed_dim)
-        self.blocks = nn.ModuleList(
-            [TransformerBlock(embed_dim, nhead, ff_dim, dropout) for _ in range(num_layers)]
-        )
+        self.blocks = nn.ModuleList([TransformerBlock(embed_dim, nhead, ff_dim, dropout) for _ in range(num_layers)])
         self.final_norm = nn.LayerNorm(embed_dim)
         self.lm_head = nn.Linear(embed_dim, vocab_size, bias=False)
 
@@ -175,143 +149,62 @@ class NanoTransformer(nn.Module):
             x, _ = block(x, positions)
         return self.lm_head(self.final_norm(x))
 
-    def _prefill(self, token_ids: torch.Tensor) -> tuple[torch.Tensor, list[tuple[torch.Tensor, torch.Tensor]]]:
-        seq_len = token_ids.size(1)
-        positions = torch.arange(seq_len, device=token_ids.device)
+    def _prefill(self, token_ids):
+        positions = torch.arange(token_ids.size(1), device=token_ids.device)
         x = self.token_embedding(token_ids)
-        caches = []
+        cache = []
         for block in self.blocks:
             x, kv = block(x, positions, use_cache=True)
-            assert kv is not None
-            caches.append(kv)
-        return self.lm_head(self.final_norm(x)), caches
+            cache.append(kv)
+        return self.lm_head(self.final_norm(x)), cache
 
-    def _decode_one(
-        self,
-        token_id: torch.Tensor,
-        position: int,
-        caches: list[tuple[torch.Tensor, torch.Tensor]],
-    ) -> tuple[torch.Tensor, list[tuple[torch.Tensor, torch.Tensor]]]:
+    def _decode_one(self, token_id, position, cache):
         positions = torch.tensor([position], device=token_id.device)
         x = self.token_embedding(token_id)
-        updated = []
-        for block, past_kv in zip(self.blocks, caches):
-            x, kv = block(x, positions, past_kv=past_kv, use_cache=True)
-            assert kv is not None
-            # Sliding cache retains exactly the training context window. RoPE
-            # keeps positions on retained keys, so they do not need re-encoding.
-            updated.append((kv[0][..., -self.max_len :, :], kv[1][..., -self.max_len :, :]))
-        return self.lm_head(self.final_norm(x)), updated
+        next_cache = []
+        for block, past_kv in zip(self.blocks, cache):
+            x, kv = block(x, positions, past_kv, use_cache=True)
+            # Keep the latest context window. RoPE positions already embedded in cached keys.
+            next_cache.append((kv[0][..., -self.max_len :, :], kv[1][..., -self.max_len :, :]))
+        return self.lm_head(self.final_norm(x)), next_cache
 
     @torch.inference_mode()
-    def generate(
-        self,
-        prompt: str,
-        max_new_tokens: int = 300,
-        temperature: float = 0.8,
-        top_k: int = 40,
-    ) -> str:
-        if temperature <= 0:
-            raise ValueError("temperature must be greater than zero")
-        if max_new_tokens < 0:
-            raise ValueError("max_new_tokens must be non-negative")
+    def generate(self, tokenizer: Tokenizer, prompt: str, max_new_tokens=300, temperature=0.8, top_k=40) -> str:
+        if temperature <= 0 or max_new_tokens < 0:
+            raise ValueError("temperature must be positive and max_new_tokens non-negative")
         device = next(self.parameters()).device
-        prompt_bytes = ByteTokenizer.encode(prompt) or [ord(" ")]
-        # A long prompt is truncated to the context the model was trained on.
-        prompt_bytes = prompt_bytes[-self.max_len :]
-        ids = torch.tensor([prompt_bytes], dtype=torch.long, device=device)
+        prompt_ids = tokenizer.encode(prompt).ids or [0]
+        prompt_ids = prompt_ids[-self.max_len :]
+        ids = torch.tensor([prompt_ids], dtype=torch.long, device=device)
         was_training = self.training
         self.eval()
         try:
-            logits, caches = self._prefill(ids)
-            all_bytes = list(prompt_bytes)
+            logits, cache = self._prefill(ids)
+            generated = list(prompt_ids)
             next_logits = logits[:, -1, :]
-
             for step in range(max_new_tokens):
-                scaled = next_logits / temperature
-                # Only sample bytes that keep the output a valid UTF-8 stream.
-                allowed = _valid_utf8_next_byte_mask(all_bytes, device)
-                scaled = scaled.masked_fill(~allowed[None, :], float("-inf"))
+                scores = next_logits / temperature
                 if top_k > 0:
-                    k = min(top_k, int(allowed.sum().item()))
-                    threshold = torch.topk(scaled, k).values[:, -1, None]
-                    scaled = scaled.masked_fill(scaled < threshold, float("-inf"))
-                next_id = torch.multinomial(F.softmax(scaled.float(), dim=-1), num_samples=1)
-                byte_value = int(next_id.item())
-                all_bytes.append(byte_value)
-
+                    k = min(top_k, scores.size(-1))
+                    threshold = torch.topk(scores, k).values[:, -1, None]
+                    scores = scores.masked_fill(scores < threshold, float("-inf"))
+                next_id = torch.multinomial(F.softmax(scores.float(), dim=-1), num_samples=1)
+                token_id = int(next_id.item())
+                generated.append(token_id)
                 if step + 1 < max_new_tokens:
-                    position = len(prompt_bytes) + step
-                    next_logits_all, caches = self._decode_one(next_id, position, caches)
+                    position = min(len(prompt_ids) + step, self.max_len - 1)
+                    next_logits_all, cache = self._decode_one(next_id, position, cache)
                     next_logits = next_logits_all[:, -1, :]
         finally:
             self.train(was_training)
-
-        return ByteTokenizer.decode(all_bytes)
-
-
-def _valid_utf8_next_byte_mask(prefix: list[int], device: torch.device) -> torch.Tensor:
-    """Mask byte IDs to keep prefix + next byte valid UTF-8."""
-    allowed = torch.zeros(256, dtype=torch.bool, device=device)
-    i = len(prefix) - 1
-    while i >= 0 and 0x80 <= prefix[i] <= 0xBF:
-        i -= 1
-
-    if i < 0:
-        # No valid prompt/generated sequence ends this way; fail safely.
-        allowed[0x80:0xC0] = True
-        return allowed
-
-    lead = prefix[i]
-    continuations = len(prefix) - i - 1
-    if lead < 0x80 or lead > 0xBF:
-        if lead < 0x80 or continuations >= 3:
-            allowed[:0x80] = True
-            allowed[0xC2:0xF5] = True
-            return allowed
-
-    if 0xC2 <= lead <= 0xDF and continuations == 0:
-        allowed[0x80:0xC0] = True
-    elif 0xE0 <= lead <= 0xEF and continuations == 0:
-        low, high = (0xA0, 0xC0) if lead == 0xE0 else ((0x80, 0xA0) if lead == 0xED else (0x80, 0xC0))
-        allowed[low:high] = True
-    elif 0xF0 <= lead <= 0xF4 and continuations == 0:
-        low, high = (0x90, 0xC0) if lead == 0xF0 else ((0x80, 0x90) if lead == 0xF4 else (0x80, 0xC0))
-        allowed[low:high] = True
-    elif 0xC2 <= lead <= 0xF4:
-        expected = 1 if lead <= 0xDF else (2 if lead <= 0xEF else 3)
-        if 0 < continuations < expected:
-            allowed[0x80:0xC0] = True
-        else:
-            allowed[:0x80] = True
-            allowed[0xC2:0xF5] = True
-    else:
-        # Defensive fallback for malformed external prefix.
-        allowed[:0x80] = True
-        allowed[0xC2:0xF5] = True
-    return allowed
+        return tokenizer.decode(generated, skip_special_tokens=True)
 
 
 def count_parameters(model: nn.Module) -> int:
-    return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-def load_text(data_path: Path, download_shakespeare: bool) -> str:
-    if download_shakespeare:
-        print(f"Downloading Shakespeare corpus from {SHAKESPEARE_URL}")
-        request = urllib.request.Request(SHAKESPEARE_URL, headers={"User-Agent": "NanoLM educational experiment"})
-        with urllib.request.urlopen(request, timeout=30) as response:
-            text = response.read().decode("utf-8", errors="replace")
-        data_path.parent.mkdir(parents=True, exist_ok=True)
-        data_path.write_text(text, encoding="utf-8")
-        print(f"Saved corpus to {data_path}")
-        return text
-    if not data_path.is_file():
-        raise FileNotFoundError(f"Training text not found: {data_path}")
-    return data_path.read_text(encoding="utf-8", errors="replace")
-
-
-def get_batch(data: torch.Tensor, batch_size: int, block_size: int) -> tuple[torch.Tensor, torch.Tensor]:
+def get_batch(data: torch.Tensor, batch_size: int, block_size: int):
     starts = torch.randint(0, data.numel() - block_size, (batch_size,), device=data.device)
     x = torch.stack([data[i : i + block_size] for i in starts])
     y = torch.stack([data[i + 1 : i + block_size + 1] for i in starts])
@@ -319,25 +212,18 @@ def get_batch(data: torch.Tensor, batch_size: int, block_size: int) -> tuple[tor
 
 
 @torch.no_grad()
-def estimate_loss(
-    model: NanoTransformer,
-    train_data: torch.Tensor,
-    val_data: torch.Tensor,
-    batch_size: int,
-    block_size: int,
-    eval_batches: int,
-) -> tuple[float, float]:
+def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batches):
     model.eval()
-    losses = []
+    results = []
     for data in (train_data, val_data):
-        batch_losses = []
+        losses = []
         for _ in range(eval_batches):
             x, y = get_batch(data, batch_size, block_size)
             logits = model(x)
-            batch_losses.append(F.cross_entropy(logits.float().reshape(-1, 256), y.reshape(-1)).item())
-        losses.append(sum(batch_losses) / len(batch_losses))
+            losses.append(F.cross_entropy(logits.float().reshape(-1, logits.size(-1)), y.reshape(-1)).item())
+        results.append(sum(losses) / len(losses))
     model.train()
-    return losses[0], losses[1]
+    return results
 
 
 def choose_device(requested: str) -> torch.device:
@@ -350,29 +236,42 @@ def choose_device(requested: str) -> torch.device:
     return torch.device("cpu")
 
 
-def choose_precision(requested: str, device: torch.device) -> tuple[Optional[torch.dtype], str]:
-    """Return autocast dtype and display label; non-CUDA defaults to FP32."""
+def precision_settings(requested: str, device: torch.device):
     if device.type != "cuda":
-        if requested not in ("auto", "fp32"):
-            print(f"{requested} mixed precision requested, but {device.type} is not CUDA; using FP32.")
         return None, "fp32"
     if requested == "fp32":
         return None, "fp32"
-    if requested == "bf16":
-        if not torch.cuda.is_bf16_supported():
-            raise ValueError("This CUDA GPU does not support bf16; choose --precision fp16 or auto")
-        return torch.bfloat16, "bf16"
     if requested == "fp16":
         return torch.float16, "fp16"
-    if torch.cuda.is_bf16_supported():
+    if requested == "bf16":
+        if not torch.cuda.is_bf16_supported():
+            raise ValueError("GPU does not support bf16; use --precision fp16 or auto")
         return torch.bfloat16, "bf16"
-    return torch.float16, "fp16"
+    if requested == "auto":
+        return (torch.bfloat16, "bf16") if torch.cuda.is_bf16_supported() else (torch.float16, "fp16")
+    raise ValueError(f"Unknown precision: {requested}")
+
+
+def load_text(data_path: Path, download_shakespeare: bool) -> str:
+    if download_shakespeare:
+        request = urllib.request.Request(SHAKESPEARE_URL, headers={"User-Agent": "NanoLM educational experiment"})
+        with urllib.request.urlopen(request, timeout=30) as response:
+            text = response.read().decode("utf-8", errors="replace")
+        data_path.parent.mkdir(parents=True, exist_ok=True)
+        data_path.write_text(text, encoding="utf-8")
+        return text
+    if not data_path.is_file():
+        raise FileNotFoundError(f"Training text not found: {data_path}")
+    return data_path.read_text(encoding="utf-8", errors="replace")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train a byte-level Shakespeare language model.")
+    parser = argparse.ArgumentParser(description="Prepare a BPE tokenizer or train NanoLM.")
     parser.add_argument("--data", type=Path, default=Path("corpus.txt"), help="UTF-8 training text")
-    parser.add_argument("--download-shakespeare", action="store_true", help="Download Project Gutenberg complete works")
+    parser.add_argument("--tokenizer", type=Path, default=Path("nanolm_tokenizer.json"))
+    parser.add_argument("--vocab-size", type=int, default=8000)
+    parser.add_argument("--prepare-tokenizer", action="store_true", help="Train/save tokenizer only; do not train LM")
+    parser.add_argument("--download-shakespeare", action="store_true")
     parser.add_argument("--steps", type=int, default=5000)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--block-size", type=int, default=128)
@@ -383,49 +282,53 @@ def main() -> None:
     parser.add_argument("--device", default="auto", help="auto, cpu, cuda, or mps")
     parser.add_argument("--checkpoint", type=Path, default=Path("nanolm_shakespeare.pt"))
     parser.add_argument("--prompt", default="To be, or not to be:")
-    parser.add_argument("--generate", type=int, default=300, help="Number of new bytes to generate")
+    parser.add_argument("--generate", type=int, default=300)
     args = parser.parse_args()
 
-    if args.steps < 1 or args.batch_size < 1 or args.block_size < 1 or args.eval_batches < 1:
-        parser.error("steps, batch-size, block-size, and eval-batches must be positive")
-    if args.eval_interval < 1:
-        parser.error("eval-interval must be positive")
+    if args.vocab_size < 300:
+        parser.error("--vocab-size must be at least 300 for byte-level BPE")
+    if args.prepare_tokenizer:
+        text = load_text(args.data, args.download_shakespeare)
+        tokenizer = train_bpe_tokenizer(text, args.tokenizer, args.vocab_size)
+        sample = text[:500]
+        encoded_sample = tokenizer.encode(sample).ids
+        print(f"Tokenizer saved: {args.tokenizer}")
+        print(f"Vocabulary size: {tokenizer.get_vocab_size():,}")
+        print(f"Sample chars: {len(sample):,} | sample tokens: {len(encoded_sample):,}")
+        print(f"Round-trip sample matches: {tokenizer.decode(encoded_sample) == sample}")
+        print("Language model training was not started.")
+        return
 
-    random.seed(42)
-    torch.manual_seed(42)
-    device = choose_device(args.device)
-    amp_dtype, precision_name = choose_precision(args.precision, device)
+    if args.steps < 1 or args.batch_size < 1 or args.block_size < 1 or args.eval_batches < 1 or args.eval_interval < 1:
+        parser.error("steps, batch-size, block-size, eval-interval, and eval-batches must be positive")
+
     text = load_text(args.data, args.download_shakespeare)
-    encoded = torch.tensor(ByteTokenizer.encode(text), dtype=torch.long)
-    if encoded.numel() < args.block_size + 2:
-        parser.error(f"Corpus is too short for block-size={args.block_size}; provide a longer file or lower block size")
-
-    split = int(0.9 * encoded.numel())
-    train_data, val_data = encoded[:split].to(device), encoded[split:].to(device)
+    tokenizer = load_tokenizer(args.tokenizer)
+    encoded = tokenizer.encode(text).ids
+    if len(encoded) < args.block_size + 2:
+        parser.error("Tokenized corpus is too short for the selected block size")
+    data = torch.tensor(encoded, dtype=torch.long)
+    split = int(0.9 * len(data))
+    device = choose_device(args.device)
+    train_data, val_data = data[:split].to(device), data[split:].to(device)
     if val_data.numel() <= args.block_size:
         parser.error("Validation split is too short for the selected block size")
 
-    model = NanoTransformer(max_len=args.block_size).to(device)
+    vocab_size = tokenizer.get_vocab_size()
+    model = NanoTransformer(vocab_size=vocab_size, max_len=args.block_size).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=0.1)
+    amp_dtype, precision_name = precision_settings(args.precision, device)
     use_amp = device.type == "cuda" and amp_dtype is not None
     scaler = torch.amp.GradScaler("cuda", enabled=(use_amp and amp_dtype == torch.float16))
-    print(
-        f"Device: {device} | Precision: {precision_name} | Corpus: {encoded.numel():,} bytes "
-        f"| Parameters: {count_parameters(model):,}"
-    )
+    print(f"Device: {device} | Precision: {precision_name} | Tokens: {len(data):,} | Vocab: {vocab_size:,} | Params: {count_parameters(model):,}")
 
     for step in range(1, args.steps + 1):
         model.train()
         x, y = get_batch(train_data, args.batch_size, args.block_size)
-        amp_context = (
-            torch.autocast(device_type="cuda", dtype=amp_dtype)
-            if use_amp
-            else contextlib.nullcontext()
-        )
-        with amp_context:
+        autocast = torch.autocast(device_type="cuda", dtype=amp_dtype) if use_amp else contextlib.nullcontext()
+        with autocast:
             logits = model(x)
-            loss = F.cross_entropy(logits.float().reshape(-1, 256), y.reshape(-1))
-
+            loss = F.cross_entropy(logits.float().reshape(-1, vocab_size), y.reshape(-1))
         optimizer.zero_grad(set_to_none=True)
         scaler.scale(loss).backward()
         scaler.unscale_(optimizer)
@@ -434,35 +337,21 @@ def main() -> None:
         scaler.update()
 
         if step == 1 or step % args.eval_interval == 0 or step == args.steps:
-            train_loss, val_loss = estimate_loss(
-                model, train_data, val_data, args.batch_size, args.block_size, args.eval_batches
-            )
-            print(
-                f"Step {step:>5}/{args.steps} | train loss {train_loss:.4f} "
-                f"| val loss {val_loss:.4f} | val perplexity {math.exp(min(val_loss, 20)):.2f}"
-            )
+            train_loss, val_loss = estimate_loss(model, train_data, val_data, args.batch_size, args.block_size, args.eval_batches)
+            print(f"Step {step:>5}/{args.steps} | train loss {train_loss:.4f} | val loss {val_loss:.4f} | val perplexity {math.exp(min(val_loss, 20)):.2f}")
 
     args.checkpoint.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(
-        {
-            "model_state_dict": model.state_dict(),
-            "model_config": {
-                "vocab_size": 256,
-                "embed_dim": 128,
-                "nhead": 4,
-                "num_layers": 10,
-                "ff_dim": 512,
-                "max_len": args.block_size,
-                "position_encoding": "RoPE",
-            },
-            "training_data": str(args.data),
-            "precision": precision_name,
-        },
-        args.checkpoint,
-    )
+    torch.save({
+        "model_state_dict": model.state_dict(),
+        "model_config": {"vocab_size": vocab_size, "embed_dim": 128, "nhead": 4, "num_layers": 10,
+                         "ff_dim": 512, "max_len": args.block_size, "position_encoding": "RoPE"},
+        "tokenizer_path": str(args.tokenizer),
+        "training_data": str(args.data),
+        "precision": precision_name,
+    }, args.checkpoint)
     print(f"Checkpoint saved to {args.checkpoint}")
     print("\n--- Sample ---")
-    print(model.generate(args.prompt, max_new_tokens=args.generate))
+    print(model.generate(tokenizer, args.prompt, max_new_tokens=args.generate))
 
 
 if __name__ == "__main__":
