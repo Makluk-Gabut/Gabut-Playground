@@ -1,0 +1,108 @@
+Device: cuda | Precision: bf16 | Tokens: 12,900,327 | Vocab: 2,000 | Parameters: 2,238,976
+Embedding/output weights tied: True
+Step 500/12000 | train loss 6.0947 | val loss 5.9587 | val perplexity 387.11
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 750/12000 | train loss 5.6495 | val loss 5.4805 | val perplexity 239.96
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 1000/12000 | train loss 5.4041 | val loss 5.2971 | val perplexity 199.75
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 1250/12000 | train loss 5.1965 | val loss 5.0376 | val perplexity 154.10
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 1500/12000 | train loss 5.0285 | val loss 4.8878 | val perplexity 132.66
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 1750/12000 | train loss 4.9078 | val loss 4.8459 | val perplexity 127.21
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 2000/12000 | train loss 4.8014 | val loss 4.6370 | val perplexity 103.23
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 2250/12000 | train loss 4.6862 | val loss 4.5449 | val perplexity 94.15
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 2500/12000 | train loss 4.6142 | val loss 4.4830 | val perplexity 88.50
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 2750/12000 | train loss 4.4505 | val loss 4.4274 | val perplexity 83.71
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 3000/12000 | train loss 4.4207 | val loss 4.3907 | val perplexity 80.69
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 3250/12000 | train loss 4.3959 | val loss 4.3270 | val perplexity 75.72
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 3500/12000 | train loss 4.2913 | val loss 4.2655 | val perplexity 71.20
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 3750/12000 | train loss 4.2474 | val loss 4.2234 | val perplexity 68.26
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 4000/12000 | train loss 4.1802 | val loss 4.1459 | val perplexity 63.18
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 4250/12000 | train loss 4.1945 | val loss 4.0789 | val perplexity 59.08
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 4500/12000 | train loss 4.1296 | val loss 4.0414 | val perplexity 56.90
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 4750/12000 | train loss 4.0294 | val loss 4.0326 | val perplexity 56.41
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 5000/12000 | train loss 3.9992 | val loss 3.9669 | val perplexity 52.82
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 5250/12000 | train loss 4.0085 | val loss 3.9460 | val perplexity 51.73
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 5500/12000 | train loss 3.9480 | val loss 3.9314 | val perplexity 50.98
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 5750/12000 | train loss 3.9027 | val loss 3.9307 | val perplexity 50.94
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 6000/12000 | train loss 3.8952 | val loss 3.8194 | val perplexity 45.58
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 6250/12000 | train loss 3.8760 | val loss 3.8288 | val perplexity 46.01
+Step 6500/12000 | train loss 3.7899 | val loss 3.7960 | val perplexity 44.52
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 6750/12000 | train loss 3.8202 | val loss 3.8291 | val perplexity 46.02
+Step 7000/12000 | train loss 3.7607 | val loss 3.8228 | val perplexity 45.73
+Step 7250/12000 | train loss 3.7315 | val loss 3.7416 | val perplexity 42.17
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 7500/12000 | train loss 3.6889 | val loss 3.6974 | val perplexity 40.34
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 7750/12000 | train loss 3.7165 | val loss 3.7391 | val perplexity 42.06
+Step 8000/12000 | train loss 3.6702 | val loss 3.6746 | val perplexity 39.43
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 8250/12000 | train loss 3.7106 | val loss 3.6715 | val perplexity 39.31
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 8500/12000 | train loss 3.6296 | val loss 3.6451 | val perplexity 38.29
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 8750/12000 | train loss 3.6369 | val loss 3.6192 | val perplexity 37.31
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 9000/12000 | train loss 3.6249 | val loss 3.6063 | val perplexity 36.83
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 9250/12000 | train loss 3.6257 | val loss 3.6176 | val perplexity 37.25
+Step 9500/12000 | train loss 3.6272 | val loss 3.6331 | val perplexity 37.83
+Step 9750/12000 | train loss 3.5901 | val loss 3.5741 | val perplexity 35.66
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 10000/12000 | train loss 3.6122 | val loss 3.6210 | val perplexity 37.38
+Step 10250/12000 | train loss 3.5645 | val loss 3.5074 | val perplexity 33.36
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 10500/12000 | train loss 3.5050 | val loss 3.5400 | val perplexity 34.47
+Step 10750/12000 | train loss 3.5325 | val loss 3.5074 | val perplexity 33.36
+Step 11000/12000 | train loss 3.5078 | val loss 3.5264 | val perplexity 34.00
+Step 11250/12000 | train loss 3.5141 | val loss 3.4607 | val perplexity 31.84
+Best checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000_best.pt
+Step 11500/12000 | train loss 3.5391 | val loss 3.4700 | val perplexity 32.14
+Step 11750/12000 | train loss 3.4819 | val loss 3.4974 | val perplexity 33.03
+Step 12000/12000 | train loss 3.4727 | val loss 3.4954 | val perplexity 32.96
+Final checkpoint saved: /content/drive/MyDrive/NanoLM_Shakespeare_2k/nanolm_2k_12000.pt
+To be, or not to be:
+To farre the wiser of my Loue
+
+   Aum. So is his owne
+
+   Iul. I take your Bottome
+
+   Men. I pray you sir,
+My Conscience, haue you no owne good Lord,
+To you, and giue their Child
+
+   Page. I will be one:
+For I am glad and and to the Crowne in England
+
+   Ham. Those of a Fellow, and by good fouree;
+For I am to come in his Chamber:
+Whose wise: If his Vnckle, and shee
+He did not
+
+   Gui. O, you shall dull,
+But a Roman Wife, and burne him,
+I know not to thee, and I haue heard mee;
+To see the Sanne of a Siege,
+So that, and now the Ads of
