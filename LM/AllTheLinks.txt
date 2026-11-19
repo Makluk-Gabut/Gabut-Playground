@@ -1,4 +1,3 @@
 Download all the weight
 
-torchlm
-https://drive.google.com/drive/u/3/folders/1x2QkWXryC96yuHdubbJe4WdM7CLOhrsi
+https://drive.google.com/drive/u/3/folders/14IinlFdIjjTQcPtmxrwIw-8RAcwQNLmX
