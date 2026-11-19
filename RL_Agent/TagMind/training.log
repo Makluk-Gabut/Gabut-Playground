@@ -1,0 +1,1228 @@
+2026-11-19 12:42:38 | Device: cpu
+2026-11-19 12:42:38 | Folder hasil: /content/drive/MyDrive/TagMind
+2026-11-19 12:42:38 | Episode 1/100 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.995
+2026-11-19 12:42:39 | Episode 10/100 | winner=runner | steps=50 | reward C=-1.100 R=-0.800 | epsilon=0.951
+2026-11-19 12:42:42 | Episode 20/100 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.905
+2026-11-19 12:42:45 | Episode 30/100 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.860
+2026-11-19 12:42:48 | Episode 40/100 | winner=runner | steps=50 | reward C=-1.100 R=-0.500 | epsilon=0.818
+2026-11-19 12:42:50 | Episode 50/100 | winner=runner | steps=50 | reward C=-1.100 R=0.000 | epsilon=0.778
+2026-11-19 12:42:52 | Episode 60/100 | winner=runner | steps=50 | reward C=-0.400 R=-0.600 | epsilon=0.740
+2026-11-19 12:42:55 | Episode 70/100 | winner=runner | steps=50 | reward C=-0.800 R=-0.600 | epsilon=0.704
+2026-11-19 12:42:57 | Episode 80/100 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.670
+2026-11-19 12:43:01 | Episode 90/100 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.637
+2026-11-19 12:43:05 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000100.png
+2026-11-19 12:43:05 | Episode 100/100 | winner=chaser | steps=41 | reward C=0.350 R=-1.450 | epsilon=0.606
+2026-11-19 12:43:06 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep100.pth
+2026-11-19 12:43:06 | Training selesai.
+2026-11-19 12:43:06 | CSV: /content/drive/MyDrive/TagMind/tagmind_metrics.csv
+2026-11-19 12:43:06 | Grafik: /content/drive/MyDrive/TagMind/reward_plot.png
+2026-11-19 12:43:06 | Gambar: /content/drive/MyDrive/TagMind/frames
+2026-11-19 12:43:06 | Checkpoint akhir: /content/drive/MyDrive/TagMind/checkpoint_final.pth
+2026-11-19 12:43:23 | Device: cpu
+2026-11-19 12:43:23 | Folder hasil: /content/drive/MyDrive/TagMind
+2026-11-19 12:43:23 | Episode 1/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.995
+2026-11-19 12:43:24 | Episode 10/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.800 | epsilon=0.951
+2026-11-19 12:43:28 | Episode 20/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.905
+2026-11-19 12:43:31 | Episode 30/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.860
+2026-11-19 12:43:34 | Episode 40/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.500 | epsilon=0.818
+2026-11-19 12:43:36 | Episode 50/10000 | winner=runner | steps=50 | reward C=-1.100 R=0.000 | epsilon=0.778
+2026-11-19 12:43:38 | Episode 60/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.600 | epsilon=0.740
+2026-11-19 12:43:40 | Episode 70/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.600 | epsilon=0.704
+2026-11-19 12:43:44 | Episode 80/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.670
+2026-11-19 12:43:47 | Episode 90/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.637
+2026-11-19 12:43:50 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000100.png
+2026-11-19 12:43:51 | Episode 100/10000 | winner=chaser | steps=41 | reward C=0.350 R=-1.450 | epsilon=0.606
+2026-11-19 12:43:51 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep100.pth
+2026-11-19 12:43:53 | Episode 110/10000 | winner=chaser | steps=21 | reward C=0.850 R=-1.550 | epsilon=0.576
+2026-11-19 12:43:56 | Episode 120/10000 | winner=chaser | steps=43 | reward C=0.350 R=-1.950 | epsilon=0.548
+2026-11-19 12:43:59 | Episode 130/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.521
+2026-11-19 12:44:02 | Episode 140/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.200 | epsilon=0.496
+2026-11-19 12:44:04 | Episode 150/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.600 | epsilon=0.471
+2026-11-19 12:44:07 | Episode 160/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.600 | epsilon=0.448
+2026-11-19 12:44:10 | Episode 170/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.900 | epsilon=0.427
+2026-11-19 12:44:13 | Episode 180/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.000 | epsilon=0.406
+2026-11-19 12:44:16 | Episode 190/10000 | winner=chaser | steps=35 | reward C=1.050 R=-1.650 | epsilon=0.386
+2026-11-19 12:44:19 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000200.png
+2026-11-19 12:44:19 | Episode 200/10000 | winner=chaser | steps=25 | reward C=0.450 R=-1.650 | epsilon=0.367
+2026-11-19 12:44:20 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep200.pth
+2026-11-19 12:44:23 | Episode 210/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.000 | epsilon=0.349
+2026-11-19 12:44:25 | Episode 220/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.800 | epsilon=0.332
+2026-11-19 12:44:29 | Episode 230/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.200 | epsilon=0.316
+2026-11-19 12:44:32 | Episode 240/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.300
+2026-11-19 12:44:35 | Episode 250/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.500 | epsilon=0.286
+2026-11-19 12:44:38 | Episode 260/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.400 | epsilon=0.272
+2026-11-19 12:44:41 | Episode 270/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.258
+2026-11-19 12:44:45 | Episode 280/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.246
+2026-11-19 12:44:48 | Episode 290/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.900 | epsilon=0.234
+2026-11-19 12:44:50 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000300.png
+2026-11-19 12:44:51 | Episode 300/10000 | winner=chaser | steps=39 | reward C=0.050 R=-2.350 | epsilon=0.222
+2026-11-19 12:44:52 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep300.pth
+2026-11-19 12:44:55 | Episode 310/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.500 | epsilon=0.211
+2026-11-19 12:44:58 | Episode 320/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.201
+2026-11-19 12:45:02 | Episode 330/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.800 | epsilon=0.191
+2026-11-19 12:45:04 | Episode 340/10000 | winner=chaser | steps=10 | reward C=1.100 R=-1.200 | epsilon=0.182
+2026-11-19 12:45:07 | Episode 350/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.000 | epsilon=0.173
+2026-11-19 12:45:10 | Episode 360/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.500 | epsilon=0.165
+2026-11-19 12:45:13 | Episode 370/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.400 | epsilon=0.157
+2026-11-19 12:45:16 | Episode 380/10000 | winner=chaser | steps=8 | reward C=1.000 R=-1.400 | epsilon=0.149
+2026-11-19 12:45:19 | Episode 390/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.500 | epsilon=0.142
+2026-11-19 12:45:21 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000400.png
+2026-11-19 12:45:22 | Episode 400/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.400 | epsilon=0.135
+2026-11-19 12:45:23 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep400.pth
+2026-11-19 12:45:26 | Episode 410/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.600 | epsilon=0.128
+2026-11-19 12:45:30 | Episode 420/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.700 | epsilon=0.122
+2026-11-19 12:45:33 | Episode 430/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.100 | epsilon=0.116
+2026-11-19 12:45:36 | Episode 440/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.400 | epsilon=0.110
+2026-11-19 12:45:38 | Episode 450/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.200 | epsilon=0.105
+2026-11-19 12:45:41 | Episode 460/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.600 | epsilon=0.100
+2026-11-19 12:45:45 | Episode 470/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.095
+2026-11-19 12:45:47 | Episode 480/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.400 | epsilon=0.090
+2026-11-19 12:45:50 | Episode 490/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.900 | epsilon=0.086
+2026-11-19 12:45:53 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000500.png
+2026-11-19 12:45:54 | Episode 500/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.200 | epsilon=0.082
+2026-11-19 12:45:55 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep500.pth
+2026-11-19 12:45:59 | Episode 510/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.500 | epsilon=0.080
+2026-11-19 12:46:02 | Episode 520/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.200 | epsilon=0.080
+2026-11-19 12:46:05 | Episode 530/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.000 | epsilon=0.080
+2026-11-19 12:46:07 | Episode 540/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.600 | epsilon=0.080
+2026-11-19 12:46:10 | Episode 550/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.200 | epsilon=0.080
+2026-11-19 12:46:13 | Episode 560/10000 | winner=chaser | steps=3 | reward C=1.150 R=-0.950 | epsilon=0.080
+2026-11-19 12:46:16 | Episode 570/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.600 | epsilon=0.080
+2026-11-19 12:46:19 | Episode 580/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.900 | epsilon=0.080
+2026-11-19 12:46:22 | Episode 590/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 12:46:24 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000600.png
+2026-11-19 12:46:25 | Episode 600/10000 | winner=runner | steps=50 | reward C=-2.500 R=-1.800 | epsilon=0.080
+2026-11-19 12:46:26 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep600.pth
+2026-11-19 12:46:30 | Episode 610/10000 | winner=chaser | steps=50 | reward C=1.400 R=-2.100 | epsilon=0.080
+2026-11-19 12:46:33 | Episode 620/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 12:46:35 | Episode 630/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.000 | epsilon=0.080
+2026-11-19 12:46:38 | Episode 640/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.600 | epsilon=0.080
+2026-11-19 12:46:40 | Episode 650/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.400 | epsilon=0.080
+2026-11-19 12:46:44 | Episode 660/10000 | winner=runner | steps=50 | reward C=-0.700 R=-1.100 | epsilon=0.080
+2026-11-19 12:46:47 | Episode 670/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.000 | epsilon=0.080
+2026-11-19 12:46:50 | Episode 680/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.200 | epsilon=0.080
+2026-11-19 12:46:53 | Episode 690/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.200 | epsilon=0.080
+2026-11-19 12:46:55 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000700.png
+2026-11-19 12:46:56 | Episode 700/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.200 | epsilon=0.080
+2026-11-19 12:46:58 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep700.pth
+2026-11-19 12:47:01 | Episode 710/10000 | winner=runner | steps=50 | reward C=-1.600 R=-0.700 | epsilon=0.080
+2026-11-19 12:47:04 | Episode 720/10000 | winner=runner | steps=50 | reward C=-1.200 R=0.000 | epsilon=0.080
+2026-11-19 12:47:07 | Episode 730/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.000 | epsilon=0.080
+2026-11-19 12:47:10 | Episode 740/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 12:47:14 | Episode 750/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.700 | epsilon=0.080
+2026-11-19 12:47:17 | Episode 760/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.600 | epsilon=0.080
+2026-11-19 12:47:19 | Episode 770/10000 | winner=chaser | steps=6 | reward C=1.300 R=-1.200 | epsilon=0.080
+2026-11-19 12:47:21 | Episode 780/10000 | winner=chaser | steps=10 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 12:47:24 | Episode 790/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.600 | epsilon=0.080
+2026-11-19 12:47:27 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000800.png
+2026-11-19 12:47:28 | Episode 800/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.100 | epsilon=0.080
+2026-11-19 12:47:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep800.pth
+2026-11-19 12:47:33 | Episode 810/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.300 | epsilon=0.080
+2026-11-19 12:47:35 | Episode 820/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.500 | epsilon=0.080
+2026-11-19 12:47:38 | Episode 830/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.400 | epsilon=0.080
+2026-11-19 12:47:40 | Episode 840/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.000 | epsilon=0.080
+2026-11-19 12:47:43 | Episode 850/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.600 | epsilon=0.080
+2026-11-19 12:47:46 | Episode 860/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.080
+2026-11-19 12:47:49 | Episode 870/10000 | winner=chaser | steps=37 | reward C=0.950 R=-1.050 | epsilon=0.080
+2026-11-19 12:47:51 | Episode 880/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.500 | epsilon=0.080
+2026-11-19 12:47:53 | Episode 890/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.900 | epsilon=0.080
+2026-11-19 12:47:57 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_000900.png
+2026-11-19 12:47:57 | Episode 900/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.900 | epsilon=0.080
+2026-11-19 12:48:00 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep900.pth
+2026-11-19 12:48:03 | Episode 910/10000 | winner=chaser | steps=50 | reward C=1.300 R=-1.800 | epsilon=0.080
+2026-11-19 12:48:05 | Episode 920/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 12:48:08 | Episode 930/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.400 | epsilon=0.080
+2026-11-19 12:48:10 | Episode 940/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 12:48:14 | Episode 950/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.700 | epsilon=0.080
+2026-11-19 12:48:17 | Episode 960/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.700 | epsilon=0.080
+2026-11-19 12:48:19 | Episode 970/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.200 | epsilon=0.080
+2026-11-19 12:48:22 | Episode 980/10000 | winner=chaser | steps=39 | reward C=-0.550 R=-2.550 | epsilon=0.080
+2026-11-19 12:48:24 | Episode 990/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.080
+2026-11-19 12:48:27 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001000.png
+2026-11-19 12:48:28 | Episode 1000/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.200 | epsilon=0.080
+2026-11-19 12:48:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1000.pth
+2026-11-19 12:48:33 | Episode 1010/10000 | winner=chaser | steps=22 | reward C=1.300 R=-1.300 | epsilon=0.080
+2026-11-19 12:48:36 | Episode 1020/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.300 | epsilon=0.080
+2026-11-19 12:48:38 | Episode 1030/10000 | winner=runner | steps=50 | reward C=-1.600 R=-0.900 | epsilon=0.080
+2026-11-19 12:48:41 | Episode 1040/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.800 | epsilon=0.080
+2026-11-19 12:48:44 | Episode 1050/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.700 | epsilon=0.080
+2026-11-19 12:48:47 | Episode 1060/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.800 | epsilon=0.080
+2026-11-19 12:48:49 | Episode 1070/10000 | winner=chaser | steps=21 | reward C=1.350 R=-1.550 | epsilon=0.080
+2026-11-19 12:48:52 | Episode 1080/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 12:48:54 | Episode 1090/10000 | winner=chaser | steps=26 | reward C=0.900 R=-1.600 | epsilon=0.080
+2026-11-19 12:48:57 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001100.png
+2026-11-19 12:48:58 | Episode 1100/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.700 | epsilon=0.080
+2026-11-19 12:49:00 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1100.pth
+2026-11-19 12:49:03 | Episode 1110/10000 | winner=chaser | steps=25 | reward C=0.450 R=-2.150 | epsilon=0.080
+2026-11-19 12:49:06 | Episode 1120/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.400 | epsilon=0.080
+2026-11-19 12:49:08 | Episode 1130/10000 | winner=chaser | steps=7 | reward C=1.250 R=-1.250 | epsilon=0.080
+2026-11-19 12:49:11 | Episode 1140/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.900 | epsilon=0.080
+2026-11-19 12:49:14 | Episode 1150/10000 | winner=chaser | steps=11 | reward C=1.450 R=-1.250 | epsilon=0.080
+2026-11-19 12:49:17 | Episode 1160/10000 | winner=runner | steps=50 | reward C=-1.800 R=-0.500 | epsilon=0.080
+2026-11-19 12:49:19 | Episode 1170/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.000 | epsilon=0.080
+2026-11-19 12:49:22 | Episode 1180/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.500 | epsilon=0.080
+2026-11-19 12:49:24 | Episode 1190/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.300 | epsilon=0.080
+2026-11-19 12:49:27 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001200.png
+2026-11-19 12:49:28 | Episode 1200/10000 | winner=chaser | steps=8 | reward C=1.100 R=-1.000 | epsilon=0.080
+2026-11-19 12:49:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1200.pth
+2026-11-19 12:49:33 | Episode 1210/10000 | winner=chaser | steps=11 | reward C=1.050 R=-1.150 | epsilon=0.080
+2026-11-19 12:49:35 | Episode 1220/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.400 | epsilon=0.080
+2026-11-19 12:49:38 | Episode 1230/10000 | winner=chaser | steps=32 | reward C=0.700 R=-1.300 | epsilon=0.080
+2026-11-19 12:49:40 | Episode 1240/10000 | winner=chaser | steps=18 | reward C=1.000 R=-1.100 | epsilon=0.080
+2026-11-19 12:49:43 | Episode 1250/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.700 | epsilon=0.080
+2026-11-19 12:49:46 | Episode 1260/10000 | winner=chaser | steps=31 | reward C=0.250 R=-2.450 | epsilon=0.080
+2026-11-19 12:49:48 | Episode 1270/10000 | winner=chaser | steps=38 | reward C=1.100 R=-1.500 | epsilon=0.080
+2026-11-19 12:49:51 | Episode 1280/10000 | winner=chaser | steps=14 | reward C=1.200 R=-1.500 | epsilon=0.080
+2026-11-19 12:49:53 | Episode 1290/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.100 | epsilon=0.080
+2026-11-19 12:49:56 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001300.png
+2026-11-19 12:49:57 | Episode 1300/10000 | winner=runner | steps=50 | reward C=-0.600 R=-1.000 | epsilon=0.080
+2026-11-19 12:49:59 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1300.pth
+2026-11-19 12:50:02 | Episode 1310/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.080
+2026-11-19 12:50:05 | Episode 1320/10000 | winner=chaser | steps=48 | reward C=0.200 R=-3.000 | epsilon=0.080
+2026-11-19 12:50:08 | Episode 1330/10000 | winner=chaser | steps=19 | reward C=1.050 R=-1.350 | epsilon=0.080
+2026-11-19 12:50:10 | Episode 1340/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.000 | epsilon=0.080
+2026-11-19 12:50:13 | Episode 1350/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.800 | epsilon=0.080
+2026-11-19 12:50:16 | Episode 1360/10000 | winner=runner | steps=50 | reward C=0.000 R=0.300 | epsilon=0.080
+2026-11-19 12:50:19 | Episode 1370/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.200 | epsilon=0.080
+2026-11-19 12:50:22 | Episode 1380/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.200 | epsilon=0.080
+2026-11-19 12:50:24 | Episode 1390/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.100 | epsilon=0.080
+2026-11-19 12:50:26 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001400.png
+2026-11-19 12:50:27 | Episode 1400/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 12:50:29 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1400.pth
+2026-11-19 12:50:32 | Episode 1410/10000 | winner=chaser | steps=11 | reward C=1.550 R=-1.450 | epsilon=0.080
+2026-11-19 12:50:34 | Episode 1420/10000 | winner=runner | steps=50 | reward C=-2.100 R=-1.500 | epsilon=0.080
+2026-11-19 12:50:36 | Episode 1430/10000 | winner=runner | steps=50 | reward C=0.000 R=0.100 | epsilon=0.080
+2026-11-19 12:50:39 | Episode 1440/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.600 | epsilon=0.080
+2026-11-19 12:50:41 | Episode 1450/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.300 | epsilon=0.080
+2026-11-19 12:50:44 | Episode 1460/10000 | winner=chaser | steps=23 | reward C=1.050 R=-1.250 | epsilon=0.080
+2026-11-19 12:50:46 | Episode 1470/10000 | winner=runner | steps=50 | reward C=0.500 R=-0.400 | epsilon=0.080
+2026-11-19 12:50:48 | Episode 1480/10000 | winner=runner | steps=50 | reward C=-0.700 R=-1.100 | epsilon=0.080
+2026-11-19 12:50:51 | Episode 1490/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.500 | epsilon=0.080
+2026-11-19 12:50:53 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001500.png
+2026-11-19 12:50:53 | Episode 1500/10000 | winner=runner | steps=50 | reward C=-1.700 R=-2.100 | epsilon=0.080
+2026-11-19 12:50:55 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1500.pth
+2026-11-19 12:50:58 | Episode 1510/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.700 | epsilon=0.080
+2026-11-19 12:51:02 | Episode 1520/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.100 | epsilon=0.080
+2026-11-19 12:51:05 | Episode 1530/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.600 | epsilon=0.080
+2026-11-19 12:51:07 | Episode 1540/10000 | winner=runner | steps=50 | reward C=0.100 R=-0.100 | epsilon=0.080
+2026-11-19 12:51:10 | Episode 1550/10000 | winner=chaser | steps=16 | reward C=0.800 R=-1.600 | epsilon=0.080
+2026-11-19 12:51:13 | Episode 1560/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.100 | epsilon=0.080
+2026-11-19 12:51:16 | Episode 1570/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.000 | epsilon=0.080
+2026-11-19 12:51:19 | Episode 1580/10000 | winner=chaser | steps=37 | reward C=0.150 R=-2.150 | epsilon=0.080
+2026-11-19 12:51:21 | Episode 1590/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.900 | epsilon=0.080
+2026-11-19 12:51:24 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001600.png
+2026-11-19 12:51:24 | Episode 1600/10000 | winner=chaser | steps=48 | reward C=0.300 R=-1.800 | epsilon=0.080
+2026-11-19 12:51:26 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1600.pth
+2026-11-19 12:51:29 | Episode 1610/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.100 | epsilon=0.080
+2026-11-19 12:51:32 | Episode 1620/10000 | winner=chaser | steps=27 | reward C=0.350 R=-1.850 | epsilon=0.080
+2026-11-19 12:51:35 | Episode 1630/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.800 | epsilon=0.080
+2026-11-19 12:51:38 | Episode 1640/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.400 | epsilon=0.080
+2026-11-19 12:51:40 | Episode 1650/10000 | winner=chaser | steps=40 | reward C=0.700 R=-1.800 | epsilon=0.080
+2026-11-19 12:51:43 | Episode 1660/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.800 | epsilon=0.080
+2026-11-19 12:51:47 | Episode 1670/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.700 | epsilon=0.080
+2026-11-19 12:51:49 | Episode 1680/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.300 | epsilon=0.080
+2026-11-19 12:51:52 | Episode 1690/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.600 | epsilon=0.080
+2026-11-19 12:51:54 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001700.png
+2026-11-19 12:51:55 | Episode 1700/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.700 | epsilon=0.080
+2026-11-19 12:51:56 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1700.pth
+2026-11-19 12:52:00 | Episode 1710/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.100 | epsilon=0.080
+2026-11-19 12:52:03 | Episode 1720/10000 | winner=chaser | steps=16 | reward C=0.600 R=-1.400 | epsilon=0.080
+2026-11-19 12:52:05 | Episode 1730/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.400 | epsilon=0.080
+2026-11-19 12:52:07 | Episode 1740/10000 | winner=chaser | steps=18 | reward C=0.900 R=-1.200 | epsilon=0.080
+2026-11-19 12:52:10 | Episode 1750/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.300 | epsilon=0.080
+2026-11-19 12:52:12 | Episode 1760/10000 | winner=chaser | steps=11 | reward C=0.850 R=-1.250 | epsilon=0.080
+2026-11-19 12:52:15 | Episode 1770/10000 | winner=chaser | steps=19 | reward C=1.350 R=-1.450 | epsilon=0.080
+2026-11-19 12:52:17 | Episode 1780/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.080
+2026-11-19 12:52:19 | Episode 1790/10000 | winner=runner | steps=50 | reward C=-1.300 R=0.200 | epsilon=0.080
+2026-11-19 12:52:22 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001800.png
+2026-11-19 12:52:23 | Episode 1800/10000 | winner=chaser | steps=26 | reward C=1.800 R=-1.600 | epsilon=0.080
+2026-11-19 12:52:24 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1800.pth
+2026-11-19 12:52:26 | Episode 1810/10000 | winner=chaser | steps=5 | reward C=1.050 R=-1.150 | epsilon=0.080
+2026-11-19 12:52:30 | Episode 1820/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.600 | epsilon=0.080
+2026-11-19 12:52:33 | Episode 1830/10000 | winner=chaser | steps=39 | reward C=0.150 R=-1.950 | epsilon=0.080
+2026-11-19 12:52:36 | Episode 1840/10000 | winner=runner | steps=50 | reward C=-0.600 R=-1.200 | epsilon=0.080
+2026-11-19 12:52:39 | Episode 1850/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.080
+2026-11-19 12:52:41 | Episode 1860/10000 | winner=chaser | steps=9 | reward C=1.350 R=-1.350 | epsilon=0.080
+2026-11-19 12:52:43 | Episode 1870/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.200 | epsilon=0.080
+2026-11-19 12:52:46 | Episode 1880/10000 | winner=chaser | steps=12 | reward C=1.200 R=-1.200 | epsilon=0.080
+2026-11-19 12:52:48 | Episode 1890/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.200 | epsilon=0.080
+2026-11-19 12:52:51 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_001900.png
+2026-11-19 12:52:51 | Episode 1900/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.300 | epsilon=0.080
+2026-11-19 12:52:53 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep1900.pth
+2026-11-19 12:52:55 | Episode 1910/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.000 | epsilon=0.080
+2026-11-19 12:52:58 | Episode 1920/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 12:53:02 | Episode 1930/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.800 | epsilon=0.080
+2026-11-19 12:53:04 | Episode 1940/10000 | winner=chaser | steps=11 | reward C=0.850 R=-0.850 | epsilon=0.080
+2026-11-19 12:53:06 | Episode 1950/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.500 | epsilon=0.080
+2026-11-19 12:53:09 | Episode 1960/10000 | winner=chaser | steps=49 | reward C=0.550 R=-1.550 | epsilon=0.080
+2026-11-19 12:53:11 | Episode 1970/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.800 | epsilon=0.080
+2026-11-19 12:53:14 | Episode 1980/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.080
+2026-11-19 12:53:17 | Episode 1990/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 12:53:20 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002000.png
+2026-11-19 12:53:20 | Episode 2000/10000 | winner=chaser | steps=50 | reward C=0.300 R=-1.800 | epsilon=0.080
+2026-11-19 12:53:22 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2000.pth
+2026-11-19 12:53:25 | Episode 2010/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.900 | epsilon=0.080
+2026-11-19 12:53:27 | Episode 2020/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.100 | epsilon=0.080
+2026-11-19 12:53:31 | Episode 2030/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.700 | epsilon=0.080
+2026-11-19 12:53:34 | Episode 2040/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.100 | epsilon=0.080
+2026-11-19 12:53:37 | Episode 2050/10000 | winner=chaser | steps=30 | reward C=1.000 R=-1.600 | epsilon=0.080
+2026-11-19 12:53:40 | Episode 2060/10000 | winner=runner | steps=50 | reward C=0.100 R=0.300 | epsilon=0.080
+2026-11-19 12:53:42 | Episode 2070/10000 | winner=chaser | steps=23 | reward C=0.350 R=-1.750 | epsilon=0.080
+2026-11-19 12:53:45 | Episode 2080/10000 | winner=chaser | steps=39 | reward C=-0.050 R=-2.650 | epsilon=0.080
+2026-11-19 12:53:48 | Episode 2090/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.000 | epsilon=0.080
+2026-11-19 12:53:51 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002100.png
+2026-11-19 12:53:51 | Episode 2100/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.200 | epsilon=0.080
+2026-11-19 12:53:53 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2100.pth
+2026-11-19 12:53:55 | Episode 2110/10000 | winner=chaser | steps=36 | reward C=0.500 R=-2.200 | epsilon=0.080
+2026-11-19 12:53:57 | Episode 2120/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.100 | epsilon=0.080
+2026-11-19 12:54:01 | Episode 2130/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.300 | epsilon=0.080
+2026-11-19 12:54:03 | Episode 2140/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.900 | epsilon=0.080
+2026-11-19 12:54:05 | Episode 2150/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.300 | epsilon=0.080
+2026-11-19 12:54:08 | Episode 2160/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.400 | epsilon=0.080
+2026-11-19 12:54:11 | Episode 2170/10000 | winner=chaser | steps=47 | reward C=0.950 R=-1.850 | epsilon=0.080
+2026-11-19 12:54:14 | Episode 2180/10000 | winner=chaser | steps=32 | reward C=1.400 R=-1.600 | epsilon=0.080
+2026-11-19 12:54:17 | Episode 2190/10000 | winner=chaser | steps=17 | reward C=1.150 R=-1.450 | epsilon=0.080
+2026-11-19 12:54:19 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002200.png
+2026-11-19 12:54:20 | Episode 2200/10000 | winner=chaser | steps=6 | reward C=1.200 R=-1.300 | epsilon=0.080
+2026-11-19 12:54:22 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2200.pth
+2026-11-19 12:54:24 | Episode 2210/10000 | winner=chaser | steps=46 | reward C=0.200 R=-2.000 | epsilon=0.080
+2026-11-19 12:54:26 | Episode 2220/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.000 | epsilon=0.080
+2026-11-19 12:54:29 | Episode 2230/10000 | winner=chaser | steps=13 | reward C=1.250 R=-1.450 | epsilon=0.080
+2026-11-19 12:54:33 | Episode 2240/10000 | winner=runner | steps=50 | reward C=0.100 R=-0.200 | epsilon=0.080
+2026-11-19 12:54:35 | Episode 2250/10000 | winner=chaser | steps=5 | reward C=1.150 R=-1.250 | epsilon=0.080
+2026-11-19 12:54:37 | Episode 2260/10000 | winner=chaser | steps=23 | reward C=1.650 R=-1.550 | epsilon=0.080
+2026-11-19 12:54:40 | Episode 2270/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.200 | epsilon=0.080
+2026-11-19 12:54:41 | Episode 2280/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.500 | epsilon=0.080
+2026-11-19 12:54:45 | Episode 2290/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.300 | epsilon=0.080
+2026-11-19 12:54:48 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002300.png
+2026-11-19 12:54:48 | Episode 2300/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 12:54:50 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2300.pth
+2026-11-19 12:54:52 | Episode 2310/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.000 | epsilon=0.080
+2026-11-19 12:54:55 | Episode 2320/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.200 | epsilon=0.080
+2026-11-19 12:54:58 | Episode 2330/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.400 | epsilon=0.080
+2026-11-19 12:55:00 | Episode 2340/10000 | winner=runner | steps=50 | reward C=-2.100 R=-1.800 | epsilon=0.080
+2026-11-19 12:55:03 | Episode 2350/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.100 | epsilon=0.080
+2026-11-19 12:55:05 | Episode 2360/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.700 | epsilon=0.080
+2026-11-19 12:55:07 | Episode 2370/10000 | winner=runner | steps=50 | reward C=0.200 R=-0.200 | epsilon=0.080
+2026-11-19 12:55:09 | Episode 2380/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.400 | epsilon=0.080
+2026-11-19 12:55:12 | Episode 2390/10000 | winner=chaser | steps=34 | reward C=1.100 R=-1.400 | epsilon=0.080
+2026-11-19 12:55:16 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002400.png
+2026-11-19 12:55:17 | Episode 2400/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.200 | epsilon=0.080
+2026-11-19 12:55:18 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2400.pth
+2026-11-19 12:55:21 | Episode 2410/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 12:55:23 | Episode 2420/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.700 | epsilon=0.080
+2026-11-19 12:55:25 | Episode 2430/10000 | winner=chaser | steps=34 | reward C=0.900 R=-2.000 | epsilon=0.080
+2026-11-19 12:55:27 | Episode 2440/10000 | winner=chaser | steps=14 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 12:55:30 | Episode 2450/10000 | winner=chaser | steps=13 | reward C=0.750 R=-1.450 | epsilon=0.080
+2026-11-19 12:55:33 | Episode 2460/10000 | winner=chaser | steps=24 | reward C=0.900 R=-1.600 | epsilon=0.080
+2026-11-19 12:55:34 | Episode 2470/10000 | winner=chaser | steps=22 | reward C=0.700 R=-1.200 | epsilon=0.080
+2026-11-19 12:55:36 | Episode 2480/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.200 | epsilon=0.080
+2026-11-19 12:55:38 | Episode 2490/10000 | winner=chaser | steps=44 | reward C=-0.200 R=-2.500 | epsilon=0.080
+2026-11-19 12:55:42 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002500.png
+2026-11-19 12:55:42 | Episode 2500/10000 | winner=chaser | steps=40 | reward C=-0.100 R=-2.900 | epsilon=0.080
+2026-11-19 12:55:45 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2500.pth
+2026-11-19 12:55:48 | Episode 2510/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.000 | epsilon=0.080
+2026-11-19 12:55:51 | Episode 2520/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.080
+2026-11-19 12:55:53 | Episode 2530/10000 | winner=chaser | steps=17 | reward C=0.750 R=-1.450 | epsilon=0.080
+2026-11-19 12:55:55 | Episode 2540/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 12:55:59 | Episode 2550/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.300 | epsilon=0.080
+2026-11-19 12:56:01 | Episode 2560/10000 | winner=chaser | steps=14 | reward C=1.200 R=-1.200 | epsilon=0.080
+2026-11-19 12:56:03 | Episode 2570/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.700 | epsilon=0.080
+2026-11-19 12:56:06 | Episode 2580/10000 | winner=runner | steps=50 | reward C=-0.800 R=-1.000 | epsilon=0.080
+2026-11-19 12:56:08 | Episode 2590/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.800 | epsilon=0.080
+2026-11-19 12:56:11 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002600.png
+2026-11-19 12:56:11 | Episode 2600/10000 | winner=chaser | steps=38 | reward C=1.600 R=-2.100 | epsilon=0.080
+2026-11-19 12:56:13 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2600.pth
+2026-11-19 12:56:17 | Episode 2610/10000 | winner=chaser | steps=13 | reward C=1.450 R=-1.450 | epsilon=0.080
+2026-11-19 12:56:19 | Episode 2620/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.100 | epsilon=0.080
+2026-11-19 12:56:22 | Episode 2630/10000 | winner=runner | steps=50 | reward C=-2.100 R=-1.600 | epsilon=0.080
+2026-11-19 12:56:24 | Episode 2640/10000 | winner=chaser | steps=38 | reward C=0.300 R=-1.500 | epsilon=0.080
+2026-11-19 12:56:26 | Episode 2650/10000 | winner=chaser | steps=6 | reward C=1.300 R=-1.200 | epsilon=0.080
+2026-11-19 12:56:29 | Episode 2660/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.100 | epsilon=0.080
+2026-11-19 12:56:32 | Episode 2670/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.100 | epsilon=0.080
+2026-11-19 12:56:34 | Episode 2680/10000 | winner=chaser | steps=4 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 12:56:36 | Episode 2690/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.080
+2026-11-19 12:56:38 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002700.png
+2026-11-19 12:56:39 | Episode 2700/10000 | winner=chaser | steps=1 | reward C=1.050 R=-1.050 | epsilon=0.080
+2026-11-19 12:56:40 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2700.pth
+2026-11-19 12:56:43 | Episode 2710/10000 | winner=chaser | steps=12 | reward C=0.800 R=-1.500 | epsilon=0.080
+2026-11-19 12:56:47 | Episode 2720/10000 | winner=chaser | steps=13 | reward C=1.050 R=-1.050 | epsilon=0.080
+2026-11-19 12:56:50 | Episode 2730/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.500 | epsilon=0.080
+2026-11-19 12:56:52 | Episode 2740/10000 | winner=chaser | steps=16 | reward C=1.200 R=-1.500 | epsilon=0.080
+2026-11-19 12:56:54 | Episode 2750/10000 | winner=chaser | steps=4 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 12:56:57 | Episode 2760/10000 | winner=chaser | steps=5 | reward C=1.250 R=-1.250 | epsilon=0.080
+2026-11-19 12:56:59 | Episode 2770/10000 | winner=chaser | steps=7 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 12:57:02 | Episode 2780/10000 | winner=chaser | steps=35 | reward C=0.750 R=-2.450 | epsilon=0.080
+2026-11-19 12:57:05 | Episode 2790/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.400 | epsilon=0.080
+2026-11-19 12:57:08 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002800.png
+2026-11-19 12:57:08 | Episode 2800/10000 | winner=chaser | steps=17 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 12:57:10 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2800.pth
+2026-11-19 12:57:12 | Episode 2810/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.200 | epsilon=0.080
+2026-11-19 12:57:16 | Episode 2820/10000 | winner=chaser | steps=10 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 12:57:18 | Episode 2830/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.200 | epsilon=0.080
+2026-11-19 12:57:20 | Episode 2840/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.200 | epsilon=0.080
+2026-11-19 12:57:22 | Episode 2850/10000 | winner=chaser | steps=19 | reward C=1.150 R=-1.650 | epsilon=0.080
+2026-11-19 12:57:25 | Episode 2860/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.900 | epsilon=0.080
+2026-11-19 12:57:28 | Episode 2870/10000 | winner=chaser | steps=48 | reward C=-0.400 R=-3.100 | epsilon=0.080
+2026-11-19 12:57:32 | Episode 2880/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.500 | epsilon=0.080
+2026-11-19 12:57:35 | Episode 2890/10000 | winner=runner | steps=50 | reward C=0.000 R=0.100 | epsilon=0.080
+2026-11-19 12:57:37 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_002900.png
+2026-11-19 12:57:37 | Episode 2900/10000 | winner=runner | steps=50 | reward C=-2.100 R=-0.800 | epsilon=0.080
+2026-11-19 12:57:39 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep2900.pth
+2026-11-19 12:57:41 | Episode 2910/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.600 | epsilon=0.080
+2026-11-19 12:57:44 | Episode 2920/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.700 | epsilon=0.080
+2026-11-19 12:57:47 | Episode 2930/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.080
+2026-11-19 12:57:50 | Episode 2940/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 12:57:52 | Episode 2950/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.900 | epsilon=0.080
+2026-11-19 12:57:55 | Episode 2960/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.600 | epsilon=0.080
+2026-11-19 12:57:57 | Episode 2970/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.600 | epsilon=0.080
+2026-11-19 12:58:00 | Episode 2980/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.300 | epsilon=0.080
+2026-11-19 12:58:02 | Episode 2990/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.300 | epsilon=0.080
+2026-11-19 12:58:05 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003000.png
+2026-11-19 12:58:05 | Episode 3000/10000 | winner=chaser | steps=28 | reward C=1.200 R=-1.400 | epsilon=0.080
+2026-11-19 12:58:07 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3000.pth
+2026-11-19 12:58:09 | Episode 3010/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.500 | epsilon=0.080
+2026-11-19 12:58:11 | Episode 3020/10000 | winner=chaser | steps=50 | reward C=0.800 R=-1.600 | epsilon=0.080
+2026-11-19 12:58:14 | Episode 3030/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.600 | epsilon=0.080
+2026-11-19 12:58:17 | Episode 3040/10000 | winner=chaser | steps=26 | reward C=1.200 R=-1.900 | epsilon=0.080
+2026-11-19 12:58:19 | Episode 3050/10000 | winner=chaser | steps=10 | reward C=1.400 R=-1.500 | epsilon=0.080
+2026-11-19 12:58:21 | Episode 3060/10000 | winner=chaser | steps=25 | reward C=1.450 R=-1.850 | epsilon=0.080
+2026-11-19 12:58:23 | Episode 3070/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.500 | epsilon=0.080
+2026-11-19 12:58:25 | Episode 3080/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.500 | epsilon=0.080
+2026-11-19 12:58:27 | Episode 3090/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.900 | epsilon=0.080
+2026-11-19 12:58:31 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003100.png
+2026-11-19 12:58:32 | Episode 3100/10000 | winner=chaser | steps=17 | reward C=1.050 R=-1.150 | epsilon=0.080
+2026-11-19 12:58:33 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3100.pth
+2026-11-19 12:58:36 | Episode 3110/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.200 | epsilon=0.080
+2026-11-19 12:58:37 | Episode 3120/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.700 | epsilon=0.080
+2026-11-19 12:58:40 | Episode 3130/10000 | winner=chaser | steps=23 | reward C=0.950 R=-1.350 | epsilon=0.080
+2026-11-19 12:58:42 | Episode 3140/10000 | winner=chaser | steps=16 | reward C=1.200 R=-1.300 | epsilon=0.080
+2026-11-19 12:58:44 | Episode 3150/10000 | winner=chaser | steps=38 | reward C=0.900 R=-1.700 | epsilon=0.080
+2026-11-19 12:58:47 | Episode 3160/10000 | winner=chaser | steps=5 | reward C=1.050 R=-1.150 | epsilon=0.080
+2026-11-19 12:58:48 | Episode 3170/10000 | winner=chaser | steps=34 | reward C=1.100 R=-1.600 | epsilon=0.080
+2026-11-19 12:58:51 | Episode 3180/10000 | winner=runner | steps=50 | reward C=-2.500 R=-2.300 | epsilon=0.080
+2026-11-19 12:58:52 | Episode 3190/10000 | winner=chaser | steps=31 | reward C=-0.050 R=-2.150 | epsilon=0.080
+2026-11-19 12:58:54 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003200.png
+2026-11-19 12:58:55 | Episode 3200/10000 | winner=chaser | steps=5 | reward C=1.050 R=-0.850 | epsilon=0.080
+2026-11-19 12:58:56 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3200.pth
+2026-11-19 12:59:01 | Episode 3210/10000 | winner=runner | steps=50 | reward C=-1.600 R=-0.800 | epsilon=0.080
+2026-11-19 12:59:03 | Episode 3220/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.500 | epsilon=0.080
+2026-11-19 12:59:06 | Episode 3230/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.500 | epsilon=0.080
+2026-11-19 12:59:08 | Episode 3240/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.300 | epsilon=0.080
+2026-11-19 12:59:10 | Episode 3250/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.700 | epsilon=0.080
+2026-11-19 12:59:13 | Episode 3260/10000 | winner=chaser | steps=12 | reward C=1.100 R=-1.400 | epsilon=0.080
+2026-11-19 12:59:16 | Episode 3270/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.200 | epsilon=0.080
+2026-11-19 12:59:19 | Episode 3280/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.600 | epsilon=0.080
+2026-11-19 12:59:21 | Episode 3290/10000 | winner=chaser | steps=29 | reward C=0.350 R=-2.250 | epsilon=0.080
+2026-11-19 12:59:24 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003300.png
+2026-11-19 12:59:24 | Episode 3300/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.700 | epsilon=0.080
+2026-11-19 12:59:26 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3300.pth
+2026-11-19 12:59:28 | Episode 3310/10000 | winner=chaser | steps=35 | reward C=0.350 R=-2.450 | epsilon=0.080
+2026-11-19 12:59:31 | Episode 3320/10000 | winner=runner | steps=50 | reward C=0.500 R=-0.400 | epsilon=0.080
+2026-11-19 12:59:33 | Episode 3330/10000 | winner=chaser | steps=50 | reward C=0.500 R=-1.800 | epsilon=0.080
+2026-11-19 12:59:35 | Episode 3340/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.000 | epsilon=0.080
+2026-11-19 12:59:37 | Episode 3350/10000 | winner=chaser | steps=22 | reward C=0.700 R=-1.000 | epsilon=0.080
+2026-11-19 12:59:39 | Episode 3360/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.700 | epsilon=0.080
+2026-11-19 12:59:42 | Episode 3370/10000 | winner=chaser | steps=38 | reward C=0.500 R=-2.400 | epsilon=0.080
+2026-11-19 12:59:44 | Episode 3380/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.600 | epsilon=0.080
+2026-11-19 12:59:47 | Episode 3390/10000 | winner=chaser | steps=42 | reward C=0.600 R=-2.100 | epsilon=0.080
+2026-11-19 12:59:49 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003400.png
+2026-11-19 12:59:50 | Episode 3400/10000 | winner=chaser | steps=12 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 12:59:51 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3400.pth
+2026-11-19 12:59:53 | Episode 3410/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.400 | epsilon=0.080
+2026-11-19 12:59:56 | Episode 3420/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.000 | epsilon=0.080
+2026-11-19 12:59:58 | Episode 3430/10000 | winner=chaser | steps=11 | reward C=1.350 R=-1.250 | epsilon=0.080
+2026-11-19 13:00:01 | Episode 3440/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.400 | epsilon=0.080
+2026-11-19 13:00:04 | Episode 3450/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.100 | epsilon=0.080
+2026-11-19 13:00:06 | Episode 3460/10000 | winner=chaser | steps=3 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 13:00:08 | Episode 3470/10000 | winner=chaser | steps=29 | reward C=0.650 R=-1.950 | epsilon=0.080
+2026-11-19 13:00:10 | Episode 3480/10000 | winner=chaser | steps=3 | reward C=1.250 R=-1.150 | epsilon=0.080
+2026-11-19 13:00:13 | Episode 3490/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.300 | epsilon=0.080
+2026-11-19 13:00:16 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003500.png
+2026-11-19 13:00:17 | Episode 3500/10000 | winner=chaser | steps=20 | reward C=1.200 R=-1.400 | epsilon=0.080
+2026-11-19 13:00:18 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3500.pth
+2026-11-19 13:00:20 | Episode 3510/10000 | winner=chaser | steps=41 | reward C=0.750 R=-1.150 | epsilon=0.080
+2026-11-19 13:00:23 | Episode 3520/10000 | winner=runner | steps=50 | reward C=-0.400 R=-1.000 | epsilon=0.080
+2026-11-19 13:00:25 | Episode 3530/10000 | winner=runner | steps=50 | reward C=0.100 R=-0.600 | epsilon=0.080
+2026-11-19 13:00:28 | Episode 3540/10000 | winner=chaser | steps=8 | reward C=1.300 R=-1.300 | epsilon=0.080
+2026-11-19 13:00:32 | Episode 3550/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.400 | epsilon=0.080
+2026-11-19 13:00:34 | Episode 3560/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.000 | epsilon=0.080
+2026-11-19 13:00:37 | Episode 3570/10000 | winner=chaser | steps=28 | reward C=1.500 R=-1.700 | epsilon=0.080
+2026-11-19 13:00:39 | Episode 3580/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.900 | epsilon=0.080
+2026-11-19 13:00:41 | Episode 3590/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.900 | epsilon=0.080
+2026-11-19 13:00:43 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003600.png
+2026-11-19 13:00:44 | Episode 3600/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:00:47 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3600.pth
+2026-11-19 13:00:49 | Episode 3610/10000 | winner=chaser | steps=45 | reward C=0.850 R=-2.150 | epsilon=0.080
+2026-11-19 13:00:51 | Episode 3620/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.800 | epsilon=0.080
+2026-11-19 13:00:53 | Episode 3630/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.400 | epsilon=0.080
+2026-11-19 13:00:55 | Episode 3640/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.300 | epsilon=0.080
+2026-11-19 13:00:57 | Episode 3650/10000 | winner=chaser | steps=20 | reward C=1.200 R=-1.600 | epsilon=0.080
+2026-11-19 13:01:00 | Episode 3660/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.600 | epsilon=0.080
+2026-11-19 13:01:02 | Episode 3670/10000 | winner=runner | steps=50 | reward C=-0.500 R=-1.000 | epsilon=0.080
+2026-11-19 13:01:04 | Episode 3680/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.400 | epsilon=0.080
+2026-11-19 13:01:07 | Episode 3690/10000 | winner=runner | steps=50 | reward C=-0.600 R=-1.300 | epsilon=0.080
+2026-11-19 13:01:09 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003700.png
+2026-11-19 13:01:09 | Episode 3700/10000 | winner=chaser | steps=10 | reward C=1.400 R=-1.100 | epsilon=0.080
+2026-11-19 13:01:11 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3700.pth
+2026-11-19 13:01:14 | Episode 3710/10000 | winner=chaser | steps=24 | reward C=0.900 R=-1.300 | epsilon=0.080
+2026-11-19 13:01:17 | Episode 3720/10000 | winner=chaser | steps=4 | reward C=1.200 R=-1.200 | epsilon=0.080
+2026-11-19 13:01:19 | Episode 3730/10000 | winner=chaser | steps=2 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:01:21 | Episode 3740/10000 | winner=chaser | steps=43 | reward C=-0.150 R=-2.950 | epsilon=0.080
+2026-11-19 13:01:23 | Episode 3750/10000 | winner=chaser | steps=3 | reward C=1.250 R=-1.050 | epsilon=0.080
+2026-11-19 13:01:25 | Episode 3760/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.400 | epsilon=0.080
+2026-11-19 13:01:27 | Episode 3770/10000 | winner=chaser | steps=21 | reward C=1.050 R=-1.550 | epsilon=0.080
+2026-11-19 13:01:31 | Episode 3780/10000 | winner=chaser | steps=37 | reward C=0.850 R=-2.050 | epsilon=0.080
+2026-11-19 13:01:33 | Episode 3790/10000 | winner=runner | steps=50 | reward C=-1.200 R=-2.100 | epsilon=0.080
+2026-11-19 13:01:36 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003800.png
+2026-11-19 13:01:37 | Episode 3800/10000 | winner=chaser | steps=9 | reward C=0.850 R=-1.150 | epsilon=0.080
+2026-11-19 13:01:38 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3800.pth
+2026-11-19 13:01:40 | Episode 3810/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.600 | epsilon=0.080
+2026-11-19 13:01:43 | Episode 3820/10000 | winner=runner | steps=50 | reward C=0.100 R=0.000 | epsilon=0.080
+2026-11-19 13:01:46 | Episode 3830/10000 | winner=chaser | steps=46 | reward C=1.300 R=-1.900 | epsilon=0.080
+2026-11-19 13:01:48 | Episode 3840/10000 | winner=chaser | steps=11 | reward C=0.950 R=-0.950 | epsilon=0.080
+2026-11-19 13:01:50 | Episode 3850/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:01:52 | Episode 3860/10000 | winner=chaser | steps=37 | reward C=0.650 R=-1.850 | epsilon=0.080
+2026-11-19 13:01:54 | Episode 3870/10000 | winner=chaser | steps=46 | reward C=0.300 R=-2.300 | epsilon=0.080
+2026-11-19 13:01:56 | Episode 3880/10000 | winner=runner | steps=50 | reward C=0.400 R=-0.600 | epsilon=0.080
+2026-11-19 13:01:59 | Episode 3890/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:02:02 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_003900.png
+2026-11-19 13:02:03 | Episode 3900/10000 | winner=chaser | steps=17 | reward C=1.250 R=-1.450 | epsilon=0.080
+2026-11-19 13:02:04 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep3900.pth
+2026-11-19 13:02:06 | Episode 3910/10000 | winner=chaser | steps=7 | reward C=1.250 R=-1.250 | epsilon=0.080
+2026-11-19 13:02:09 | Episode 3920/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.900 | epsilon=0.080
+2026-11-19 13:02:11 | Episode 3930/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:02:13 | Episode 3940/10000 | winner=chaser | steps=14 | reward C=0.900 R=-1.500 | epsilon=0.080
+2026-11-19 13:02:16 | Episode 3950/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.400 | epsilon=0.080
+2026-11-19 13:02:19 | Episode 3960/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.500 | epsilon=0.080
+2026-11-19 13:02:21 | Episode 3970/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.400 | epsilon=0.080
+2026-11-19 13:02:23 | Episode 3980/10000 | winner=chaser | steps=18 | reward C=0.800 R=-1.300 | epsilon=0.080
+2026-11-19 13:02:25 | Episode 3990/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.300 | epsilon=0.080
+2026-11-19 13:02:27 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004000.png
+2026-11-19 13:02:28 | Episode 4000/10000 | winner=chaser | steps=6 | reward C=1.200 R=-1.200 | epsilon=0.080
+2026-11-19 13:02:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4000.pth
+2026-11-19 13:02:33 | Episode 4010/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.700 | epsilon=0.080
+2026-11-19 13:02:36 | Episode 4020/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.300 | epsilon=0.080
+2026-11-19 13:02:38 | Episode 4030/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.600 | epsilon=0.080
+2026-11-19 13:02:41 | Episode 4040/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.100 | epsilon=0.080
+2026-11-19 13:02:45 | Episode 4050/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.800 | epsilon=0.080
+2026-11-19 13:02:48 | Episode 4060/10000 | winner=chaser | steps=11 | reward C=1.450 R=-1.450 | epsilon=0.080
+2026-11-19 13:02:50 | Episode 4070/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.200 | epsilon=0.080
+2026-11-19 13:02:54 | Episode 4080/10000 | winner=runner | steps=50 | reward C=-2.000 R=-2.000 | epsilon=0.080
+2026-11-19 13:02:56 | Episode 4090/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:03:01 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004100.png
+2026-11-19 13:03:01 | Episode 4100/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.700 | epsilon=0.080
+2026-11-19 13:03:03 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4100.pth
+2026-11-19 13:03:06 | Episode 4110/10000 | winner=chaser | steps=39 | reward C=1.050 R=-1.750 | epsilon=0.080
+2026-11-19 13:03:08 | Episode 4120/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.600 | epsilon=0.080
+2026-11-19 13:03:11 | Episode 4130/10000 | winner=chaser | steps=3 | reward C=1.150 R=-0.950 | epsilon=0.080
+2026-11-19 13:03:14 | Episode 4140/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.600 | epsilon=0.080
+2026-11-19 13:03:17 | Episode 4150/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.080
+2026-11-19 13:03:19 | Episode 4160/10000 | winner=chaser | steps=10 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:03:21 | Episode 4170/10000 | winner=chaser | steps=7 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 13:03:23 | Episode 4180/10000 | winner=runner | steps=50 | reward C=-1.800 R=-0.700 | epsilon=0.080
+2026-11-19 13:03:26 | Episode 4190/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.300 | epsilon=0.080
+2026-11-19 13:03:30 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004200.png
+2026-11-19 13:03:30 | Episode 4200/10000 | winner=chaser | steps=21 | reward C=0.950 R=-1.350 | epsilon=0.080
+2026-11-19 13:03:32 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4200.pth
+2026-11-19 13:03:35 | Episode 4210/10000 | winner=chaser | steps=15 | reward C=1.350 R=-1.450 | epsilon=0.080
+2026-11-19 13:03:37 | Episode 4220/10000 | winner=chaser | steps=10 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:03:40 | Episode 4230/10000 | winner=chaser | steps=4 | reward C=1.400 R=-1.200 | epsilon=0.080
+2026-11-19 13:03:42 | Episode 4240/10000 | winner=chaser | steps=17 | reward C=1.450 R=-1.650 | epsilon=0.080
+2026-11-19 13:03:46 | Episode 4250/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.100 | epsilon=0.080
+2026-11-19 13:03:48 | Episode 4260/10000 | winner=chaser | steps=15 | reward C=1.150 R=-1.450 | epsilon=0.080
+2026-11-19 13:03:50 | Episode 4270/10000 | winner=chaser | steps=49 | reward C=0.850 R=-2.050 | epsilon=0.080
+2026-11-19 13:03:52 | Episode 4280/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.800 | epsilon=0.080
+2026-11-19 13:03:55 | Episode 4290/10000 | winner=runner | steps=50 | reward C=0.000 R=-0.400 | epsilon=0.080
+2026-11-19 13:03:59 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004300.png
+2026-11-19 13:04:00 | Episode 4300/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.000 | epsilon=0.080
+2026-11-19 13:04:02 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4300.pth
+2026-11-19 13:04:04 | Episode 4310/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.600 | epsilon=0.080
+2026-11-19 13:04:06 | Episode 4320/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.700 | epsilon=0.080
+2026-11-19 13:04:08 | Episode 4330/10000 | winner=chaser | steps=20 | reward C=0.700 R=-1.300 | epsilon=0.080
+2026-11-19 13:04:10 | Episode 4340/10000 | winner=chaser | steps=9 | reward C=1.150 R=-1.450 | epsilon=0.080
+2026-11-19 13:04:13 | Episode 4350/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.600 | epsilon=0.080
+2026-11-19 13:04:16 | Episode 4360/10000 | winner=chaser | steps=25 | reward C=0.650 R=-1.550 | epsilon=0.080
+2026-11-19 13:04:18 | Episode 4370/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.900 | epsilon=0.080
+2026-11-19 13:04:20 | Episode 4380/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.900 | epsilon=0.080
+2026-11-19 13:04:22 | Episode 4390/10000 | winner=runner | steps=50 | reward C=-0.600 R=-1.100 | epsilon=0.080
+2026-11-19 13:04:24 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004400.png
+2026-11-19 13:04:25 | Episode 4400/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.500 | epsilon=0.080
+2026-11-19 13:04:27 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4400.pth
+2026-11-19 13:04:29 | Episode 4410/10000 | winner=chaser | steps=24 | reward C=1.000 R=-1.600 | epsilon=0.080
+2026-11-19 13:04:32 | Episode 4420/10000 | winner=chaser | steps=31 | reward C=1.550 R=-1.650 | epsilon=0.080
+2026-11-19 13:04:34 | Episode 4430/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.900 | epsilon=0.080
+2026-11-19 13:04:37 | Episode 4440/10000 | winner=chaser | steps=22 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:04:38 | Episode 4450/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.700 | epsilon=0.080
+2026-11-19 13:04:41 | Episode 4460/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:04:44 | Episode 4470/10000 | winner=chaser | steps=22 | reward C=1.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:04:47 | Episode 4480/10000 | winner=runner | steps=50 | reward C=-0.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:04:49 | Episode 4490/10000 | winner=chaser | steps=3 | reward C=1.050 R=-1.050 | epsilon=0.080
+2026-11-19 13:04:53 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004500.png
+2026-11-19 13:04:53 | Episode 4500/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.900 | epsilon=0.080
+2026-11-19 13:04:55 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4500.pth
+2026-11-19 13:04:57 | Episode 4510/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.500 | epsilon=0.080
+2026-11-19 13:04:59 | Episode 4520/10000 | winner=chaser | steps=11 | reward C=1.350 R=-1.550 | epsilon=0.080
+2026-11-19 13:05:02 | Episode 4530/10000 | winner=chaser | steps=26 | reward C=1.300 R=-1.400 | epsilon=0.080
+2026-11-19 13:05:04 | Episode 4540/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.900 | epsilon=0.080
+2026-11-19 13:05:06 | Episode 4550/10000 | winner=chaser | steps=23 | reward C=0.950 R=-1.450 | epsilon=0.080
+2026-11-19 13:05:09 | Episode 4560/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.000 | epsilon=0.080
+2026-11-19 13:05:11 | Episode 4570/10000 | winner=chaser | steps=10 | reward C=1.300 R=-1.400 | epsilon=0.080
+2026-11-19 13:05:15 | Episode 4580/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.600 | epsilon=0.080
+2026-11-19 13:05:17 | Episode 4590/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.200 | epsilon=0.080
+2026-11-19 13:05:20 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004600.png
+2026-11-19 13:05:20 | Episode 4600/10000 | winner=chaser | steps=12 | reward C=1.500 R=-1.600 | epsilon=0.080
+2026-11-19 13:05:22 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4600.pth
+2026-11-19 13:05:24 | Episode 4610/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.700 | epsilon=0.080
+2026-11-19 13:05:27 | Episode 4620/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.700 | epsilon=0.080
+2026-11-19 13:05:31 | Episode 4630/10000 | winner=chaser | steps=14 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 13:05:34 | Episode 4640/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.200 | epsilon=0.080
+2026-11-19 13:05:37 | Episode 4650/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.700 | epsilon=0.080
+2026-11-19 13:05:39 | Episode 4660/10000 | winner=chaser | steps=7 | reward C=1.350 R=-1.050 | epsilon=0.080
+2026-11-19 13:05:42 | Episode 4670/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.080
+2026-11-19 13:05:46 | Episode 4680/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.700 | epsilon=0.080
+2026-11-19 13:05:48 | Episode 4690/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.600 | epsilon=0.080
+2026-11-19 13:05:52 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004700.png
+2026-11-19 13:05:52 | Episode 4700/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 13:05:54 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4700.pth
+2026-11-19 13:05:58 | Episode 4710/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.300 | epsilon=0.080
+2026-11-19 13:06:02 | Episode 4720/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.000 | epsilon=0.080
+2026-11-19 13:06:05 | Episode 4730/10000 | winner=chaser | steps=25 | reward C=1.350 R=-1.450 | epsilon=0.080
+2026-11-19 13:06:07 | Episode 4740/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.200 | epsilon=0.080
+2026-11-19 13:06:10 | Episode 4750/10000 | winner=runner | steps=50 | reward C=-1.000 R=-1.100 | epsilon=0.080
+2026-11-19 13:06:14 | Episode 4760/10000 | winner=chaser | steps=23 | reward C=1.050 R=-1.650 | epsilon=0.080
+2026-11-19 13:06:18 | Episode 4770/10000 | winner=chaser | steps=23 | reward C=1.350 R=-1.650 | epsilon=0.080
+2026-11-19 13:06:21 | Episode 4780/10000 | winner=chaser | steps=4 | reward C=1.200 R=-1.000 | epsilon=0.080
+2026-11-19 13:06:24 | Episode 4790/10000 | winner=chaser | steps=21 | reward C=1.550 R=-1.250 | epsilon=0.080
+2026-11-19 13:06:28 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004800.png
+2026-11-19 13:06:28 | Episode 4800/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.900 | epsilon=0.080
+2026-11-19 13:06:31 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4800.pth
+2026-11-19 13:06:35 | Episode 4810/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.100 | epsilon=0.080
+2026-11-19 13:06:38 | Episode 4820/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.000 | epsilon=0.080
+2026-11-19 13:06:41 | Episode 4830/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.600 | epsilon=0.080
+2026-11-19 13:06:45 | Episode 4840/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.600 | epsilon=0.080
+2026-11-19 13:06:49 | Episode 4850/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.800 | epsilon=0.080
+2026-11-19 13:06:52 | Episode 4860/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.900 | epsilon=0.080
+2026-11-19 13:06:55 | Episode 4870/10000 | winner=chaser | steps=45 | reward C=0.150 R=-1.950 | epsilon=0.080
+2026-11-19 13:06:58 | Episode 4880/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.900 | epsilon=0.080
+2026-11-19 13:07:02 | Episode 4890/10000 | winner=chaser | steps=29 | reward C=0.550 R=-1.950 | epsilon=0.080
+2026-11-19 13:07:04 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_004900.png
+2026-11-19 13:07:05 | Episode 4900/10000 | winner=runner | steps=50 | reward C=0.000 R=-0.700 | epsilon=0.080
+2026-11-19 13:07:06 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep4900.pth
+2026-11-19 13:07:09 | Episode 4910/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.200 | epsilon=0.080
+2026-11-19 13:07:13 | Episode 4920/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.600 | epsilon=0.080
+2026-11-19 13:07:16 | Episode 4930/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.400 | epsilon=0.080
+2026-11-19 13:07:19 | Episode 4940/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:07:21 | Episode 4950/10000 | winner=chaser | steps=17 | reward C=1.150 R=-1.350 | epsilon=0.080
+2026-11-19 13:07:23 | Episode 4960/10000 | winner=chaser | steps=12 | reward C=0.900 R=-0.900 | epsilon=0.080
+2026-11-19 13:07:25 | Episode 4970/10000 | winner=chaser | steps=8 | reward C=1.200 R=-0.900 | epsilon=0.080
+2026-11-19 13:07:28 | Episode 4980/10000 | winner=runner | steps=50 | reward C=-0.800 R=-1.200 | epsilon=0.080
+2026-11-19 13:07:32 | Episode 4990/10000 | winner=runner | steps=50 | reward C=-1.000 R=-1.100 | epsilon=0.080
+2026-11-19 13:07:35 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005000.png
+2026-11-19 13:07:36 | Episode 5000/10000 | winner=chaser | steps=21 | reward C=1.450 R=-1.450 | epsilon=0.080
+2026-11-19 13:07:37 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5000.pth
+2026-11-19 13:07:40 | Episode 5010/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:07:42 | Episode 5020/10000 | winner=runner | steps=50 | reward C=-0.000 R=-1.000 | epsilon=0.080
+2026-11-19 13:07:45 | Episode 5030/10000 | winner=chaser | steps=11 | reward C=1.450 R=-1.050 | epsilon=0.080
+2026-11-19 13:07:48 | Episode 5040/10000 | winner=runner | steps=50 | reward C=0.000 R=-0.200 | epsilon=0.080
+2026-11-19 13:07:50 | Episode 5050/10000 | winner=chaser | steps=9 | reward C=0.850 R=-0.950 | epsilon=0.080
+2026-11-19 13:07:53 | Episode 5060/10000 | winner=runner | steps=50 | reward C=-0.800 R=-1.000 | epsilon=0.080
+2026-11-19 13:07:56 | Episode 5070/10000 | winner=runner | steps=50 | reward C=-1.000 R=-1.200 | epsilon=0.080
+2026-11-19 13:08:00 | Episode 5080/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.700 | epsilon=0.080
+2026-11-19 13:08:03 | Episode 5090/10000 | winner=chaser | steps=36 | reward C=0.500 R=-1.900 | epsilon=0.080
+2026-11-19 13:08:06 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005100.png
+2026-11-19 13:08:07 | Episode 5100/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:08:09 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5100.pth
+2026-11-19 13:08:11 | Episode 5110/10000 | winner=chaser | steps=6 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:08:13 | Episode 5120/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.400 | epsilon=0.080
+2026-11-19 13:08:17 | Episode 5130/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.100 | epsilon=0.080
+2026-11-19 13:08:19 | Episode 5140/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:08:22 | Episode 5150/10000 | winner=chaser | steps=23 | reward C=1.250 R=-1.750 | epsilon=0.080
+2026-11-19 13:08:24 | Episode 5160/10000 | winner=runner | steps=50 | reward C=0.300 R=0.000 | epsilon=0.080
+2026-11-19 13:08:27 | Episode 5170/10000 | winner=chaser | steps=2 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:08:31 | Episode 5180/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.800 | epsilon=0.080
+2026-11-19 13:08:34 | Episode 5190/10000 | winner=chaser | steps=16 | reward C=1.000 R=-1.500 | epsilon=0.080
+2026-11-19 13:08:37 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005200.png
+2026-11-19 13:08:38 | Episode 5200/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.200 | epsilon=0.080
+2026-11-19 13:08:39 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5200.pth
+2026-11-19 13:08:42 | Episode 5210/10000 | winner=chaser | steps=12 | reward C=1.000 R=-1.400 | epsilon=0.080
+2026-11-19 13:08:45 | Episode 5220/10000 | winner=chaser | steps=3 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 13:08:48 | Episode 5230/10000 | winner=runner | steps=50 | reward C=0.200 R=-0.400 | epsilon=0.080
+2026-11-19 13:08:51 | Episode 5240/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:08:53 | Episode 5250/10000 | winner=chaser | steps=4 | reward C=1.300 R=-1.200 | epsilon=0.080
+2026-11-19 13:08:57 | Episode 5260/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.900 | epsilon=0.080
+2026-11-19 13:09:01 | Episode 5270/10000 | winner=runner | steps=50 | reward C=0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:09:04 | Episode 5280/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.080
+2026-11-19 13:09:07 | Episode 5290/10000 | winner=chaser | steps=4 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 13:09:10 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005300.png
+2026-11-19 13:09:11 | Episode 5300/10000 | winner=runner | steps=50 | reward C=-1.000 R=-1.000 | epsilon=0.080
+2026-11-19 13:09:13 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5300.pth
+2026-11-19 13:09:17 | Episode 5310/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.100 | epsilon=0.080
+2026-11-19 13:09:20 | Episode 5320/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:09:23 | Episode 5330/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.600 | epsilon=0.080
+2026-11-19 13:09:25 | Episode 5340/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.400 | epsilon=0.080
+2026-11-19 13:09:29 | Episode 5350/10000 | winner=runner | steps=50 | reward C=-0.500 R=-1.000 | epsilon=0.080
+2026-11-19 13:09:33 | Episode 5360/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.800 | epsilon=0.080
+2026-11-19 13:09:36 | Episode 5370/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.900 | epsilon=0.080
+2026-11-19 13:09:39 | Episode 5380/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.600 | epsilon=0.080
+2026-11-19 13:09:42 | Episode 5390/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.900 | epsilon=0.080
+2026-11-19 13:09:47 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005400.png
+2026-11-19 13:09:47 | Episode 5400/10000 | winner=chaser | steps=5 | reward C=1.050 R=-1.250 | epsilon=0.080
+2026-11-19 13:09:49 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5400.pth
+2026-11-19 13:09:52 | Episode 5410/10000 | winner=chaser | steps=40 | reward C=0.200 R=-2.300 | epsilon=0.080
+2026-11-19 13:09:55 | Episode 5420/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:09:58 | Episode 5430/10000 | winner=runner | steps=50 | reward C=-2.300 R=-1.700 | epsilon=0.080
+2026-11-19 13:10:02 | Episode 5440/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.800 | epsilon=0.080
+2026-11-19 13:10:06 | Episode 5450/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.100 | epsilon=0.080
+2026-11-19 13:10:08 | Episode 5460/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.800 | epsilon=0.080
+2026-11-19 13:10:12 | Episode 5470/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.400 | epsilon=0.080
+2026-11-19 13:10:16 | Episode 5480/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.100 | epsilon=0.080
+2026-11-19 13:10:19 | Episode 5490/10000 | winner=runner | steps=50 | reward C=-2.100 R=-1.200 | epsilon=0.080
+2026-11-19 13:10:22 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005500.png
+2026-11-19 13:10:23 | Episode 5500/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.300 | epsilon=0.080
+2026-11-19 13:10:24 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5500.pth
+2026-11-19 13:10:28 | Episode 5510/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.900 | epsilon=0.080
+2026-11-19 13:10:32 | Episode 5520/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.700 | epsilon=0.080
+2026-11-19 13:10:35 | Episode 5530/10000 | winner=runner | steps=50 | reward C=-2.300 R=-1.200 | epsilon=0.080
+2026-11-19 13:10:39 | Episode 5540/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.900 | epsilon=0.080
+2026-11-19 13:10:42 | Episode 5550/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:10:46 | Episode 5560/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:10:49 | Episode 5570/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.400 | epsilon=0.080
+2026-11-19 13:10:52 | Episode 5580/10000 | winner=runner | steps=50 | reward C=-1.100 R=-1.000 | epsilon=0.080
+2026-11-19 13:10:55 | Episode 5590/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.300 | epsilon=0.080
+2026-11-19 13:11:00 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005600.png
+2026-11-19 13:11:01 | Episode 5600/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.000 | epsilon=0.080
+2026-11-19 13:11:02 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5600.pth
+2026-11-19 13:11:05 | Episode 5610/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.300 | epsilon=0.080
+2026-11-19 13:11:08 | Episode 5620/10000 | winner=chaser | steps=46 | reward C=-0.100 R=-2.500 | epsilon=0.080
+2026-11-19 13:11:12 | Episode 5630/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.600 | epsilon=0.080
+2026-11-19 13:11:16 | Episode 5640/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.700 | epsilon=0.080
+2026-11-19 13:11:19 | Episode 5650/10000 | winner=chaser | steps=15 | reward C=0.750 R=-1.550 | epsilon=0.080
+2026-11-19 13:11:22 | Episode 5660/10000 | winner=chaser | steps=2 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:11:25 | Episode 5670/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.200 | epsilon=0.080
+2026-11-19 13:11:28 | Episode 5680/10000 | winner=runner | steps=50 | reward C=-0.800 R=-1.000 | epsilon=0.080
+2026-11-19 13:11:32 | Episode 5690/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.300 | epsilon=0.080
+2026-11-19 13:11:36 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005700.png
+2026-11-19 13:11:36 | Episode 5700/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.300 | epsilon=0.080
+2026-11-19 13:11:38 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5700.pth
+2026-11-19 13:11:41 | Episode 5710/10000 | winner=chaser | steps=18 | reward C=0.900 R=-1.400 | epsilon=0.080
+2026-11-19 13:11:45 | Episode 5720/10000 | winner=runner | steps=50 | reward C=-1.000 R=-1.100 | epsilon=0.080
+2026-11-19 13:11:48 | Episode 5730/10000 | winner=chaser | steps=6 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 13:11:51 | Episode 5740/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.300 | epsilon=0.080
+2026-11-19 13:11:55 | Episode 5750/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.800 | epsilon=0.080
+2026-11-19 13:11:58 | Episode 5760/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.500 | epsilon=0.080
+2026-11-19 13:12:02 | Episode 5770/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.600 | epsilon=0.080
+2026-11-19 13:12:05 | Episode 5780/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.100 | epsilon=0.080
+2026-11-19 13:12:09 | Episode 5790/10000 | winner=runner | steps=50 | reward C=-2.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:12:13 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005800.png
+2026-11-19 13:12:14 | Episode 5800/10000 | winner=chaser | steps=15 | reward C=1.450 R=-1.050 | epsilon=0.080
+2026-11-19 13:12:16 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5800.pth
+2026-11-19 13:12:19 | Episode 5810/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.700 | epsilon=0.080
+2026-11-19 13:12:23 | Episode 5820/10000 | winner=runner | steps=50 | reward C=-2.400 R=-1.400 | epsilon=0.080
+2026-11-19 13:12:27 | Episode 5830/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.600 | epsilon=0.080
+2026-11-19 13:12:31 | Episode 5840/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.400 | epsilon=0.080
+2026-11-19 13:12:34 | Episode 5850/10000 | winner=chaser | steps=24 | reward C=0.700 R=-1.700 | epsilon=0.080
+2026-11-19 13:12:37 | Episode 5860/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.600 | epsilon=0.080
+2026-11-19 13:12:40 | Episode 5870/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:12:44 | Episode 5880/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.100 | epsilon=0.080
+2026-11-19 13:12:48 | Episode 5890/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.500 | epsilon=0.080
+2026-11-19 13:12:51 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_005900.png
+2026-11-19 13:12:52 | Episode 5900/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:12:53 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep5900.pth
+2026-11-19 13:12:56 | Episode 5910/10000 | winner=chaser | steps=4 | reward C=1.200 R=-1.000 | epsilon=0.080
+2026-11-19 13:13:01 | Episode 5920/10000 | winner=chaser | steps=30 | reward C=1.000 R=-1.400 | epsilon=0.080
+2026-11-19 13:13:03 | Episode 5930/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.300 | epsilon=0.080
+2026-11-19 13:13:07 | Episode 5940/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.600 | epsilon=0.080
+2026-11-19 13:13:10 | Episode 5950/10000 | winner=runner | steps=50 | reward C=-2.100 R=-2.200 | epsilon=0.080
+2026-11-19 13:13:14 | Episode 5960/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.400 | epsilon=0.080
+2026-11-19 13:13:18 | Episode 5970/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.900 | epsilon=0.080
+2026-11-19 13:13:22 | Episode 5980/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.300 | epsilon=0.080
+2026-11-19 13:13:25 | Episode 5990/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.500 | epsilon=0.080
+2026-11-19 13:13:30 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006000.png
+2026-11-19 13:13:31 | Episode 6000/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.000 | epsilon=0.080
+2026-11-19 13:13:32 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6000.pth
+2026-11-19 13:13:36 | Episode 6010/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.800 | epsilon=0.080
+2026-11-19 13:13:39 | Episode 6020/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.100 | epsilon=0.080
+2026-11-19 13:13:44 | Episode 6030/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.100 | epsilon=0.080
+2026-11-19 13:13:47 | Episode 6040/10000 | winner=chaser | steps=46 | reward C=0.700 R=-2.100 | epsilon=0.080
+2026-11-19 13:13:51 | Episode 6050/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.500 | epsilon=0.080
+2026-11-19 13:13:54 | Episode 6060/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.400 | epsilon=0.080
+2026-11-19 13:13:58 | Episode 6070/10000 | winner=chaser | steps=44 | reward C=0.600 R=-1.800 | epsilon=0.080
+2026-11-19 13:14:02 | Episode 6080/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:14:05 | Episode 6090/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.400 | epsilon=0.080
+2026-11-19 13:14:09 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006100.png
+2026-11-19 13:14:10 | Episode 6100/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.100 | epsilon=0.080
+2026-11-19 13:14:12 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6100.pth
+2026-11-19 13:14:16 | Episode 6110/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:14:19 | Episode 6120/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.500 | epsilon=0.080
+2026-11-19 13:14:22 | Episode 6130/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.200 | epsilon=0.080
+2026-11-19 13:14:25 | Episode 6140/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.500 | epsilon=0.080
+2026-11-19 13:14:30 | Episode 6150/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.400 | epsilon=0.080
+2026-11-19 13:14:33 | Episode 6160/10000 | winner=runner | steps=50 | reward C=0.100 R=-0.100 | epsilon=0.080
+2026-11-19 13:14:37 | Episode 6170/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:14:40 | Episode 6180/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 13:14:45 | Episode 6190/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.100 | epsilon=0.080
+2026-11-19 13:14:48 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006200.png
+2026-11-19 13:14:49 | Episode 6200/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.300 | epsilon=0.080
+2026-11-19 13:14:50 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6200.pth
+2026-11-19 13:14:54 | Episode 6210/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.000 | epsilon=0.080
+2026-11-19 13:14:58 | Episode 6220/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.100 | epsilon=0.080
+2026-11-19 13:15:02 | Episode 6230/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.100 | epsilon=0.080
+2026-11-19 13:15:05 | Episode 6240/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.400 | epsilon=0.080
+2026-11-19 13:15:08 | Episode 6250/10000 | winner=runner | steps=50 | reward C=-2.300 R=-2.000 | epsilon=0.080
+2026-11-19 13:15:12 | Episode 6260/10000 | winner=chaser | steps=19 | reward C=0.650 R=-1.750 | epsilon=0.080
+2026-11-19 13:15:16 | Episode 6270/10000 | winner=chaser | steps=33 | reward C=1.050 R=-1.350 | epsilon=0.080
+2026-11-19 13:15:19 | Episode 6280/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:15:22 | Episode 6290/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.500 | epsilon=0.080
+2026-11-19 13:15:26 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006300.png
+2026-11-19 13:15:27 | Episode 6300/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.500 | epsilon=0.080
+2026-11-19 13:15:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6300.pth
+2026-11-19 13:15:33 | Episode 6310/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.300 | epsilon=0.080
+2026-11-19 13:15:36 | Episode 6320/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.300 | epsilon=0.080
+2026-11-19 13:15:39 | Episode 6330/10000 | winner=runner | steps=50 | reward C=-2.400 R=-2.000 | epsilon=0.080
+2026-11-19 13:15:44 | Episode 6340/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.000 | epsilon=0.080
+2026-11-19 13:15:48 | Episode 6350/10000 | winner=chaser | steps=2 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:15:51 | Episode 6360/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:15:54 | Episode 6370/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.300 | epsilon=0.080
+2026-11-19 13:15:59 | Episode 6380/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.200 | epsilon=0.080
+2026-11-19 13:16:02 | Episode 6390/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.200 | epsilon=0.080
+2026-11-19 13:16:06 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006400.png
+2026-11-19 13:16:07 | Episode 6400/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.100 | epsilon=0.080
+2026-11-19 13:16:08 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6400.pth
+2026-11-19 13:16:12 | Episode 6410/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.200 | epsilon=0.080
+2026-11-19 13:16:16 | Episode 6420/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.900 | epsilon=0.080
+2026-11-19 13:16:20 | Episode 6430/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.400 | epsilon=0.080
+2026-11-19 13:16:22 | Episode 6440/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.400 | epsilon=0.080
+2026-11-19 13:16:26 | Episode 6450/10000 | winner=runner | steps=50 | reward C=-2.300 R=-1.900 | epsilon=0.080
+2026-11-19 13:16:31 | Episode 6460/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.200 | epsilon=0.080
+2026-11-19 13:16:35 | Episode 6470/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.500 | epsilon=0.080
+2026-11-19 13:16:38 | Episode 6480/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:16:42 | Episode 6490/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.100 | epsilon=0.080
+2026-11-19 13:16:47 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006500.png
+2026-11-19 13:16:47 | Episode 6500/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.080
+2026-11-19 13:16:49 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6500.pth
+2026-11-19 13:16:52 | Episode 6510/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:16:55 | Episode 6520/10000 | winner=runner | steps=50 | reward C=-1.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:17:00 | Episode 6530/10000 | winner=chaser | steps=3 | reward C=1.150 R=-1.150 | epsilon=0.080
+2026-11-19 13:17:04 | Episode 6540/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:17:07 | Episode 6550/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:17:11 | Episode 6560/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.300 | epsilon=0.080
+2026-11-19 13:17:16 | Episode 6570/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.400 | epsilon=0.080
+2026-11-19 13:17:19 | Episode 6580/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.300 | epsilon=0.080
+2026-11-19 13:17:23 | Episode 6590/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:17:28 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006600.png
+2026-11-19 13:17:29 | Episode 6600/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:17:30 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6600.pth
+2026-11-19 13:17:34 | Episode 6610/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.000 | epsilon=0.080
+2026-11-19 13:17:37 | Episode 6620/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.100 | epsilon=0.080
+2026-11-19 13:17:40 | Episode 6630/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.300 | epsilon=0.080
+2026-11-19 13:17:45 | Episode 6640/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.000 | epsilon=0.080
+2026-11-19 13:17:48 | Episode 6650/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.500 | epsilon=0.080
+2026-11-19 13:17:51 | Episode 6660/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.600 | epsilon=0.080
+2026-11-19 13:17:55 | Episode 6670/10000 | winner=chaser | steps=17 | reward C=0.850 R=-1.650 | epsilon=0.080
+2026-11-19 13:17:59 | Episode 6680/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:18:03 | Episode 6690/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:18:07 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006700.png
+2026-11-19 13:18:08 | Episode 6700/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 13:18:09 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6700.pth
+2026-11-19 13:18:14 | Episode 6710/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.500 | epsilon=0.080
+2026-11-19 13:18:18 | Episode 6720/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.200 | epsilon=0.080
+2026-11-19 13:18:21 | Episode 6730/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.200 | epsilon=0.080
+2026-11-19 13:18:24 | Episode 6740/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.500 | epsilon=0.080
+2026-11-19 13:18:30 | Episode 6750/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:18:33 | Episode 6760/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.400 | epsilon=0.080
+2026-11-19 13:18:37 | Episode 6770/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.100 | epsilon=0.080
+2026-11-19 13:18:41 | Episode 6780/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.900 | epsilon=0.080
+2026-11-19 13:18:46 | Episode 6790/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:18:49 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006800.png
+2026-11-19 13:18:50 | Episode 6800/10000 | winner=chaser | steps=16 | reward C=0.800 R=-1.300 | epsilon=0.080
+2026-11-19 13:18:52 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6800.pth
+2026-11-19 13:18:55 | Episode 6810/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.200 | epsilon=0.080
+2026-11-19 13:19:00 | Episode 6820/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:19:04 | Episode 6830/10000 | winner=runner | steps=50 | reward C=-1.500 R=0.300 | epsilon=0.080
+2026-11-19 13:19:07 | Episode 6840/10000 | winner=runner | steps=50 | reward C=-1.200 R=0.100 | epsilon=0.080
+2026-11-19 13:19:11 | Episode 6850/10000 | winner=chaser | steps=22 | reward C=1.100 R=-1.400 | epsilon=0.080
+2026-11-19 13:19:15 | Episode 6860/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.400 | epsilon=0.080
+2026-11-19 13:19:19 | Episode 6870/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:19:23 | Episode 6880/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:19:26 | Episode 6890/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.300 | epsilon=0.080
+2026-11-19 13:19:31 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_006900.png
+2026-11-19 13:19:31 | Episode 6900/10000 | winner=runner | steps=50 | reward C=-1.700 R=-0.500 | epsilon=0.080
+2026-11-19 13:19:33 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep6900.pth
+2026-11-19 13:19:36 | Episode 6910/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 13:19:40 | Episode 6920/10000 | winner=chaser | steps=7 | reward C=1.150 R=-1.250 | epsilon=0.080
+2026-11-19 13:19:45 | Episode 6930/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:19:48 | Episode 6940/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.100 | epsilon=0.080
+2026-11-19 13:19:51 | Episode 6950/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:19:55 | Episode 6960/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:19:59 | Episode 6970/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.700 | epsilon=0.080
+2026-11-19 13:20:02 | Episode 6980/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.000 | epsilon=0.080
+2026-11-19 13:20:06 | Episode 6990/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.600 | epsilon=0.080
+2026-11-19 13:20:10 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007000.png
+2026-11-19 13:20:11 | Episode 7000/10000 | winner=chaser | steps=27 | reward C=0.650 R=-2.150 | epsilon=0.080
+2026-11-19 13:20:13 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7000.pth
+2026-11-19 13:20:17 | Episode 7010/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.600 | epsilon=0.080
+2026-11-19 13:20:20 | Episode 7020/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.000 | epsilon=0.080
+2026-11-19 13:20:24 | Episode 7030/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:20:29 | Episode 7040/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.100 | epsilon=0.080
+2026-11-19 13:20:33 | Episode 7050/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.200 | epsilon=0.080
+2026-11-19 13:20:36 | Episode 7060/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.600 | epsilon=0.080
+2026-11-19 13:20:40 | Episode 7070/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:20:45 | Episode 7080/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.700 | epsilon=0.080
+2026-11-19 13:20:48 | Episode 7090/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:20:53 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007100.png
+2026-11-19 13:20:53 | Episode 7100/10000 | winner=runner | steps=50 | reward C=-1.800 R=-1.100 | epsilon=0.080
+2026-11-19 13:20:55 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7100.pth
+2026-11-19 13:21:00 | Episode 7110/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.500 | epsilon=0.080
+2026-11-19 13:21:04 | Episode 7120/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.200 | epsilon=0.080
+2026-11-19 13:21:07 | Episode 7130/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:21:12 | Episode 7140/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:21:16 | Episode 7150/10000 | winner=chaser | steps=26 | reward C=0.600 R=-1.800 | epsilon=0.080
+2026-11-19 13:21:20 | Episode 7160/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.000 | epsilon=0.080
+2026-11-19 13:21:24 | Episode 7170/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.100 | epsilon=0.080
+2026-11-19 13:21:29 | Episode 7180/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:21:33 | Episode 7190/10000 | winner=runner | steps=50 | reward C=-2.300 R=-1.400 | epsilon=0.080
+2026-11-19 13:21:36 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007200.png
+2026-11-19 13:21:37 | Episode 7200/10000 | winner=runner | steps=50 | reward C=-2.300 R=-1.600 | epsilon=0.080
+2026-11-19 13:21:39 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7200.pth
+2026-11-19 13:21:43 | Episode 7210/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.000 | epsilon=0.080
+2026-11-19 13:21:47 | Episode 7220/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.600 | epsilon=0.080
+2026-11-19 13:21:50 | Episode 7230/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.400 | epsilon=0.080
+2026-11-19 13:21:54 | Episode 7240/10000 | winner=chaser | steps=9 | reward C=1.350 R=-0.950 | epsilon=0.080
+2026-11-19 13:21:58 | Episode 7250/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.400 | epsilon=0.080
+2026-11-19 13:22:02 | Episode 7260/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:22:05 | Episode 7270/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.000 | epsilon=0.080
+2026-11-19 13:22:09 | Episode 7280/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.800 | epsilon=0.080
+2026-11-19 13:22:13 | Episode 7290/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.200 | epsilon=0.080
+2026-11-19 13:22:18 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007300.png
+2026-11-19 13:22:18 | Episode 7300/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.000 | epsilon=0.080
+2026-11-19 13:22:20 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7300.pth
+2026-11-19 13:22:24 | Episode 7310/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:22:29 | Episode 7320/10000 | winner=chaser | steps=43 | reward C=1.250 R=-1.550 | epsilon=0.080
+2026-11-19 13:22:33 | Episode 7330/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.200 | epsilon=0.080
+2026-11-19 13:22:36 | Episode 7340/10000 | winner=chaser | steps=2 | reward C=1.100 R=-1.100 | epsilon=0.080
+2026-11-19 13:22:39 | Episode 7350/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.400 | epsilon=0.080
+2026-11-19 13:22:43 | Episode 7360/10000 | winner=chaser | steps=12 | reward C=1.200 R=-1.300 | epsilon=0.080
+2026-11-19 13:22:47 | Episode 7370/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:22:50 | Episode 7380/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.200 | epsilon=0.080
+2026-11-19 13:22:54 | Episode 7390/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.500 | epsilon=0.080
+2026-11-19 13:22:59 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007400.png
+2026-11-19 13:23:00 | Episode 7400/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.200 | epsilon=0.080
+2026-11-19 13:23:02 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7400.pth
+2026-11-19 13:23:05 | Episode 7410/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.200 | epsilon=0.080
+2026-11-19 13:23:09 | Episode 7420/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.400 | epsilon=0.080
+2026-11-19 13:23:13 | Episode 7430/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.700 | epsilon=0.080
+2026-11-19 13:23:17 | Episode 7440/10000 | winner=runner | steps=50 | reward C=-1.100 R=0.300 | epsilon=0.080
+2026-11-19 13:23:21 | Episode 7450/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.400 | epsilon=0.080
+2026-11-19 13:23:25 | Episode 7460/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.300 | epsilon=0.080
+2026-11-19 13:23:30 | Episode 7470/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 13:23:33 | Episode 7480/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.000 | epsilon=0.080
+2026-11-19 13:23:37 | Episode 7490/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:23:42 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007500.png
+2026-11-19 13:23:43 | Episode 7500/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:23:45 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7500.pth
+2026-11-19 13:23:48 | Episode 7510/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.500 | epsilon=0.080
+2026-11-19 13:23:51 | Episode 7520/10000 | winner=chaser | steps=4 | reward C=1.100 R=-1.200 | epsilon=0.080
+2026-11-19 13:23:55 | Episode 7530/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:23:59 | Episode 7540/10000 | winner=chaser | steps=34 | reward C=0.700 R=-1.500 | epsilon=0.080
+2026-11-19 13:24:03 | Episode 7550/10000 | winner=chaser | steps=24 | reward C=1.200 R=-1.600 | epsilon=0.080
+2026-11-19 13:24:07 | Episode 7560/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.800 | epsilon=0.080
+2026-11-19 13:24:11 | Episode 7570/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.200 | epsilon=0.080
+2026-11-19 13:24:15 | Episode 7580/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:24:19 | Episode 7590/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.700 | epsilon=0.080
+2026-11-19 13:24:23 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007600.png
+2026-11-19 13:24:24 | Episode 7600/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:24:26 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7600.pth
+2026-11-19 13:24:30 | Episode 7610/10000 | winner=chaser | steps=45 | reward C=0.150 R=-2.250 | epsilon=0.080
+2026-11-19 13:24:34 | Episode 7620/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:24:38 | Episode 7630/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:24:42 | Episode 7640/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.800 | epsilon=0.080
+2026-11-19 13:24:46 | Episode 7650/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.600 | epsilon=0.080
+2026-11-19 13:24:50 | Episode 7660/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.100 | epsilon=0.080
+2026-11-19 13:24:54 | Episode 7670/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.400 | epsilon=0.080
+2026-11-19 13:24:59 | Episode 7680/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.600 | epsilon=0.080
+2026-11-19 13:25:02 | Episode 7690/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:25:06 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007700.png
+2026-11-19 13:25:07 | Episode 7700/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:25:09 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7700.pth
+2026-11-19 13:25:13 | Episode 7710/10000 | winner=chaser | steps=13 | reward C=1.350 R=-1.350 | epsilon=0.080
+2026-11-19 13:25:17 | Episode 7720/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:25:20 | Episode 7730/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.200 | epsilon=0.080
+2026-11-19 13:25:23 | Episode 7740/10000 | winner=runner | steps=50 | reward C=-1.900 R=-0.500 | epsilon=0.080
+2026-11-19 13:25:28 | Episode 7750/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.700 | epsilon=0.080
+2026-11-19 13:25:32 | Episode 7760/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.300 | epsilon=0.080
+2026-11-19 13:25:35 | Episode 7770/10000 | winner=chaser | steps=27 | reward C=0.750 R=-1.450 | epsilon=0.080
+2026-11-19 13:25:40 | Episode 7780/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.900 | epsilon=0.080
+2026-11-19 13:25:44 | Episode 7790/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:25:48 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007800.png
+2026-11-19 13:25:49 | Episode 7800/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:25:50 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7800.pth
+2026-11-19 13:25:54 | Episode 7810/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.400 | epsilon=0.080
+2026-11-19 13:25:59 | Episode 7820/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.600 | epsilon=0.080
+2026-11-19 13:26:03 | Episode 7830/10000 | winner=runner | steps=50 | reward C=-2.500 R=-1.800 | epsilon=0.080
+2026-11-19 13:26:06 | Episode 7840/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.400 | epsilon=0.080
+2026-11-19 13:26:10 | Episode 7850/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.200 | epsilon=0.080
+2026-11-19 13:26:15 | Episode 7860/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.500 | epsilon=0.080
+2026-11-19 13:26:18 | Episode 7870/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.000 | epsilon=0.080
+2026-11-19 13:26:21 | Episode 7880/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.400 | epsilon=0.080
+2026-11-19 13:26:24 | Episode 7890/10000 | winner=chaser | steps=7 | reward C=0.950 R=-1.350 | epsilon=0.080
+2026-11-19 13:26:29 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_007900.png
+2026-11-19 13:26:30 | Episode 7900/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.100 | epsilon=0.080
+2026-11-19 13:26:31 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep7900.pth
+2026-11-19 13:26:35 | Episode 7910/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.400 | epsilon=0.080
+2026-11-19 13:26:39 | Episode 7920/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.200 | epsilon=0.080
+2026-11-19 13:26:44 | Episode 7930/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:26:47 | Episode 7940/10000 | winner=runner | steps=50 | reward C=-1.400 R=-0.200 | epsilon=0.080
+2026-11-19 13:26:50 | Episode 7950/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.700 | epsilon=0.080
+2026-11-19 13:26:54 | Episode 7960/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:26:59 | Episode 7970/10000 | winner=chaser | steps=20 | reward C=1.100 R=-1.300 | epsilon=0.080
+2026-11-19 13:27:02 | Episode 7980/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.080
+2026-11-19 13:27:06 | Episode 7990/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:27:10 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008000.png
+2026-11-19 13:27:11 | Episode 8000/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.500 | epsilon=0.080
+2026-11-19 13:27:13 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8000.pth
+2026-11-19 13:27:17 | Episode 8010/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.100 | epsilon=0.080
+2026-11-19 13:27:21 | Episode 8020/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.400 | epsilon=0.080
+2026-11-19 13:27:25 | Episode 8030/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.000 | epsilon=0.080
+2026-11-19 13:27:30 | Episode 8040/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.200 | epsilon=0.080
+2026-11-19 13:27:33 | Episode 8050/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.600 | epsilon=0.080
+2026-11-19 13:27:37 | Episode 8060/10000 | winner=runner | steps=50 | reward C=-1.600 R=-0.600 | epsilon=0.080
+2026-11-19 13:27:42 | Episode 8070/10000 | winner=runner | steps=50 | reward C=-2.400 R=-1.100 | epsilon=0.080
+2026-11-19 13:27:46 | Episode 8080/10000 | winner=runner | steps=50 | reward C=-1.300 R=0.000 | epsilon=0.080
+2026-11-19 13:27:49 | Episode 8090/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.300 | epsilon=0.080
+2026-11-19 13:27:53 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008100.png
+2026-11-19 13:27:54 | Episode 8100/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.080
+2026-11-19 13:27:57 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8100.pth
+2026-11-19 13:28:01 | Episode 8110/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.000 | epsilon=0.080
+2026-11-19 13:28:04 | Episode 8120/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.080
+2026-11-19 13:28:08 | Episode 8130/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.300 | epsilon=0.080
+2026-11-19 13:28:13 | Episode 8140/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.300 | epsilon=0.080
+2026-11-19 13:28:16 | Episode 8150/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:28:20 | Episode 8160/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:28:23 | Episode 8170/10000 | winner=chaser | steps=4 | reward C=1.200 R=-1.200 | epsilon=0.080
+2026-11-19 13:28:28 | Episode 8180/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:28:31 | Episode 8190/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.300 | epsilon=0.080
+2026-11-19 13:28:35 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008200.png
+2026-11-19 13:28:36 | Episode 8200/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.300 | epsilon=0.080
+2026-11-19 13:28:38 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8200.pth
+2026-11-19 13:28:42 | Episode 8210/10000 | winner=chaser | steps=12 | reward C=1.300 R=-1.300 | epsilon=0.080
+2026-11-19 13:28:46 | Episode 8220/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.600 | epsilon=0.080
+2026-11-19 13:28:49 | Episode 8230/10000 | winner=runner | steps=50 | reward C=0.000 R=0.000 | epsilon=0.080
+2026-11-19 13:28:53 | Episode 8240/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.300 | epsilon=0.080
+2026-11-19 13:28:58 | Episode 8250/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.400 | epsilon=0.080
+2026-11-19 13:29:02 | Episode 8260/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.200 | epsilon=0.080
+2026-11-19 13:29:05 | Episode 8270/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.100 | epsilon=0.080
+2026-11-19 13:29:09 | Episode 8280/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:29:14 | Episode 8290/10000 | winner=chaser | steps=7 | reward C=1.050 R=-1.250 | epsilon=0.080
+2026-11-19 13:29:17 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008300.png
+2026-11-19 13:29:18 | Episode 8300/10000 | winner=chaser | steps=5 | reward C=1.050 R=-1.250 | epsilon=0.080
+2026-11-19 13:29:19 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8300.pth
+2026-11-19 13:29:23 | Episode 8310/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.300 | epsilon=0.080
+2026-11-19 13:29:28 | Episode 8320/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.500 | epsilon=0.080
+2026-11-19 13:29:32 | Episode 8330/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:29:35 | Episode 8340/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:29:39 | Episode 8350/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:29:44 | Episode 8360/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:29:47 | Episode 8370/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.500 | epsilon=0.080
+2026-11-19 13:29:51 | Episode 8380/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:29:55 | Episode 8390/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:30:00 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008400.png
+2026-11-19 13:30:00 | Episode 8400/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:30:02 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8400.pth
+2026-11-19 13:30:06 | Episode 8410/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:30:10 | Episode 8420/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:30:15 | Episode 8430/10000 | winner=runner | steps=50 | reward C=-2.100 R=-0.600 | epsilon=0.080
+2026-11-19 13:30:18 | Episode 8440/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.300 | epsilon=0.080
+2026-11-19 13:30:22 | Episode 8450/10000 | winner=runner | steps=50 | reward C=-2.100 R=-2.100 | epsilon=0.080
+2026-11-19 13:30:27 | Episode 8460/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.700 | epsilon=0.080
+2026-11-19 13:30:31 | Episode 8470/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.000 | epsilon=0.080
+2026-11-19 13:30:34 | Episode 8480/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.300 | epsilon=0.080
+2026-11-19 13:30:38 | Episode 8490/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.100 | epsilon=0.080
+2026-11-19 13:30:43 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008500.png
+2026-11-19 13:30:44 | Episode 8500/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.100 | epsilon=0.080
+2026-11-19 13:30:45 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8500.pth
+2026-11-19 13:30:49 | Episode 8510/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.500 | epsilon=0.080
+2026-11-19 13:30:52 | Episode 8520/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.300 | epsilon=0.080
+2026-11-19 13:30:57 | Episode 8530/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:31:01 | Episode 8540/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.300 | epsilon=0.080
+2026-11-19 13:31:05 | Episode 8550/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 13:31:09 | Episode 8560/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:31:14 | Episode 8570/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.000 | epsilon=0.080
+2026-11-19 13:31:17 | Episode 8580/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.500 | epsilon=0.080
+2026-11-19 13:31:21 | Episode 8590/10000 | winner=runner | steps=50 | reward C=-1.600 R=-1.400 | epsilon=0.080
+2026-11-19 13:31:25 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008600.png
+2026-11-19 13:31:26 | Episode 8600/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.300 | epsilon=0.080
+2026-11-19 13:31:28 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8600.pth
+2026-11-19 13:31:31 | Episode 8610/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.200 | epsilon=0.080
+2026-11-19 13:31:35 | Episode 8620/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:31:39 | Episode 8630/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.600 | epsilon=0.080
+2026-11-19 13:31:43 | Episode 8640/10000 | winner=chaser | steps=7 | reward C=1.350 R=-1.350 | epsilon=0.080
+2026-11-19 13:31:47 | Episode 8650/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:31:50 | Episode 8660/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.500 | epsilon=0.080
+2026-11-19 13:31:55 | Episode 8670/10000 | winner=runner | steps=50 | reward C=-2.200 R=-1.300 | epsilon=0.080
+2026-11-19 13:31:59 | Episode 8680/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:32:03 | Episode 8690/10000 | winner=chaser | steps=45 | reward C=0.850 R=-1.450 | epsilon=0.080
+2026-11-19 13:32:06 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008700.png
+2026-11-19 13:32:07 | Episode 8700/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.200 | epsilon=0.080
+2026-11-19 13:32:09 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8700.pth
+2026-11-19 13:32:13 | Episode 8710/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.300 | epsilon=0.080
+2026-11-19 13:32:17 | Episode 8720/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.500 | epsilon=0.080
+2026-11-19 13:32:20 | Episode 8730/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.200 | epsilon=0.080
+2026-11-19 13:32:25 | Episode 8740/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 13:32:29 | Episode 8750/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.300 | epsilon=0.080
+2026-11-19 13:32:33 | Episode 8760/10000 | winner=runner | steps=50 | reward C=-1.700 R=-1.300 | epsilon=0.080
+2026-11-19 13:32:36 | Episode 8770/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.100 | epsilon=0.080
+2026-11-19 13:32:41 | Episode 8780/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.300 | epsilon=0.080
+2026-11-19 13:32:45 | Episode 8790/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.900 | epsilon=0.080
+2026-11-19 13:32:49 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008800.png
+2026-11-19 13:32:50 | Episode 8800/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.000 | epsilon=0.080
+2026-11-19 13:32:51 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8800.pth
+2026-11-19 13:32:56 | Episode 8810/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.500 | epsilon=0.080
+2026-11-19 13:33:00 | Episode 8820/10000 | winner=runner | steps=50 | reward C=-0.100 R=-0.300 | epsilon=0.080
+2026-11-19 13:33:03 | Episode 8830/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.100 | epsilon=0.080
+2026-11-19 13:33:07 | Episode 8840/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.300 | epsilon=0.080
+2026-11-19 13:33:12 | Episode 8850/10000 | winner=runner | steps=50 | reward C=-0.700 R=-0.200 | epsilon=0.080
+2026-11-19 13:33:15 | Episode 8860/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 13:33:19 | Episode 8870/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.400 | epsilon=0.080
+2026-11-19 13:33:23 | Episode 8880/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:33:27 | Episode 8890/10000 | winner=chaser | steps=29 | reward C=0.150 R=-2.250 | epsilon=0.080
+2026-11-19 13:33:31 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_008900.png
+2026-11-19 13:33:32 | Episode 8900/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.300 | epsilon=0.080
+2026-11-19 13:33:34 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep8900.pth
+2026-11-19 13:33:37 | Episode 8910/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.400 | epsilon=0.080
+2026-11-19 13:33:42 | Episode 8920/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.800 | epsilon=0.080
+2026-11-19 13:33:46 | Episode 8930/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.100 | epsilon=0.080
+2026-11-19 13:33:49 | Episode 8940/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.900 | epsilon=0.080
+2026-11-19 13:33:54 | Episode 8950/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.400 | epsilon=0.080
+2026-11-19 13:33:58 | Episode 8960/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.500 | epsilon=0.080
+2026-11-19 13:34:02 | Episode 8970/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.000 | epsilon=0.080
+2026-11-19 13:34:05 | Episode 8980/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.300 | epsilon=0.080
+2026-11-19 13:34:10 | Episode 8990/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:34:14 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009000.png
+2026-11-19 13:34:15 | Episode 9000/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.500 | epsilon=0.080
+2026-11-19 13:34:16 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9000.pth
+2026-11-19 13:34:20 | Episode 9010/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:34:24 | Episode 9020/10000 | winner=runner | steps=50 | reward C=-1.800 R=-2.100 | epsilon=0.080
+2026-11-19 13:34:28 | Episode 9030/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.000 | epsilon=0.080
+2026-11-19 13:34:32 | Episode 9040/10000 | winner=runner | steps=50 | reward C=-0.500 R=-0.100 | epsilon=0.080
+2026-11-19 13:34:36 | Episode 9050/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.100 | epsilon=0.080
+2026-11-19 13:34:41 | Episode 9060/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.080
+2026-11-19 13:34:45 | Episode 9070/10000 | winner=runner | steps=50 | reward C=-0.900 R=0.000 | epsilon=0.080
+2026-11-19 13:34:49 | Episode 9080/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.500 | epsilon=0.080
+2026-11-19 13:34:52 | Episode 9090/10000 | winner=chaser | steps=2 | reward C=1.300 R=-1.100 | epsilon=0.080
+2026-11-19 13:34:57 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009100.png
+2026-11-19 13:34:58 | Episode 9100/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:35:00 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9100.pth
+2026-11-19 13:35:03 | Episode 9110/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:35:06 | Episode 9120/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.400 | epsilon=0.080
+2026-11-19 13:35:11 | Episode 9130/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:35:15 | Episode 9140/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.600 | epsilon=0.080
+2026-11-19 13:35:19 | Episode 9150/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:35:23 | Episode 9160/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:35:28 | Episode 9170/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.100 | epsilon=0.080
+2026-11-19 13:35:32 | Episode 9180/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.200 | epsilon=0.080
+2026-11-19 13:35:36 | Episode 9190/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.300 | epsilon=0.080
+2026-11-19 13:35:40 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009200.png
+2026-11-19 13:35:42 | Episode 9200/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.500 | epsilon=0.080
+2026-11-19 13:35:44 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9200.pth
+2026-11-19 13:35:48 | Episode 9210/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:35:53 | Episode 9220/10000 | winner=runner | steps=50 | reward C=-2.000 R=-1.800 | epsilon=0.080
+2026-11-19 13:35:58 | Episode 9230/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.200 | epsilon=0.080
+2026-11-19 13:36:02 | Episode 9240/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.080
+2026-11-19 13:36:06 | Episode 9250/10000 | winner=runner | steps=50 | reward C=-1.200 R=-1.200 | epsilon=0.080
+2026-11-19 13:36:11 | Episode 9260/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:36:15 | Episode 9270/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.600 | epsilon=0.080
+2026-11-19 13:36:19 | Episode 9280/10000 | winner=runner | steps=50 | reward C=-1.400 R=-1.600 | epsilon=0.080
+2026-11-19 13:36:23 | Episode 9290/10000 | winner=runner | steps=50 | reward C=-2.500 R=-1.900 | epsilon=0.080
+2026-11-19 13:36:29 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009300.png
+2026-11-19 13:36:29 | Episode 9300/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.700 | epsilon=0.080
+2026-11-19 13:36:31 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9300.pth
+2026-11-19 13:36:34 | Episode 9310/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.600 | epsilon=0.080
+2026-11-19 13:36:39 | Episode 9320/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.400 | epsilon=0.080
+2026-11-19 13:36:44 | Episode 9330/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.300 | epsilon=0.080
+2026-11-19 13:36:48 | Episode 9340/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:36:51 | Episode 9350/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.200 | epsilon=0.080
+2026-11-19 13:36:56 | Episode 9360/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:37:00 | Episode 9370/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:37:04 | Episode 9380/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.900 | epsilon=0.080
+2026-11-19 13:37:07 | Episode 9390/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.700 | epsilon=0.080
+2026-11-19 13:37:13 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009400.png
+2026-11-19 13:37:14 | Episode 9400/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.100 | epsilon=0.080
+2026-11-19 13:37:15 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9400.pth
+2026-11-19 13:37:19 | Episode 9410/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.400 | epsilon=0.080
+2026-11-19 13:37:22 | Episode 9420/10000 | winner=runner | steps=50 | reward C=-1.700 R=0.000 | epsilon=0.080
+2026-11-19 13:37:26 | Episode 9430/10000 | winner=runner | steps=50 | reward C=-0.400 R=-0.500 | epsilon=0.080
+2026-11-19 13:37:30 | Episode 9440/10000 | winner=runner | steps=50 | reward C=-1.900 R=-1.900 | epsilon=0.080
+2026-11-19 13:37:34 | Episode 9450/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.000 | epsilon=0.080
+2026-11-19 13:37:37 | Episode 9460/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.000 | epsilon=0.080
+2026-11-19 13:37:42 | Episode 9470/10000 | winner=runner | steps=50 | reward C=-1.300 R=-0.800 | epsilon=0.080
+2026-11-19 13:37:46 | Episode 9480/10000 | winner=chaser | steps=50 | reward C=0.300 R=-2.400 | epsilon=0.080
+2026-11-19 13:37:50 | Episode 9490/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.100 | epsilon=0.080
+2026-11-19 13:37:54 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009500.png
+2026-11-19 13:37:55 | Episode 9500/10000 | winner=runner | steps=50 | reward C=-0.200 R=-0.600 | epsilon=0.080
+2026-11-19 13:37:57 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9500.pth
+2026-11-19 13:38:01 | Episode 9510/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.300 | epsilon=0.080
+2026-11-19 13:38:05 | Episode 9520/10000 | winner=runner | steps=50 | reward C=-0.100 R=0.200 | epsilon=0.080
+2026-11-19 13:38:09 | Episode 9530/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.300 | epsilon=0.080
+2026-11-19 13:38:13 | Episode 9540/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.100 | epsilon=0.080
+2026-11-19 13:38:17 | Episode 9550/10000 | winner=runner | steps=50 | reward C=-1.100 R=0.300 | epsilon=0.080
+2026-11-19 13:38:21 | Episode 9560/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.400 | epsilon=0.080
+2026-11-19 13:38:26 | Episode 9570/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.400 | epsilon=0.080
+2026-11-19 13:38:30 | Episode 9580/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.100 | epsilon=0.080
+2026-11-19 13:38:33 | Episode 9590/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.100 | epsilon=0.080
+2026-11-19 13:38:37 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009600.png
+2026-11-19 13:38:38 | Episode 9600/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.100 | epsilon=0.080
+2026-11-19 13:38:41 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9600.pth
+2026-11-19 13:38:45 | Episode 9610/10000 | winner=chaser | steps=16 | reward C=0.700 R=-1.700 | epsilon=0.080
+2026-11-19 13:38:48 | Episode 9620/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.800 | epsilon=0.080
+2026-11-19 13:38:51 | Episode 9630/10000 | winner=runner | steps=50 | reward C=-1.300 R=-1.000 | epsilon=0.080
+2026-11-19 13:38:56 | Episode 9640/10000 | winner=runner | steps=50 | reward C=-0.900 R=-1.100 | epsilon=0.080
+2026-11-19 13:39:00 | Episode 9650/10000 | winner=runner | steps=50 | reward C=0.100 R=0.100 | epsilon=0.080
+2026-11-19 13:39:04 | Episode 9660/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.700 | epsilon=0.080
+2026-11-19 13:39:08 | Episode 9670/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.400 | epsilon=0.080
+2026-11-19 13:39:13 | Episode 9680/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:39:17 | Episode 9690/10000 | winner=runner | steps=50 | reward C=-0.800 R=0.200 | epsilon=0.080
+2026-11-19 13:39:20 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009700.png
+2026-11-19 13:39:21 | Episode 9700/10000 | winner=runner | steps=50 | reward C=-1.900 R=-0.700 | epsilon=0.080
+2026-11-19 13:39:24 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9700.pth
+2026-11-19 13:39:29 | Episode 9710/10000 | winner=runner | steps=50 | reward C=-1.500 R=-1.100 | epsilon=0.080
+2026-11-19 13:39:32 | Episode 9720/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.100 | epsilon=0.080
+2026-11-19 13:39:36 | Episode 9730/10000 | winner=chaser | steps=13 | reward C=1.050 R=-1.150 | epsilon=0.080
+2026-11-19 13:39:41 | Episode 9740/10000 | winner=runner | steps=50 | reward C=-0.700 R=0.200 | epsilon=0.080
+2026-11-19 13:39:44 | Episode 9750/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.000 | epsilon=0.080
+2026-11-19 13:39:48 | Episode 9760/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.100 | epsilon=0.080
+2026-11-19 13:39:52 | Episode 9770/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.200 | epsilon=0.080
+2026-11-19 13:39:57 | Episode 9780/10000 | winner=runner | steps=50 | reward C=-0.300 R=0.000 | epsilon=0.080
+2026-11-19 13:40:00 | Episode 9790/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.500 | epsilon=0.080
+2026-11-19 13:40:04 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009800.png
+2026-11-19 13:40:05 | Episode 9800/10000 | winner=runner | steps=50 | reward C=-1.200 R=-0.600 | epsilon=0.080
+2026-11-19 13:40:06 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9800.pth
+2026-11-19 13:40:10 | Episode 9810/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.300 | epsilon=0.080
+2026-11-19 13:40:14 | Episode 9820/10000 | winner=runner | steps=50 | reward C=-0.600 R=0.000 | epsilon=0.080
+2026-11-19 13:40:18 | Episode 9830/10000 | winner=runner | steps=50 | reward C=-0.200 R=0.000 | epsilon=0.080
+2026-11-19 13:40:22 | Episode 9840/10000 | winner=runner | steps=50 | reward C=-1.300 R=0.100 | epsilon=0.080
+2026-11-19 13:40:26 | Episode 9850/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.400 | epsilon=0.080
+2026-11-19 13:40:30 | Episode 9860/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:40:34 | Episode 9870/10000 | winner=runner | steps=50 | reward C=-1.000 R=-0.200 | epsilon=0.080
+2026-11-19 13:40:38 | Episode 9880/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:40:43 | Episode 9890/10000 | winner=runner | steps=50 | reward C=-1.300 R=0.100 | epsilon=0.080
+2026-11-19 13:40:47 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_009900.png
+2026-11-19 13:40:48 | Episode 9900/10000 | winner=runner | steps=50 | reward C=0.000 R=-0.200 | epsilon=0.080
+2026-11-19 13:40:49 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep9900.pth
+2026-11-19 13:40:54 | Episode 9910/10000 | winner=runner | steps=50 | reward C=-0.600 R=-0.100 | epsilon=0.080
+2026-11-19 13:40:58 | Episode 9920/10000 | winner=runner | steps=50 | reward C=-0.800 R=-0.100 | epsilon=0.080
+2026-11-19 13:41:02 | Episode 9930/10000 | winner=runner | steps=50 | reward C=-0.400 R=0.800 | epsilon=0.080
+2026-11-19 13:41:06 | Episode 9940/10000 | winner=runner | steps=50 | reward C=-0.300 R=-0.600 | epsilon=0.080
+2026-11-19 13:41:11 | Episode 9950/10000 | winner=runner | steps=50 | reward C=-1.500 R=-0.500 | epsilon=0.080
+2026-11-19 13:41:15 | Episode 9960/10000 | winner=runner | steps=50 | reward C=-1.100 R=-0.700 | epsilon=0.080
+2026-11-19 13:41:19 | Episode 9970/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.100 | epsilon=0.080
+2026-11-19 13:41:22 | Episode 9980/10000 | winner=runner | steps=50 | reward C=-0.500 R=0.300 | epsilon=0.080
+2026-11-19 13:41:27 | Episode 9990/10000 | winner=runner | steps=50 | reward C=-1.000 R=0.000 | epsilon=0.080
+2026-11-19 13:41:31 | Gambar gameplay: /content/drive/MyDrive/TagMind/frames/episode_010000.png
+2026-11-19 13:41:32 | Episode 10000/10000 | winner=runner | steps=50 | reward C=-0.900 R=-0.500 | epsilon=0.080
+2026-11-19 13:41:33 | Checkpoint: /content/drive/MyDrive/TagMind/checkpoint_ep10000.pth
+2026-11-19 13:41:36 | Training selesai.
+2026-11-19 13:41:36 | CSV: /content/drive/MyDrive/TagMind/tagmind_metrics.csv
+2026-11-19 13:41:36 | Grafik: /content/drive/MyDrive/TagMind/reward_plot.png
+2026-11-19 13:41:36 | Gambar: /content/drive/MyDrive/TagMind/frames
+2026-11-19 13:41:36 | Checkpoint akhir: /content/drive/MyDrive/TagMind/checkpoint_final.pth
