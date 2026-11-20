@@ -1,0 +1,51 @@
+MathAI | parameters=6,563 | epochs=150
+Epoch    1 | train_loss=1.49861 train_mae=21.3127 | val_loss=1.35536 val_mae=21.7257
+Epoch   10 | train_loss=0.47123 train_mae=12.7688 | val_loss=0.36558 val_mae=10.3830
+Epoch   20 | train_loss=0.15459 train_mae=6.4064 | val_loss=0.16480 val_mae=7.0710
+Epoch   30 | train_loss=0.11356 train_mae=5.2932 | val_loss=0.08975 val_mae=5.6274
+MathAI | parameters=6,563 | epochs=150
+Epoch    1 | train_loss=1.49861 train_mae=21.3127 | val_loss=1.35536 val_mae=21.7257
+Epoch   10 | train_loss=0.47123 train_mae=12.7688 | val_loss=0.36558 val_mae=10.3830
+Epoch   20 | train_loss=0.15459 train_mae=6.4064 | val_loss=0.16480 val_mae=7.0710
+Epoch   30 | train_loss=0.11356 train_mae=5.2932 | val_loss=0.08975 val_mae=5.6274
+Epoch   40 | train_loss=0.10777 train_mae=5.3647 | val_loss=0.09617 val_mae=5.7522
+Epoch   50 | train_loss=0.10027 train_mae=5.1278 | val_loss=0.08913 val_mae=5.7340
+MathAI | parameters=6,563 | epochs=150
+Epoch    1 | train_loss=1.49861 train_mae=21.3127 | val_loss=1.35536 val_mae=21.7257
+Epoch   10 | train_loss=0.47123 train_mae=12.7688 | val_loss=0.36558 val_mae=10.3830
+Epoch   20 | train_loss=0.15459 train_mae=6.4064 | val_loss=0.16480 val_mae=7.0710
+Epoch   30 | train_loss=0.11356 train_mae=5.2932 | val_loss=0.08975 val_mae=5.6274
+Epoch   40 | train_loss=0.10777 train_mae=5.3647 | val_loss=0.09617 val_mae=5.7522
+Epoch   50 | train_loss=0.10027 train_mae=5.1278 | val_loss=0.08913 val_mae=5.7340
+Epoch   60 | train_loss=0.09943 train_mae=5.1799 | val_loss=0.08844 val_mae=5.6953
+Epoch   70 | train_loss=0.09308 train_mae=4.9342 | val_loss=0.08352 val_mae=5.5150
+Epoch   80 | train_loss=0.09110 train_mae=4.7802 | val_loss=0.08232 val_mae=5.5698
+Epoch   90 | train_loss=0.08862 train_mae=4.6999 | val_loss=0.08131 val_mae=5.6567
+Epoch  100 | train_loss=0.08740 train_mae=4.6586 | val_loss=0.08013 val_mae=5.3843
+Epoch  110 | train_loss=0.08662 train_mae=4.6542 | val_loss=0.07924 val_mae=5.3680
+Epoch  120 | train_loss=0.08578 train_mae=4.5763 | val_loss=0.07835 val_mae=5.3003
+Early stopping at epoch 127
+Training complete | best validation MAE=5.2666
+Best checkpoint: /content/drive/MyDrive/MathAI/checkpoints/mathai_checkpoint.pth
+Testing 100 expressions (difficulty=1, tolerance=0.05)
+MISS sqrt(263)          | true=16.2173 | pred=13.6346 | err=2.5826 | conf=97.61%
+MISS -6+18              | true=12.0000 | pred=8.2797 | err=3.7203 | conf=98.66%
+MISS 16/15              | true=1.0667 | pred=0.9493 | err=0.1174 | conf=98.59%
+MISS 17/8               | true=2.1250 | pred=1.7647 | err=0.3603 | conf=98.61%
+MISS sqrt(42)           | true=6.4807 | pred=13.6346 | err=7.1539 | conf=97.61%
+MISS abs(8--20)         | true=28.0000 | pred=22.9224 | err=5.0776 | conf=97.73%
+OK   0/-7               | true=-0.0000 | pred=-0.0245 | err=0.0245 | conf=99.64%
+MISS 2*4                | true=8.0000 | pred=8.2158 | err=0.2158 | conf=98.44%
+MISS 20%-16             | true=-12.0000 | pred=-4.1147 | err=7.8853 | conf=99.39%
+MISS 15+14              | true=29.0000 | pred=29.7393 | err=0.7393 | conf=96.24%
+MISS -11/16             | true=-0.6875 | pred=-1.0634 | err=0.3759 | conf=99.36%
+MISS 3*9                | true=27.0000 | pred=26.1221 | err=0.8779 | conf=93.19%
+MISS 17/15              | true=1.1333 | pred=0.9493 | err=0.1840 | conf=98.59%
+MISS 7+12               | true=19.0000 | pred=22.6244 | err=3.6244 | conf=96.57%
+MISS 11%5               | true=1.0000 | pred=1.4601 | err=0.4601 | conf=98.56%
+MISS 6*16               | true=96.0000 | pred=80.1010 | err=15.8990 | conf=84.32%
+OK   12/13              | true=0.9231 | pred=0.9493 | err=0.0262 | conf=98.59%
+MISS -6%-12             | true=-6.0000 | pred=-6.3588 | err=0.3588 | conf=99.07%
+MISS -14%19             | true=5.0000 | pred=5.2103 | err=0.2103 | conf=98.00%
+MISS 10--6              | true=16.0000 | pred=21.0544 | err=5.0544 | conf=97.69%
+Results: 7/100 (7.0%) | MAE=8.5783
