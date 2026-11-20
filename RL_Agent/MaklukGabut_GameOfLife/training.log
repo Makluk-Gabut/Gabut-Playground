@@ -1,0 +1,88 @@
+
+  [Main Brain]  12 NN total  │  19,728 param/NN  │  236,736 total
+
+  [Companion Brain]  1 policy + 1 target (shared)  │  4,070 param/NN  │  8,140 total
+
+
+  Mulai training: 500 episode  │  max_step 200  │  start_ep 0  │  ε 1.000
+
+  ep   10  rew   10160.0  alive 1/6  comp 0/0  rev 0  ε 0.951  step 1966
+  ep   20  rew   12554.0  alive 4/6  comp 0/0  rev 0  ε 0.905  step 3950
+  ep   30  rew   11017.0  alive 3/6  comp 0/0  rev 0  ε 0.860  step 5937
+  ep   40  rew   11076.0  alive 3/6  comp 0/0  rev 0  ε 0.818  step 7937
+  ep   50  rew   12365.0  alive 3/6  comp 0/0  rev 0  ε 0.778  step 9937
+  [SAVE ✓] ep   50 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0050
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep   60  rew   11908.0  alive 3/6  comp 0/0  rev 0  ε 0.740  step 11925
+  ep   70  rew   10777.0  alive 3/6  comp 0/0  rev 0  ε 0.704  step 13925
+  ep   80  rew   10365.0  alive 2/6  comp 0/0  rev 0  ε 0.670  step 15925
+  ep   90  rew   11923.0  alive 4/6  comp 0/0  rev 0  ε 0.637  step 17925
+  ep  100  rew   11455.0  alive 2/6  comp 0/0  rev 0  ε 0.606  step 19925
+  [SAVE ✓] ep  100 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0100
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  110  rew   12856.0  alive 3/6  comp 0/0  rev 0  ε 0.576  step 21925
+  ep  120  rew   12469.0  alive 4/6  comp 0/0  rev 0  ε 0.548  step 23925
+  ep  130  rew   13810.0  alive 5/6  comp 0/0  rev 0  ε 0.521  step 25925
+  ep  140  rew   12895.0  alive 4/6  comp 0/0  rev 0  ε 0.496  step 27925
+  ep  150  rew   12964.0  alive 5/6  comp 0/0  rev 0  ε 0.471  step 29925
+  [SAVE ✓] ep  150 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0150
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  160  rew   12517.0  alive 4/6  comp 0/0  rev 0  ε 0.448  step 31925
+  ep  170  rew   13407.0  alive 5/6  comp 0/0  rev 0  ε 0.427  step 33925
+  ep  180  rew   14225.0  alive 6/6  comp 0/0  rev 0  ε 0.406  step 35925
+  ep  190  rew   14310.0  alive 6/6  comp 0/0  rev 0  ε 0.386  step 37925
+  ep  200  rew   13970.0  alive 6/6  comp 0/0  rev 0  ε 0.367  step 39925
+  [SAVE ✓] ep  200 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0200
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  210  rew   14365.0  alive 6/6  comp 0/0  rev 0  ε 0.349  step 41925
+  ep  220  rew   14355.0  alive 6/6  comp 0/0  rev 0  ε 0.332  step 43925
+  ep  230  rew   14315.0  alive 6/6  comp 0/0  rev 0  ε 0.316  step 45925
+  ep  240  rew   14390.0  alive 6/6  comp 0/0  rev 0  ε 0.300  step 47925
+  ep  250  rew   13790.0  alive 6/6  comp 0/0  rev 0  ε 0.286  step 49925
+  [SAVE ✓] ep  250 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0250
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  260  rew   13870.0  alive 6/6  comp 0/0  rev 0  ε 0.272  step 51925
+  ep  270  rew   14400.0  alive 6/6  comp 0/0  rev 0  ε 0.258  step 53925
+  ep  280  rew   13855.0  alive 6/6  comp 0/0  rev 0  ε 0.246  step 55925
+  ep  290  rew   14120.0  alive 6/6  comp 0/0  rev 0  ε 0.234  step 57925
+  ep  300  rew   14205.0  alive 6/6  comp 0/0  rev 0  ε 0.222  step 59925
+  [SAVE ✓] ep  300 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0300
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  310  rew   14400.0  alive 6/6  comp 0/0  rev 0  ε 0.211  step 61925
+  ep  320  rew   14120.0  alive 6/6  comp 0/0  rev 0  ε 0.201  step 63925
+  ep  330  rew   14395.0  alive 6/6  comp 0/0  rev 0  ε 0.191  step 65925
+  ep  340  rew   14370.0  alive 6/6  comp 0/0  rev 0  ε 0.182  step 67925
+  ep  350  rew   14360.0  alive 6/6  comp 0/0  rev 0  ε 0.173  step 69925
+  [SAVE ✓] ep  350 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0350
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  360  rew   14375.0  alive 6/6  comp 0/0  rev 0  ε 0.165  step 71925
+  ep  370  rew   13935.0  alive 6/6  comp 0/0  rev 0  ε 0.157  step 73925
+  ep  380  rew   14265.0  alive 6/6  comp 0/0  rev 0  ε 0.149  step 75925
+  ep  390  rew   14195.0  alive 6/6  comp 0/0  rev 0  ε 0.142  step 77925
+  ep  400  rew   13350.0  alive 6/6  comp 0/0  rev 0  ε 0.135  step 79925
+  [SAVE ✓] ep  400 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0400
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  410  rew   14395.0  alive 6/6  comp 0/0  rev 0  ε 0.128  step 81925
+  ep  420  rew   14330.0  alive 6/6  comp 0/0  rev 0  ε 0.122  step 83925
+  ep  430  rew   14170.0  alive 6/6  comp 0/0  rev 0  ε 0.116  step 85925
+  ep  440  rew   14395.0  alive 6/6  comp 0/0  rev 0  ε 0.110  step 87925
+  ep  450  rew   14400.0  alive 6/6  comp 0/0  rev 0  ε 0.105  step 89925
+  [SAVE ✓] ep  450 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0450
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+  ep  460  rew   14200.0  alive 6/6  comp 0/0  rev 0  ε 0.100  step 91925
+  ep  470  rew   14365.0  alive 6/6  comp 0/0  rev 0  ε 0.095  step 93925
+  ep  480  rew   14395.0  alive 6/6  comp 0/0  rev 0  ε 0.090  step 95925
+  ep  490  rew   14035.0  alive 6/6  comp 0/0  rev 0  ε 0.086  step 97925
+  ep  500  rew   14400.0  alive 6/6  comp 0/0  rev 0  ε 0.082  step 99925
+  [SAVE ✓] ep  500 → /content/drive/MyDrive/MaklukGabut_GameOfLife/checkpoints/ep0500
+  [PLOT ✓] Tersimpan → /content/drive/MyDrive/MaklukGabut_GameOfLife/training_stats.png
+
+  ┌─ RINGKASAN 20 EPISODE TERAKHIR ─────────────────┐
+  │  Reward rata-rata   :    14210.8               │
+  │  Reward maks        :    14400.0               │
+  │  Agen selamat avg   :       6.00 / 6          │
+  │  Kematian avg       :       0.00               │
+  │  Companion avg/ep   :       0.00               │
+  └──────────────────────────────────────────────────┘
+
+  Training selesai.
