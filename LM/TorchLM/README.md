@@ -4,7 +4,7 @@ TorchLM is a small, decoder-only Transformer language model written in PyTorch. 
 
 ## Project contents
 
-- `torchlm.py` — tokenizer preparation, model definition, training, checkpoint saving, and text generation.
+- `Leo.py` — tokenizer preparation, model definition, training, checkpoint saving, and text generation.
 - `nanolm_bpe_2k.json` — the trained byte-level BPE tokenizer used for the experiment.
 - `loss.csv` and `loss.png` — recorded training and validation loss.
 - `training_12000.log` — training log for the 12,000-step run.
