@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Train a small decoder-only TensorFlow language model on a text corpus.
 
 Example (Colab):
