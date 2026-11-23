@@ -1,7 +1,7 @@
 """TorchLM-v2 model Bob: successor to the original PyTorch TorchLM.
 
-Bob keeps TorchLM's byte-level BPE, RoPE, tied embeddings, and PyTorch training
-while scaling it to a 16K vocabulary and roughly 15M parameters.
+Keeps TorchLM's byte-level BPE, RoPE, tied embeddings and PyTorch training,
+scaled to approximately 20M parameters with an 8K maximum vocabulary.
 """
 from __future__ import annotations
 
@@ -29,15 +29,17 @@ except ImportError as exc:
 PAD_TOKEN = "<|pad|>"
 BOS_TOKEN = "<|bos|>"
 EOS_TOKEN = "<|eos|>"
+MAX_VOCAB_SIZE = 8192
+MAX_PARAMETERS = 20_000_000
 
 
 @dataclass
 class Config:
     vocab_size: int
-    embed_dim: int = 384
-    nhead: int = 6
+    embed_dim: int = 512
+    nhead: int = 8
     num_layers: int = 6
-    ff_dim: int = 1024
+    ff_dim: int = 1536
     max_len: int = 512
     dropout: float = 0.1
 
@@ -176,8 +178,8 @@ def iter_documents(path: Path) -> Iterator[str]:
 
 
 def train_tokenizer(data_path: Path, tokenizer_path: Path, vocab_size: int):
-    if vocab_size < 300:
-        raise ValueError("Byte-level BPE vocab-size must be at least 300")
+    if not 300 <= vocab_size <= MAX_VOCAB_SIZE:
+        raise ValueError(f"vocab-size must be between 300 and {MAX_VOCAB_SIZE}")
     tokenizer = Tokenizer(models.BPE(unk_token="[UNK]", byte_fallback=True))
     tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
     tokenizer.decoder = decoders.Sequence([decoders.ByteFallback(), decoders.ByteLevel()])
@@ -199,7 +201,7 @@ def prepare_token_files(data_path: Path, tokenizer: Tokenizer, output_dir: Path)
     bos_id, eos_id = tokenizer.token_to_id(BOS_TOKEN), tokenizer.token_to_id(EOS_TOKEN)
     if bos_id is None or eos_id is None:
         raise ValueError("Tokenizer is missing BOS/EOS tokens")
-    train_count = val_count = doc_count = 0
+    train_count = val_count = 0
     with train_path.open("wb") as train_file, val_path.open("wb") as val_file:
         for doc_count, doc in enumerate(iter_documents(data_path), start=1):
             ids = np.asarray([bos_id, *tokenizer.encode(doc, add_special_tokens=False).ids, eos_id], dtype=np.uint32)
@@ -235,7 +237,7 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batc
             x, y = get_batch(data, batch_size, block_size, device)
             logits = model(x)
             losses.append(F.cross_entropy(logits.float().reshape(-1, logits.size(-1)), y.reshape(-1)).item())
-        results.append(sum(losses) / len(losses))
+    results.append(sum(losses) / len(losses))
     model.train()
     return results
 
@@ -243,14 +245,10 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batc
 def save_checkpoint(path, model, optimizer, step, best_loss, tokenizer_path, data_path, precision):
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({
-        "model_name": "Bob",
-        "model_state_dict": model.state_dict(),
-        "optimizer_state_dict": optimizer.state_dict(),
-        "model_config": asdict(model.config),
-        "step": step,
-        "best_val_loss": best_loss,
-        "tokenizer_path": str(tokenizer_path),
-        "data_path": str(data_path),
+        "model_name": "Bob", "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(), "model_config": asdict(model.config),
+        "step": step, "best_val_loss": best_loss,
+        "tokenizer_path": str(tokenizer_path), "data_path": str(data_path),
         "precision": precision,
     }, path)
 
@@ -260,14 +258,14 @@ def parse_args():
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, default=Path("runs/TorchLM-v2-Bob"))
     parser.add_argument("--tokenizer", type=Path, default=None)
-    parser.add_argument("--vocab-size", type=int, default=16384)
+    parser.add_argument("--vocab-size", type=int, default=8192)
     parser.add_argument("--prepare-tokenizer", action="store_true")
     parser.add_argument("--steps", type=int, default=12000)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--block-size", type=int, default=512)
-    parser.add_argument("--embed-dim", type=int, default=384)
-    parser.add_argument("--num-heads", type=int, default=6)
-    parser.add_argument("--ff-dim", type=int, default=1024)
+    parser.add_argument("--embed-dim", type=int, default=512)
+    parser.add_argument("--num-heads", type=int, default=8)
+    parser.add_argument("--ff-dim", type=int, default=1536)
     parser.add_argument("--num-layers", type=int, default=6)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
@@ -291,6 +289,12 @@ def main():
     args = parse_args()
     if not args.data.is_file():
         raise FileNotFoundError(f"Corpus not found: {args.data}")
+    if not 300 <= args.vocab_size <= MAX_VOCAB_SIZE:
+        raise ValueError(f"--vocab-size must be between 300 and {MAX_VOCAB_SIZE}")
+    if args.steps < 1 or args.batch_size < 1 or args.block_size < 2:
+        raise ValueError("steps/batch-size must be positive; block-size must be at least 2")
+    if args.eval_interval < 1 or args.eval_batches < 1:
+        raise ValueError("eval-interval and eval-batches must be positive")
 
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -309,11 +313,12 @@ def main():
     else:
         tokenizer = Tokenizer.from_file(str(tokenizer_path))
         tokenizer.add_special_tokens([PAD_TOKEN, BOS_TOKEN, EOS_TOKEN])
+    if tokenizer.get_vocab_size() > MAX_VOCAB_SIZE:
+        raise ValueError(f"Tokenizer has {tokenizer.get_vocab_size()} tokens; maximum is {MAX_VOCAB_SIZE}")
 
     train_path, val_path = prepare_token_files(args.data, tokenizer, args.output_dir)
     train_data = np.memmap(train_path, dtype=np.uint32, mode="r")
     val_data = np.memmap(val_path, dtype=np.uint32, mode="r")
-
     config = Config(vocab_size=tokenizer.get_vocab_size(), embed_dim=args.embed_dim,
                     nhead=args.num_heads, num_layers=args.num_layers, ff_dim=args.ff_dim,
                     max_len=args.block_size, dropout=args.dropout)
@@ -321,25 +326,27 @@ def main():
         json.dumps({**asdict(config), "model_name": "Bob"}, indent=2), encoding="utf-8"
     )
     model = Bob(config).to(device)
+    parameter_count = count_parameters(model)
+    if parameter_count > MAX_PARAMETERS:
+        raise ValueError(f"Model has {parameter_count:,} parameters; hard maximum is {MAX_PARAMETERS:,}")
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=0.1)
-
     print(f"PyTorch {torch.__version__} | Device: {device}")
-    print(f"Model: Bob | Parameters: {count_parameters(model):,} ({count_parameters(model)/1e6:.2f}M)")
-    print(f"Vocab: {config.vocab_size:,}")
+    print(f"Model: Bob | Parameters: {parameter_count:,} ({parameter_count/1e6:.3f}M / 20M max)")
+    print(f"Vocab: {config.vocab_size:,} (8,192 max)")
 
     checkpoint_path = args.checkpoint or args.output_dir / "bob_latest.pt"
     best_path = args.best_checkpoint or args.output_dir / "bob_best.pt"
     log_path = args.output_dir / "training.csv"
     fresh_log = not log_path.exists() or log_path.stat().st_size == 0
-
     amp_dtype = None
-    if device.type == "cuda":
-        if args.precision == "bf16":
+    if device.type == "cuda" and args.precision != "fp32":
+        if args.precision == "bf16" or (args.precision == "auto" and torch.cuda.is_bf16_supported()):
+            if not torch.cuda.is_bf16_supported():
+                raise ValueError("CUDA device does not support bf16")
             amp_dtype = torch.bfloat16
-        elif args.precision == "fp16":
+        else:
             amp_dtype = torch.float16
-        elif args.precision == "auto":
-            amp_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda" and amp_dtype == torch.float16))
 
     start_step, best_loss = 0, float("inf")
     if args.resume:
@@ -363,10 +370,11 @@ def main():
             with amp:
                 logits = model(x)
                 loss = F.cross_entropy(logits.float().reshape(-1, config.vocab_size), y.reshape(-1))
-            loss.backward()
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
-
+            scaler.step(optimizer)
+            scaler.update()
             if step == 1 or step % args.eval_interval == 0 or step == args.steps:
                 started = time.time()
                 train_loss, val_loss = estimate_loss(model, train_data, val_data,
@@ -377,12 +385,11 @@ def main():
                 print(f"Step {step}/{args.steps} | train {train_loss:.4f} | val {val_loss:.4f} | ppl {perplexity:.2f}")
                 writer.writerow([step, f"{train_loss:.6f}", f"{val_loss:.6f}", f"{perplexity:.6g}", f"{elapsed:.2f}"])
                 log_file.flush()
-                save_checkpoint(checkpoint_path, model, optimizer, step, best_loss,
-                                tokenizer_path, args.data, str(amp_dtype) if amp_dtype else "fp32")
+                precision = str(amp_dtype) if amp_dtype else "fp32"
+                save_checkpoint(checkpoint_path, model, optimizer, step, best_loss, tokenizer_path, args.data, precision)
                 if val_loss < best_loss:
                     best_loss = val_loss
-                    save_checkpoint(best_path, model, optimizer, step, best_loss,
-                                    tokenizer_path, args.data, str(amp_dtype) if amp_dtype else "fp32")
+                    save_checkpoint(best_path, model, optimizer, step, best_loss, tokenizer_path, args.data, precision)
 
     sample = model.generate(tokenizer, args.prompt, tokenizer.token_to_id(BOS_TOKEN),
                             tokenizer.token_to_id(EOS_TOKEN), args.generate,
