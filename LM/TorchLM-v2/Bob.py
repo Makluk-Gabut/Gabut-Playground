@@ -47,10 +47,8 @@ class RotaryEmbedding(nn.Module):
         super().__init__()
         if dim % 2:
             raise ValueError("RoPE head dimension must be even")
-        self.register_buffer(
-            "inv_freq", 1.0 / (10000 ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim)),
-            persistent=False,
-        )
+        inv_freq = 1.0 / (10000 ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
+        self.register_buffer("inv_freq", inv_freq, persistent=False)
 
     def forward(self, q: torch.Tensor, k: torch.Tensor, positions: torch.Tensor):
         dim = q.size(-1)
@@ -264,13 +262,15 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batc
 
 def save_checkpoint(path, model, optimizer, step, best_loss, tokenizer_path, data_path, precision):
     path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = path.with_suffix(path.suffix + ".tmp")
     torch.save({
         "model_name": "Bob", "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(), "model_config": asdict(model.config),
         "step": step, "best_val_loss": best_loss,
         "tokenizer_path": str(tokenizer_path), "data_path": str(data_path),
         "precision": precision,
-    }, path)
+    }, temporary_path)
+    temporary_path.replace(path)
 
 
 def parse_args():
@@ -291,8 +291,10 @@ def parse_args():
     parser.add_argument("--activation", choices=("gelu", "swiglu"), default="swiglu")
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
-    parser.add_argument("--eval-interval", type=int, default=250)
-    parser.add_argument("--eval-batches", type=int, default=20)
+    parser.add_argument("--eval-interval", type=int, default=1000)
+    parser.add_argument("--eval-batches", type=int, default=5)
+    parser.add_argument("--checkpoint-interval", type=int, default=1000,
+                        help="Save resumable latest checkpoint every N training steps")
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--precision", choices=("auto", "fp32", "fp16", "bf16"), default="auto")
     parser.add_argument("--device", default="auto")
@@ -315,8 +317,8 @@ def main():
         raise ValueError(f"--vocab-size must be between 300 and {MAX_VOCAB_SIZE}")
     if args.steps < 1 or args.batch_size < 1 or args.block_size < 2:
         raise ValueError("steps/batch-size must be positive; block-size must be at least 2")
-    if args.eval_interval < 1 or args.eval_batches < 1:
-        raise ValueError("eval-interval and eval-batches must be positive")
+    if args.eval_interval < 1 or args.eval_batches < 1 or args.checkpoint_interval < 1:
+        raise ValueError("eval-interval, eval-batches, and checkpoint-interval must be positive")
 
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -352,10 +354,13 @@ def main():
     parameter_count = count_parameters(model)
     if parameter_count > MAX_PARAMETERS:
         raise ValueError(f"Model has {parameter_count:,} parameters; hard maximum is {MAX_PARAMETERS:,}")
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=0.1)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), lr=args.learning_rate, weight_decay=0.1, fused=(device.type == "cuda")
+    )
     print(f"PyTorch {torch.__version__} | Device: {device}")
     print(f"Model: Bob | Parameters: {parameter_count:,} ({parameter_count/1e6:.3f}M / 20M max)")
     print(f"Vocab: {config.vocab_size:,} (8,192 max) | Activation: {config.activation}")
+    print(f"Fused AdamW: {'on' if device.type == 'cuda' else 'off'} | Activation checkpointing: on")
 
     checkpoint_path = args.checkpoint or args.output_dir / "bob_latest.pt"
     best_path = args.best_checkpoint or args.output_dir / "bob_best.pt"
@@ -398,7 +403,8 @@ def main():
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             scaler.step(optimizer)
             scaler.update()
-            if step == 1 or step % args.eval_interval == 0 or step == args.steps:
+
+            if step % args.eval_interval == 0 or step == args.steps:
                 started = time.time()
                 train_loss, val_loss = estimate_loss(model, train_data, val_data,
                                                      args.batch_size, args.block_size,
@@ -408,11 +414,17 @@ def main():
                 print(f"Step {step}/{args.steps} | train {train_loss:.4f} | val {val_loss:.4f} | ppl {perplexity:.2f}")
                 writer.writerow([step, f"{train_loss:.6f}", f"{val_loss:.6f}", f"{perplexity:.6g}", f"{elapsed:.2f}"])
                 log_file.flush()
-                precision = str(amp_dtype) if amp_dtype else "fp32"
-                save_checkpoint(checkpoint_path, model, optimizer, step, best_loss, tokenizer_path, args.data, precision)
                 if val_loss < best_loss:
                     best_loss = val_loss
-                    save_checkpoint(best_path, model, optimizer, step, best_loss, tokenizer_path, args.data, precision)
+                    precision = str(amp_dtype) if amp_dtype else "fp32"
+                    save_checkpoint(best_path, model, optimizer, step, best_loss,
+                                    tokenizer_path, args.data, precision)
+
+            if step % args.checkpoint_interval == 0 or step == args.steps:
+                precision = str(amp_dtype) if amp_dtype else "fp32"
+                save_checkpoint(checkpoint_path, model, optimizer, step, best_loss,
+                                tokenizer_path, args.data, precision)
+                print(f"Saved resumable checkpoint at step {step}: {checkpoint_path}")
 
     sample = model.generate(tokenizer, args.prompt, tokenizer.token_to_id(BOS_TOKEN),
                             tokenizer.token_to_id(EOS_TOKEN), args.generate,

@@ -48,7 +48,9 @@ Check the Hugging Face dataset card for the source snapshot's license and attrib
 python Bob.py \
   --data /content/drive/MyDrive/TorchLM-v2/data/idwiki.jsonl \
   --output-dir /content/drive/MyDrive/TorchLM-v2/runs/Bob \
-  --steps 12000 --vocab-size 8192 --require-gpu
+  --steps 98000 --vocab-size 8192 --require-gpu --precision fp16
 ```
 
-Training always uses activation checkpointing during backpropagation to reduce activation-memory use. This trades additional computation for lower memory use. Training uses a 1-in-20 article validation split, memory-mapped token caches, `bob_latest.pt`, `bob_best.pt`, CSV loss logs, and `sample.txt`.
+Bob uses FP32 model parameters and AdamW master weights with FP16 autocast on a T4, plus activation checkpointing. CUDA runs use fused AdamW when supported by the installed PyTorch. By default, validation runs every 1,000 steps with 5 batches per split, and the resumable `bob_latest.pt` checkpoint is saved every 1,000 steps (and at the final step). The best validation checkpoint, CSV loss log, and generated sample are also saved. Checkpoints use a temporary file followed by an atomic rename to reduce the chance of leaving a partially written checkpoint.
+
+Adjust `--checkpoint-interval` to change save frequency. More frequent validation/checkpoint writes can slow training, especially when the output directory is on Google Drive. Resume from the latest checkpoint with `--resume /path/to/bob_latest.pt`.
