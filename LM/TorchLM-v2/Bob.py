@@ -40,10 +40,10 @@ class Config:
     embed_dim: int = 512
     nhead: int = 8
     num_layers: int = 6
-    ff_dim: int = 1536
+    ff_dim: int = 1024
     max_len: int = 512
     dropout: float = 0.1
-    activation: str = "gelu"
+    activation: str = "swiglu"
 
 
 class RotaryEmbedding(nn.Module):
@@ -137,7 +137,6 @@ class Bob(nn.Module):
         self.blocks = nn.ModuleList([TransformerBlock(config) for _ in range(config.num_layers)])
         self.final_norm = nn.LayerNorm(config.embed_dim)
         self.lm_head = nn.Linear(config.embed_dim, config.vocab_size, bias=False)
-        # Tie input/output embeddings, as in the original TorchLM.
         self.lm_head.weight = self.token_embedding.weight
 
     def forward(self, token_ids):
@@ -292,9 +291,9 @@ def parse_args():
     parser.add_argument("--embed-dim", type=int, default=512)
     parser.add_argument("--num-heads", type=int, default=8)
     parser.add_argument("--ff-dim", type=int, default=None,
-                        help="Default: 1536 for GELU, 1024 for SwiGLU")
+                        help="Default: 1024 for SwiGLU, 1536 for GELU")
     parser.add_argument("--num-layers", type=int, default=6)
-    parser.add_argument("--activation", choices=("gelu", "swiglu"), default="gelu")
+    parser.add_argument("--activation", choices=("gelu", "swiglu"), default="swiglu")
     parser.add_argument("--gradient-checkpointing", action="store_true",
                         help="Trade extra compute for lower activation memory during training")
     parser.add_argument("--dropout", type=float, default=0.1)

@@ -4,17 +4,19 @@
 
 Bob keeps the original model's decoder-only Transformer, rotary position embeddings (RoPE), byte-level BPE tokenizer, tied input/output embeddings, PyTorch training, checkpointing, and sampling.
 
-## Model size and activations
+## Model size and activation
 
-The default model uses an 8,192-token maximum vocabulary, 512 hidden dimensions, 8 attention heads, 6 Transformer blocks, and a 512-token context. Input and output embeddings are tied. By default, GELU uses an FFN width of 1,536, for **19,960,832 trainable parameters** at exactly 8,192 vocabulary entries.
+The default model uses an 8,192-token maximum vocabulary, 512 hidden dimensions, 8 attention heads, 6 Transformer blocks, and a 512-token context. Input and output embeddings are tied.
 
-SwiGLU is also supported. Its default FFN width is 1,024 to account for its gate and up projections; with an 8,192 vocabulary it has **19,963,904 trainable parameters**. Both stay under the hard 20,000,000-parameter limit. The script prints and checks the actual count; the actual tokenizer vocabulary can be smaller than the requested cap.
+**SwiGLU is the default activation.** It uses an FFN width of 1,024. At exactly 8,192 vocabulary entries, the model has **19,963,904 trainable parameters** (about 19.96M). GELU remains available as an optional baseline, with an FFN width of 1,536 and **19,960,832 trainable parameters**.
 
-Select the activation with `--activation gelu` or `--activation swiglu`. You can override the FFN width with `--ff-dim`, but the script rejects configurations over the parameter limit.
+The script enforces both the 8,192-token vocabulary cap and the 20,000,000-parameter limit. The actual tokenizer vocabulary may be smaller than the requested size, and the script prints and checks the actual parameter count at startup.
+
+Use `--activation swiglu` explicitly if desired. Use `--activation gelu` to compare against the GELU baseline. Override FFN size with `--ff-dim` if needed, but configurations over 20M parameters will be rejected.
 
 ## Gradient checkpointing
 
-Use `--gradient-checkpointing` to recompute Transformer blocks during backpropagation instead of retaining all their activations. It reduces activation-memory use at the cost of extra compute/time. It is off by default; enable it if GPU memory is tight.
+Gradient checkpointing is disabled by default. Enable it with `--gradient-checkpointing` to recompute Transformer block activations during backpropagation instead of retaining them. It reduces activation memory at the cost of extra compute/time.
 
 ## Setup
 
@@ -44,4 +46,4 @@ python Bob.py \
   --gradient-checkpointing --require-gpu
 ```
 
-Use `--activation gelu` for the GELU baseline. Training uses a 1-in-20 article validation split, memory-mapped token caches, `bob_latest.pt`, `bob_best.pt`, CSV loss logs, and `sample.txt`.
+Training uses a 1-in-20 article validation split, memory-mapped token caches, `bob_latest.pt`, `bob_best.pt`, CSV loss logs, and `sample.txt`.
