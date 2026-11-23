@@ -1,8 +1,4 @@
-"""TorchLM-v2 model Bob: successor to the original PyTorch TorchLM.
-
-Keeps TorchLM's byte-level BPE, RoPE, tied embeddings and PyTorch training,
-scaled to approximately 20M parameters with an 8K maximum vocabulary.
-"""
+"""TorchLM-v2 model Bob with SwiGLU and activation checkpointing."""
 from __future__ import annotations
 
 import argparse
@@ -51,8 +47,10 @@ class RotaryEmbedding(nn.Module):
         super().__init__()
         if dim % 2:
             raise ValueError("RoPE head dimension must be even")
-        inv_freq = 1.0 / (10000 ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
-        self.register_buffer("inv_freq", inv_freq, persistent=False)
+        self.register_buffer(
+            "inv_freq", 1.0 / (10000 ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim)),
+            persistent=False,
+        )
 
     def forward(self, q: torch.Tensor, k: torch.Tensor, positions: torch.Tensor):
         dim = q.size(-1)
@@ -94,7 +92,6 @@ class CausalSelfAttention(nn.Module):
 
 
 class SwiGLU(nn.Module):
-    """Gated feed-forward: down(SiLU(gate(x)) * up(x))."""
     def __init__(self, embed_dim: int, hidden_dim: int, dropout: float):
         super().__init__()
         self.gate_proj = nn.Linear(embed_dim, hidden_dim)
@@ -129,10 +126,9 @@ class TransformerBlock(nn.Module):
 
 
 class Bob(nn.Module):
-    def __init__(self, config: Config, gradient_checkpointing: bool = False):
+    def __init__(self, config: Config):
         super().__init__()
         self.config = config
-        self.gradient_checkpointing = gradient_checkpointing
         self.token_embedding = nn.Embedding(config.vocab_size, config.embed_dim)
         self.blocks = nn.ModuleList([TransformerBlock(config) for _ in range(config.num_layers)])
         self.final_norm = nn.LayerNorm(config.embed_dim)
@@ -146,7 +142,8 @@ class Bob(nn.Module):
         positions = torch.arange(seq_len, device=token_ids.device)
         x = self.token_embedding(token_ids)
         for block in self.blocks:
-            if self.gradient_checkpointing and self.training and torch.is_grad_enabled():
+            # Always recompute block activations during backward to reduce training memory.
+            if self.training and torch.is_grad_enabled():
                 x = checkpoint(block, x, positions, use_reentrant=False)
             else:
                 x = block(x, positions)
@@ -158,8 +155,7 @@ class Bob(nn.Module):
         if temperature <= 0 or max_new_tokens < 0:
             raise ValueError("temperature must be positive and max_new_tokens non-negative")
         device = next(self.parameters()).device
-        ids = [bos_id] + tokenizer.encode(prompt, add_special_tokens=False).ids
-        ids = ids[-self.config.max_len:]
+        ids = ([bos_id] + tokenizer.encode(prompt, add_special_tokens=False).ids)[-self.config.max_len:]
         was_training = self.training
         self.eval()
         try:
@@ -168,8 +164,7 @@ class Bob(nn.Module):
                 logits = self(context)[0, -1].float() / temperature
                 if top_k > 0:
                     k = min(top_k, logits.numel())
-                    threshold = torch.topk(logits, k).values[-1]
-                    logits = logits.masked_fill(logits < threshold, float("-inf"))
+                    logits = logits.masked_fill(logits < torch.topk(logits, k).values[-1], float("-inf"))
                 next_id = int(torch.multinomial(F.softmax(logits, dim=-1), 1).item())
                 if next_id == eos_id:
                     break
@@ -294,8 +289,6 @@ def parse_args():
                         help="Default: 1024 for SwiGLU, 1536 for GELU")
     parser.add_argument("--num-layers", type=int, default=6)
     parser.add_argument("--activation", choices=("gelu", "swiglu"), default="swiglu")
-    parser.add_argument("--gradient-checkpointing", action="store_true",
-                        help="Trade extra compute for lower activation memory during training")
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
     parser.add_argument("--eval-interval", type=int, default=250)
@@ -355,7 +348,7 @@ def main():
     (args.output_dir / "config.json").write_text(
         json.dumps({**asdict(config), "model_name": "Bob"}, indent=2), encoding="utf-8"
     )
-    model = Bob(config, gradient_checkpointing=args.gradient_checkpointing).to(device)
+    model = Bob(config).to(device)
     parameter_count = count_parameters(model)
     if parameter_count > MAX_PARAMETERS:
         raise ValueError(f"Model has {parameter_count:,} parameters; hard maximum is {MAX_PARAMETERS:,}")
@@ -363,7 +356,6 @@ def main():
     print(f"PyTorch {torch.__version__} | Device: {device}")
     print(f"Model: Bob | Parameters: {parameter_count:,} ({parameter_count/1e6:.3f}M / 20M max)")
     print(f"Vocab: {config.vocab_size:,} (8,192 max) | Activation: {config.activation}")
-    print(f"Gradient checkpointing: {'on' if args.gradient_checkpointing else 'off'}")
 
     checkpoint_path = args.checkpoint or args.output_dir / "bob_latest.pt"
     best_path = args.best_checkpoint or args.output_dir / "bob_best.pt"
