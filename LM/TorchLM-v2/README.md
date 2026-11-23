@@ -4,9 +4,17 @@
 
 Bob keeps the original model's decoder-only Transformer, rotary position embeddings (RoPE), byte-level BPE tokenizer, tied input/output embeddings, PyTorch training, checkpointing, and sampling.
 
-## Model size
+## Model size and activations
 
-Defaults: vocabulary capped at 8,192, 512 hidden dimensions, 8 attention heads, 6 Transformer blocks, a 1,536-wide MLP, and a 512-token context. With an 8,192-token vocabulary, this configuration has **19,960,832 trainable parameters** (about 19.96M). The vocabulary embedding and output projection share weights. The script enforces both the 8,192-token vocabulary cap and the 20,000,000-parameter model limit; actual parameter count is printed at startup.
+The default model uses an 8,192-token maximum vocabulary, 512 hidden dimensions, 8 attention heads, 6 Transformer blocks, and a 512-token context. Input and output embeddings are tied. By default, GELU uses an FFN width of 1,536, for **19,960,832 trainable parameters** at exactly 8,192 vocabulary entries.
+
+SwiGLU is also supported. Its default FFN width is 1,024 to account for its gate and up projections; with an 8,192 vocabulary it has **19,963,904 trainable parameters**. Both stay under the hard 20,000,000-parameter limit. The script prints and checks the actual count; the actual tokenizer vocabulary can be smaller than the requested cap.
+
+Select the activation with `--activation gelu` or `--activation swiglu`. You can override the FFN width with `--ff-dim`, but the script rejects configurations over the parameter limit.
+
+## Gradient checkpointing
+
+Use `--gradient-checkpointing` to recompute Transformer blocks during backpropagation instead of retaining all their activations. It reduces activation-memory use at the cost of extra compute/time. It is off by default; enable it if GPU memory is tight.
 
 ## Setup
 
@@ -26,13 +34,14 @@ The helper downloads Wikimedia's current-only article dump, extracts namespace-0
 
 Wikipedia text is generally under CC BY-SA. Retain article attribution and follow applicable license terms.
 
-## Train
+## Train Bob
 
 ```bash
 python Bob.py \
   --data /content/drive/MyDrive/TorchLM-v2/data/idwiki.jsonl \
   --output-dir /content/drive/MyDrive/TorchLM-v2/runs/Bob \
-  --steps 12000 --vocab-size 8192 --require-gpu
+  --steps 12000 --vocab-size 8192 --activation swiglu \
+  --gradient-checkpointing --require-gpu
 ```
 
-Training uses a 1-in-20 article validation split, memory-mapped token caches, `bob_latest.pt`, `bob_best.pt`, CSV loss logs, and `sample.txt`.
+Use `--activation gelu` for the GELU baseline. Training uses a 1-in-20 article validation split, memory-mapped token caches, `bob_latest.pt`, `bob_best.pt`, CSV loss logs, and `sample.txt`.

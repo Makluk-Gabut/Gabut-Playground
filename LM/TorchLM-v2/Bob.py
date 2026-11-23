@@ -20,6 +20,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils.checkpoint import checkpoint
 
 try:
     from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
@@ -42,6 +43,7 @@ class Config:
     ff_dim: int = 1536
     max_len: int = 512
     dropout: float = 0.1
+    activation: str = "gelu"
 
 
 class RotaryEmbedding(nn.Module):
@@ -91,16 +93,34 @@ class CausalSelfAttention(nn.Module):
         return self.out_proj(attended)
 
 
+class SwiGLU(nn.Module):
+    """Gated feed-forward: down(SiLU(gate(x)) * up(x))."""
+    def __init__(self, embed_dim: int, hidden_dim: int, dropout: float):
+        super().__init__()
+        self.gate_proj = nn.Linear(embed_dim, hidden_dim)
+        self.up_proj = nn.Linear(embed_dim, hidden_dim)
+        self.down_proj = nn.Linear(hidden_dim, embed_dim)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        return self.dropout(self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x)))
+
+
 class TransformerBlock(nn.Module):
     def __init__(self, config: Config):
         super().__init__()
         self.ln1 = nn.LayerNorm(config.embed_dim)
         self.attn = CausalSelfAttention(config.embed_dim, config.nhead, config.dropout)
         self.ln2 = nn.LayerNorm(config.embed_dim)
-        self.mlp = nn.Sequential(
-            nn.Linear(config.embed_dim, config.ff_dim), nn.GELU(),
-            nn.Linear(config.ff_dim, config.embed_dim), nn.Dropout(config.dropout),
-        )
+        if config.activation == "swiglu":
+            self.mlp = SwiGLU(config.embed_dim, config.ff_dim, config.dropout)
+        elif config.activation == "gelu":
+            self.mlp = nn.Sequential(
+                nn.Linear(config.embed_dim, config.ff_dim), nn.GELU(),
+                nn.Linear(config.ff_dim, config.embed_dim), nn.Dropout(config.dropout),
+            )
+        else:
+            raise ValueError("activation must be 'gelu' or 'swiglu'")
         self.dropout = nn.Dropout(config.dropout)
 
     def forward(self, x, positions):
@@ -109,13 +129,15 @@ class TransformerBlock(nn.Module):
 
 
 class Bob(nn.Module):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, gradient_checkpointing: bool = False):
         super().__init__()
         self.config = config
+        self.gradient_checkpointing = gradient_checkpointing
         self.token_embedding = nn.Embedding(config.vocab_size, config.embed_dim)
         self.blocks = nn.ModuleList([TransformerBlock(config) for _ in range(config.num_layers)])
         self.final_norm = nn.LayerNorm(config.embed_dim)
         self.lm_head = nn.Linear(config.embed_dim, config.vocab_size, bias=False)
+        # Tie input/output embeddings, as in the original TorchLM.
         self.lm_head.weight = self.token_embedding.weight
 
     def forward(self, token_ids):
@@ -125,7 +147,10 @@ class Bob(nn.Module):
         positions = torch.arange(seq_len, device=token_ids.device)
         x = self.token_embedding(token_ids)
         for block in self.blocks:
-            x = block(x, positions)
+            if self.gradient_checkpointing and self.training and torch.is_grad_enabled():
+                x = checkpoint(block, x, positions, use_reentrant=False)
+            else:
+                x = block(x, positions)
         return self.lm_head(self.final_norm(x))
 
     @torch.inference_mode()
@@ -229,6 +254,7 @@ def get_batch(data, batch_size, block_size, device):
 
 @torch.no_grad()
 def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batches, device):
+    was_training = model.training
     model.eval()
     results = []
     for data in (train_data, val_data):
@@ -237,8 +263,8 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size, eval_batc
             x, y = get_batch(data, batch_size, block_size, device)
             logits = model(x)
             losses.append(F.cross_entropy(logits.float().reshape(-1, logits.size(-1)), y.reshape(-1)).item())
-    results.append(sum(losses) / len(losses))
-    model.train()
+        results.append(sum(losses) / len(losses))
+    model.train(was_training)
     return results
 
 
@@ -265,8 +291,12 @@ def parse_args():
     parser.add_argument("--block-size", type=int, default=512)
     parser.add_argument("--embed-dim", type=int, default=512)
     parser.add_argument("--num-heads", type=int, default=8)
-    parser.add_argument("--ff-dim", type=int, default=1536)
+    parser.add_argument("--ff-dim", type=int, default=None,
+                        help="Default: 1536 for GELU, 1024 for SwiGLU")
     parser.add_argument("--num-layers", type=int, default=6)
+    parser.add_argument("--activation", choices=("gelu", "swiglu"), default="gelu")
+    parser.add_argument("--gradient-checkpointing", action="store_true",
+                        help="Trade extra compute for lower activation memory during training")
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
     parser.add_argument("--eval-interval", type=int, default=250)
@@ -319,20 +349,22 @@ def main():
     train_path, val_path = prepare_token_files(args.data, tokenizer, args.output_dir)
     train_data = np.memmap(train_path, dtype=np.uint32, mode="r")
     val_data = np.memmap(val_path, dtype=np.uint32, mode="r")
+    ff_dim = args.ff_dim if args.ff_dim is not None else (1024 if args.activation == "swiglu" else 1536)
     config = Config(vocab_size=tokenizer.get_vocab_size(), embed_dim=args.embed_dim,
-                    nhead=args.num_heads, num_layers=args.num_layers, ff_dim=args.ff_dim,
-                    max_len=args.block_size, dropout=args.dropout)
+                    nhead=args.num_heads, num_layers=args.num_layers, ff_dim=ff_dim,
+                    max_len=args.block_size, dropout=args.dropout, activation=args.activation)
     (args.output_dir / "config.json").write_text(
         json.dumps({**asdict(config), "model_name": "Bob"}, indent=2), encoding="utf-8"
     )
-    model = Bob(config).to(device)
+    model = Bob(config, gradient_checkpointing=args.gradient_checkpointing).to(device)
     parameter_count = count_parameters(model)
     if parameter_count > MAX_PARAMETERS:
         raise ValueError(f"Model has {parameter_count:,} parameters; hard maximum is {MAX_PARAMETERS:,}")
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=0.1)
     print(f"PyTorch {torch.__version__} | Device: {device}")
     print(f"Model: Bob | Parameters: {parameter_count:,} ({parameter_count/1e6:.3f}M / 20M max)")
-    print(f"Vocab: {config.vocab_size:,} (8,192 max)")
+    print(f"Vocab: {config.vocab_size:,} (8,192 max) | Activation: {config.activation}")
+    print(f"Gradient checkpointing: {'on' if args.gradient_checkpointing else 'off'}")
 
     checkpoint_path = args.checkpoint or args.output_dir / "bob_latest.pt"
     best_path = args.best_checkpoint or args.output_dir / "bob_best.pt"
@@ -350,13 +382,13 @@ def main():
 
     start_step, best_loss = 0, float("inf")
     if args.resume:
-        checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
-        if checkpoint.get("model_config") != asdict(config):
+        checkpoint_data = torch.load(args.resume, map_location=device, weights_only=False)
+        if checkpoint_data.get("model_config") != asdict(config):
             raise ValueError("Checkpoint architecture/tokenizer config differs from this run")
-        model.load_state_dict(checkpoint["model_state_dict"])
-        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-        start_step = int(checkpoint.get("step", 0))
-        best_loss = float(checkpoint.get("best_val_loss", float("inf")))
+        model.load_state_dict(checkpoint_data["model_state_dict"])
+        optimizer.load_state_dict(checkpoint_data["optimizer_state_dict"])
+        start_step = int(checkpoint_data.get("step", 0))
+        best_loss = float(checkpoint_data.get("best_val_loss", float("inf")))
 
     with log_path.open("a", newline="", encoding="utf-8") as log_file:
         writer = csv.writer(log_file)
